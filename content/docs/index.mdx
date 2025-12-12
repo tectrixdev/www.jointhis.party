@@ -1,13 +1,36 @@
 ---
-title: Hello World
-description: Your first document
+title: Start self-hosting today!
+icon: House
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+import { House } from "lucide-react";
+import { Globe } from "lucide-react";
+import { Gamepad } from "lucide-react";
+import { Wrench } from "lucide-react";
 
-## What is Next?
+Hi, and welcome to our guides and documentation. Select one of our categories to continue and make your project happen!
+
+## Custom:
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+	<Card icon={<Globe />} href="/docs/web" title="Websites">
+		Host websites with SSL, cloudflare proxying and the right ports!
+	</Card>
+	<Card icon={<Gamepad />} href="/docs/games" title="Games">
+		Host your games with the right ports and of course, a free subdomain!
+	</Card>
+	<Card icon={<Wrench />} href="/docs/custom" title="Custom">
+		Host your services with a free subdomain!
+	</Card>
+</Cards>
+
+## Start by using a pre-made guide:
+
+<Cards>
+	<Card icon={<Gamepad />} href="/docs/minecraft" title="Minecraft">
+		Get your java domain clean and smooth! We can even remap ports!
+	</Card>
+	<Card icon={<Wrench />} href="/docs/discord-bot" title="Discord bot">
+		Host your new discord bot! No custom ports or network mapping needed.
+	</Card>
 </Cards>
