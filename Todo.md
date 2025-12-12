@@ -1,0 +1,4 @@
+- [ ] Finish guides
+- [ ] Add homepage, SEO
+- [ ] Add Og-image
+- [ ] Add tool

@@ -2,13 +2,14 @@
 title: Custom setup
 icon: Wrench
 ---
-
+import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 
+<Steps>
+<Step>
+
 # Choosing your network forwarding method
-
 ## How to decide:
-
 ### Port forwarding
 
 <Accordions>
@@ -42,15 +43,20 @@ import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 </Accordion>
 </Accordions>
 
-## Port forwarding:
+</Step>
+<br/>
+<Step>
 
-<Callout title="Advanced users only" type="warning">
+# Forwarding to the network
+<Tabs items={['Reverse proxy', 'Port forwarding']}>
+  <Tab value="Reverse proxy"><Callout title="Safer method">
+	Using a reverse-proxy is generally much safer.
+</Callout></Tab>
+  <Tab value="Port forwarding"><Callout title="Advanced users only" type="warning">
 	Port forwarding poses multiple security risks if you don't know what you're
 	doing so we only recommend this if you do know what you're doing.
-</Callout>
+</Callout></Tab>
+</Tabs>
 
-## Reverse-proxy
-
-<Callout title="Safer method">
-	Using a reverse-proxy is generally much safer.
-</Callout>
+</Step>
+</Steps>
