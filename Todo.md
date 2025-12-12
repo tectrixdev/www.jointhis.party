@@ -1,4 +1,6 @@
 - [ ] Finish guides
 - [ ] Add homepage, SEO
-- [ ] Add Og-image
+- [ ] Add og-image
 - [ ] Add tool
+- [ ] open source it all
+- [ ] Add to tectrix.dev
