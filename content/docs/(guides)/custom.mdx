@@ -2,3 +2,55 @@
 title: Custom setup
 icon: Wrench
 ---
+
+import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+
+# Choosing your network forwarding method
+
+## How to decide:
+
+### Port forwarding
+
+<Accordions>
+<Accordion title="Benefits">
+- Faster network
+- Easier configuration for ports
+- Full control
+</Accordion>
+<Accordion title="Cons">
+
+- Requires access to the router
+- Can be impossible on certain ISPs
+- Can be exploited by malicious actors
+</Accordion>
+</Accordions>
+
+### Reverse-proxy
+
+<Accordions>
+<Accordion title="Benefits">
+- Very safe
+- No need to access router
+- Works on almost all networks
+- Simple
+</Accordion>
+<Accordion title="Cons">
+- Can be costly depending on the service (we recommend a free service)
+- Can cause high ping to clients
+- Can cause instable connections
+- Can be a bit less reliable if the service goes down.
+</Accordion>
+</Accordions>
+
+## Port forwarding:
+
+<Callout title="Advanced users only" type="warning">
+	Port forwarding poses multiple security risks if you don't know what you're
+	doing so we only recommend this if you do know what you're doing.
+</Callout>
+
+## Reverse-proxy
+
+<Callout title="Safer method">
+	Using a reverse-proxy is generally much safer.
+</Callout>
