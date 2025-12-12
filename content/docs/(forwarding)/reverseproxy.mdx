@@ -1,0 +1,33 @@
+---
+title: Reverse proxy
+icon: Globe
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+
+<Callout type="success" title="Recommended method">
+	Using a reverse-proxy is generally much safer than using port forwarding, therefore we recommend this.
+</Callout>
+<Callout type="warning" title="Recent changes in playit.">
+	Playit has seen a lot of abuse, which has led them to limit their service for free users. You can now only make minecraft and terraria tunnels.
+</Callout>
+
+I'll start by explaining what this is to give you a bit of context. A reverse proxy is essentially external port forwarding, you install their program (which is open-source and safe in the case of playit) and this program will intercept your outgoing traffic and send it to their servers. Their servers will then proceed to forward that traffic and make it publicly accessible by port forwarding on their side. If there is incoming traffic, it will be accepted by their servers and sent to the program you installed. The program will then proceed to forward that traffic into your server. The obvious downside of this is latency and the reliability on a service for your networking. The free services mostly are heavily used and can be slower at peak-hours.
+You can read more on this in [this article](https://www.cloudflare.com/learning/cdn/glossary/reverse-proxy/) cloudflare wrote.
+
+# Services
+There are a lot of reverse proxy services to consider, we recommend [playit.gg](https://playit.gg/) because it's free and we have experience with it. It is not the fastest nor the greatest but it does a great job and is very user-friendly. We'll be basing this tutorial on playit. If you want to use another service you can get support in [our discord server](/discord).
+
+<Steps>
+<Step>
+# Getting started
+In order to use playit, you'll need an account. Head over to https://playit.gg/ and sign up.
+![login page](./playitlogin.png)
+I don't recommend logging in as guest.
+</Step>
+<Step>
+# Registering your agent
+![setup page](./playitsetup.png)
+</Step>
+</Steps>

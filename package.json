@@ -21,6 +21,7 @@
 		"prettier": "^3.7.4",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
+		"remark-directive": "^4.0.0",
 		"tailwind-merge": "^3.4.0"
 	},
 	"devDependencies": {

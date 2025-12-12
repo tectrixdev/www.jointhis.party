@@ -4,6 +4,7 @@ icon: Wrench
 ---
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+import { Globe } from "lucide-react";
 
 <Steps>
 <Step>
@@ -51,7 +52,10 @@ import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 <Tabs items={['Reverse proxy', 'Port forwarding']}>
   <Tab value="Reverse proxy"><Callout title="Safer method">
 	Using a reverse-proxy is generally much safer.
-</Callout></Tab>
+</Callout><Card icon={<Globe />} href="/docs/reverseproxy"  title="Setting up a reverse proxy">
+		Click to open the dedicated guide.
+	</Card>
+</Tab>
   <Tab value="Port forwarding"><Callout title="Advanced users only" type="warning">
 	Port forwarding poses multiple security risks if you don't know what you're
 	doing so we only recommend this if you do know what you're doing.
