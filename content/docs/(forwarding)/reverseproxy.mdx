@@ -4,7 +4,11 @@ icon: Globe
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
-
+import { House } from "lucide-react";
+import { Globe } from "lucide-react";
+import { Gamepad } from "lucide-react";
+import { Wrench } from "lucide-react";
+import { Speech } from "lucide-react";
 
 <Callout type="success" title="Recommended method">
 	Using a reverse-proxy is generally much safer than using port forwarding, therefore we recommend this.
@@ -32,9 +36,50 @@ Once you have created your account, you will be met with this:
 ![setup page](./playitsetup.png)
 You'll have to press setup a new agent.
 ![setup agent](./setup.png)
+</Step>
+<Step>
+# Downloading the server program
 So, you should download the software on their download page linked. I recommend using Linux for any servers but if you want to self host on your own machine windows is fine.
+For debian-based servers, I highly recommend using their debian application:
+```bash
+curl -SsL https://playit-cloud.github.io/ppa/key.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/playit.gpg >/dev/null
+echo "deb [signed-by=/etc/apt/trusted.gpg.d/playit.gpg] https://playit-cloud.github.io/ppa/data ./" | sudo tee /etc/apt/sources.list.d/playit-cloud.list
+sudo apt update
+sudo apt install playit
+```
+Now in order to run it, just enter `playit` in your terminal.
 When running the agent for the first time, you'll be met with this:
 ![console setup](./consolesetup.png)
 Open the url to link your agent to your account. Proceed to setup the agent by following the provided instructions.
+Now you should be able to setup a tunnel:
+![tunnel setup](./tunnel.png)
+You have successfully registered playit and can now continue to a guide to follow:
+<Cards>
+	<Card icon={<Gamepad />} href="/docs/minecraft" title="Minecraft">
+		Get your java domain clean and smooth! We can even remap ports!
+	</Card>
+	<Card icon={<Globe />} href="/docs/web" title="Websites">
+		Host websites with SSL, cloudflare proxying and the right ports!
+	</Card>
+	<Card icon={<Gamepad />} href="/docs/games" title="Games">
+		Host your games with the right ports and of course, a free subdomain!
+	</Card>
+	<Card icon={<Wrench />} href="/docs/custom" title="Custom">
+		Host your services with a free subdomain!
+	</Card>
+</Cards>
+<br/>
+</Step>
+<Step>
+# Extras
+## Autostart
+If you want the application to automatically start on your system, you should use their systemd service. This is only available for people who have downloaded the debian version as recommended previously. To activate it, simply use this command:
+```bash
+sudo systemctl start playit --now
+```
+This will activate the systemctl service, to avoid problems you can now close the window of playit you originally had open. Playit should continue itself in the background.
+
+I do not yet have a method for this on windows, but for other linux distros you can make your own systemctl service or use crontab.
+This section will be expanded in the future.
 </Step>
 </Steps>
