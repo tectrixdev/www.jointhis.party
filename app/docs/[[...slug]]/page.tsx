@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
+import { Pencil } from "lucide-react";
+import { Card } from "fumadocs-ui/components/card";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -18,7 +20,11 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const MDX = page.data.body;
 
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage
+			tableOfContent={{ style: "clerk" }}
+			toc={page.data.toc}
+			full={page.data.full}
+		>
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<DocsBody>
@@ -29,6 +35,13 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 					})}
 				/>
 			</DocsBody>
+			<Card
+				title={"Edit on Github"}
+				href={`https://github.com/tectrixdev/www.jointhis.party/blob/main/content/docs/${page.path}`}
+				icon={<Pencil />}
+			>
+				Found a mistake? Want to improve the documentation?
+			</Card>
 		</DocsPage>
 	);
 }
