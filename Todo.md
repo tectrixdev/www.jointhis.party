@@ -1,4 +1,5 @@
 - [ ] Finish guides
+- [ ] logos and branding
 - [ ] Add homepage, SEO
 - [ ] Add og-image
 - [ ] Add tool
