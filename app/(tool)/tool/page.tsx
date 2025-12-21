@@ -1,0 +1,76 @@
+import Link from "next/link";
+import Form from "next/form";
+import Image from "next/image";
+import { Metadata } from "next";
+import { Rubik_Glitch } from "next/font/google";
+import { Rubik } from "next/font/google";
+import { Card, Cards } from "fumadocs-ui/components/card";
+import { House } from "lucide-react";
+import { Globe } from "lucide-react";
+import { Gamepad } from "lucide-react";
+import { Wrench } from "lucide-react";
+import { Speech } from "lucide-react";
+
+const Glitch = Rubik_Glitch({
+	subsets: ["latin"],
+	weight: ["400"],
+	style: ["normal"],
+});
+
+const rubik = Rubik({
+	subsets: ["latin"],
+	weight: ["400"],
+	style: ["normal"],
+});
+
+export default function HomePage() {
+	return (
+		<main className="bg-[url(/bg.webp)] p-10 flex flex-col justify-start flex-1 bg-no-repeat bg-cover bg-center bg-fixed h-max w-screen pb-5">
+			<h1
+				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
+			>
+				Subdomain configurator
+			</h1>
+			<h2
+				className={`${rubik.className} text-center text-xl drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+			>
+				Get your{" "}
+				<p className="font-extrabold text-amber-400 drop-shadow-xl">
+					free subdomain
+				</p>{" "}
+				here!
+			</h2>
+		</main>
+	);
+}
+
+export const metadata: Metadata = {
+	title: "JoinThisParty - Subdomain Tool",
+	description: "Create your free subdomain now!",
+	generator: "Next.js",
+	applicationName: "jointhis.party",
+	keywords: [
+		"Free domain",
+		"Free subdomain",
+		"Self hosting",
+		"TecTrix",
+		"Self hosting",
+		"Self hosting subdomain",
+		"Free subdomain",
+		"minecraft subdomain",
+		"Free srv record",
+	],
+	robots: "index, follow",
+	alternates: {
+		canonical: "https://www.jointhis.party/tool",
+	},
+	authors: [{ name: "Joran Hennion" }],
+	creator: "Joran Hennion",
+	publisher: "Joran Hennion",
+	formatDetection: {
+		email: false,
+		address: false,
+		telephone: false,
+	},
+	metadataBase: new URL("https://www.jointhis.party/tool"),
+};

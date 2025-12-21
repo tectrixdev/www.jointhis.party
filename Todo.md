@@ -1,7 +1,9 @@
-- [ ] Finish guides
-- [ ] logos and branding
-- [ ] Add homepage, SEO
-- [ ] Add og-image
+- [x] logos and branding
+- [x] Add homepage
 - [ ] Add tool
+- [ ] Finish guides
+- [ ] SEO
+- [ ] Add og-image
+- [ ] fix light theme
 - [ ] open source it all
 - [ ] Add to tectrix.dev

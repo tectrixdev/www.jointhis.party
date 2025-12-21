@@ -82,7 +82,7 @@ export default function HomePage() {
 				<Card
 					className="shadow-2xls backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
 					icon={<Wrench />}
-					href="/docs/custom"
+					href="/tool"
 					title="Explore our subdomain tool!"
 				>
 					Get your free subdomain here!

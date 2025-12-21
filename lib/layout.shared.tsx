@@ -8,6 +8,10 @@ import Image from "next/image";
 
 export function baseOptions(): BaseLayoutProps {
 	return {
+		themeSwitch: {
+			enabled: false, // light theme is currently broken
+			mode: "light-dark-system",
+		},
 		nav: {
 			title: (
 				<>
@@ -31,14 +35,14 @@ export function baseOptions(): BaseLayoutProps {
 				icon: <Home />,
 			},
 			{
-				text: "Documentation",
-				url: "/docs",
-				icon: <BookOpenText />,
-			},
-			{
 				text: "Tool",
 				url: "/tool",
 				icon: <Wrench />,
+			},
+			{
+				text: "Documentation",
+				url: "/docs",
+				icon: <BookOpenText />,
 			},
 			{
 				text: "Support",
