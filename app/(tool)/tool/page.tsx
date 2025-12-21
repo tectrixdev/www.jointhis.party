@@ -10,6 +10,7 @@ import { Globe } from "lucide-react";
 import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Speech } from "lucide-react";
+import { MainHome } from "@/components/main";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -25,7 +26,7 @@ const rubik = Rubik({
 
 export default function HomePage() {
 	return (
-		<main className="bg-[url(/bg.webp)] p-10 flex flex-col justify-start flex-1 bg-no-repeat bg-cover bg-center bg-fixed h-max w-screen pb-5">
+		<MainHome ClassName="p-10">
 			<h1
 				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
@@ -40,7 +41,7 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
-		</main>
+		</MainHome>
 	);
 }
 

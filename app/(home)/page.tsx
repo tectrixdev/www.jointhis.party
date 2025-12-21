@@ -10,6 +10,7 @@ import { Globe } from "lucide-react";
 import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Speech } from "lucide-react";
+import { MainHome } from "@/components/main";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -25,14 +26,14 @@ const rubik = Rubik({
 
 export default function HomePage() {
 	return (
-		<main className="bg-[url(/bg.webp)] p-20 flex flex-col justify-start flex-1 bg-no-repeat bg-cover bg-center bg-fixed h-max w-screen pb-5">
+		<MainHome ClassName="p-10 md:p-20">
 			<h1
-				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
+				className={`${Glitch.className} text-center text-4xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
 				JoinThisParty
 			</h1>
 			<h2
-				className={`${rubik.className} text-center text-xl drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+				className={`${rubik.className} text-center text-md drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
 			>
 				Guides and documentation to help{" "}
 				<p className="font-extrabold text-amber-400 drop-shadow-xl">you</p>{" "}
@@ -88,7 +89,7 @@ export default function HomePage() {
 					Get your free subdomain here!
 				</Card>
 			</Cards>
-		</main>
+		</MainHome>
 	);
 }
 
