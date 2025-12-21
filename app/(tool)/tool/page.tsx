@@ -11,6 +11,7 @@ import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Speech } from "lucide-react";
 import { MainHome } from "@/components/main";
+import Authbutton from "@/components/authbutton";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -24,7 +25,7 @@ const rubik = Rubik({
 	style: ["normal"],
 });
 
-export default function HomePage() {
+export default async function HomePage() {
 	return (
 		<MainHome ClassName="p-10">
 			<h1
@@ -41,6 +42,7 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
+			<Authbutton extended={true} />
 		</MainHome>
 	);
 }
