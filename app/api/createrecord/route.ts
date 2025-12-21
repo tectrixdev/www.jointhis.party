@@ -17,23 +17,6 @@ export async function POST(request: Request) {
 			apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 		});
 
-		let targetHost = String(value);
-
-		// If SRV record, create a random A record first
-		if (type === "SRV") {
-			const randomSubdomain = `srv-${Math.random().toString(36).substring(2, 9)}`;
-			targetHost = `${randomSubdomain}.jointhis.party`;
-
-			await client.dns.records.create({
-				zone_id: "fc5602181bbb84839aef4907714f435c",
-				name: randomSubdomain,
-				type: "A",
-				ttl: 3600,
-				content: String(value),
-				comment: session.user?.id ?? undefined,
-			});
-		}
-
 		const payload: any = {
 			zone_id: "fc5602181bbb84839aef4907714f435c",
 			name: String(name),
@@ -49,12 +32,47 @@ export async function POST(request: Request) {
 				priority: 0,
 				weight: 0,
 				port: Number(port || 0),
-				target: targetHost,
+				target: String(value),
 			};
 			delete payload.content;
 		}
 
 		const recordResponse = await client.dns.records.create(payload);
+		if (process.env.LOGS_WEBHOOK) {
+			await fetch(process.env.LOGS_WEBHOOK, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					content: "<@&1448781724803661927>",
+					tts: false,
+					embeds: [
+						{
+							id: 652627557,
+							title: "New subdomain created!",
+							description: `NAME: **${name}**\nURL: https://${name}.jointhis.party\nOWNER: <@${session.user?.id}>`,
+							color: 2326507,
+							fields: [
+								{
+									id: 986834541,
+									name: "IP",
+									value: `${value}`,
+								},
+								{
+									id: 356214976,
+									name: "Record Type",
+									value: `${type}`,
+								},
+							],
+						},
+					],
+					components: [],
+					actions: {},
+					flags: 0,
+				}),
+			});
+		}
 		return NextResponse.json(
 			{ success: true, record: recordResponse },
 			{ status: 200 },

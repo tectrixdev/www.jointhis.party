@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { MainHome } from "@/components/main";
-import { createrecord } from "@/components/createrecord";
 import RecordForm from "@/components/RecordForm";
 
 const Glitch = Rubik_Glitch({
