@@ -8,6 +8,7 @@ import { MainHome } from "@/components/main";
 import RecordForm from "@/components/RecordForm";
 import SubdomainManagerClient from "@/components/SubdomainManagerClient";
 import { Toaster } from "react-hot-toast";
+import AuthbuttonExtended from "@/components/authbuttonExtended";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
+			<AuthbuttonExtended />
 			<RecordForm />
 			<SubdomainManagerClient />
 		</MainHome>

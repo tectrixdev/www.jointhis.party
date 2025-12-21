@@ -39,7 +39,7 @@ export default function RecordForm() {
 		<>
 			<form
 				onSubmit={onSubmit}
-				className="flex flex-col gap-4 max-w-2xl mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-2/3 border-white border"
+				className="flex flex-col gap-4 w-full mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-2/3 border-white border"
 			>
 				<div className="flex flex-col gap-2">
 					<label htmlFor="name" className="font-semibold">
