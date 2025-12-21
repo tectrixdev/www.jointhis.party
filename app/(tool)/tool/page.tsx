@@ -6,6 +6,8 @@ import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { MainHome } from "@/components/main";
 import RecordForm from "@/components/RecordForm";
+import SubdomainManagerClient from "@/components/SubdomainManagerClient";
+import { Toaster } from "react-hot-toast";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -22,6 +24,7 @@ const rubik = Rubik({
 export default function HomePage() {
 	return (
 		<MainHome ClassName="p-10">
+			<Toaster />
 			<h1
 				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
@@ -37,6 +40,7 @@ export default function HomePage() {
 				here!
 			</h2>
 			<RecordForm />
+			<SubdomainManagerClient />
 		</MainHome>
 	);
 }

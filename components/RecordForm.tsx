@@ -17,7 +17,7 @@ export default function RecordForm() {
 		};
 
 		try {
-			const res = await fetch("/api/createrecord", {
+			const res = await fetch("/api/records", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),
@@ -37,12 +37,10 @@ export default function RecordForm() {
 
 	return (
 		<>
-			<Toaster />
 			<form
 				onSubmit={onSubmit}
 				className="flex flex-col gap-4 max-w-2xl mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-2/3 border-white border"
 			>
-				{/* ...re-use the same inputs as your page.tsx form (name,type,value,port,submit) */}
 				<div className="flex flex-col gap-2">
 					<label htmlFor="name" className="font-semibold">
 						Subdomain Name
