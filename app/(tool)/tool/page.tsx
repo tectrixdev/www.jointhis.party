@@ -4,13 +4,10 @@ import Image from "next/image";
 import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
-import { Card, Cards } from "fumadocs-ui/components/card";
-import { House } from "lucide-react";
-import { Globe } from "lucide-react";
-import { Gamepad } from "lucide-react";
-import { Wrench } from "lucide-react";
-import { Speech } from "lucide-react";
 import { MainHome } from "@/components/main";
+import RecordForm from "@/components/RecordForm";
+import SubdomainManagerClient from "@/components/SubdomainManagerClient";
+import { Toaster } from "react-hot-toast";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -27,6 +24,7 @@ const rubik = Rubik({
 export default function HomePage() {
 	return (
 		<MainHome ClassName="p-10">
+			<Toaster />
 			<h1
 				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
@@ -41,6 +39,8 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
+			<RecordForm />
+			<SubdomainManagerClient />
 		</MainHome>
 	);
 }

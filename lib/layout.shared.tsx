@@ -5,6 +5,7 @@ import { Speech } from "lucide-react";
 import { BookOpenText } from "lucide-react";
 import { Home } from "lucide-react";
 import Image from "next/image";
+import Authbutton from "@/components/authbutton";
 
 export function baseOptions(): BaseLayoutProps {
 	return {
@@ -33,6 +34,7 @@ export function baseOptions(): BaseLayoutProps {
 				text: "Home",
 				url: "/",
 				icon: <Home />,
+				on: "menu",
 			},
 			{
 				text: "Tool",
@@ -49,6 +51,13 @@ export function baseOptions(): BaseLayoutProps {
 				url: "/discord",
 				icon: <Speech />,
 			},
+			{
+				type: "custom",
+				children: <Authbutton extended={false} />,
+				secondary: true,
+				on: "nav",
+			},
 		],
+		githubUrl: "https://github.com/tectrixdev/www.jointhis.party",
 	};
 }
