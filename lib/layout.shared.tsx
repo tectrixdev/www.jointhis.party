@@ -53,9 +53,8 @@ export function baseOptions(): BaseLayoutProps {
 			},
 			{
 				type: "custom",
-				children: <Authbutton extended={false} />,
+				children: <Authbutton />,
 				secondary: true,
-				on: "nav",
 			},
 		],
 		githubUrl: "https://github.com/tectrixdev/www.jointhis.party",
