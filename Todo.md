@@ -1,6 +1,6 @@
 - [x] logos and branding
 - [x] Add homepage
-- [ ] Add tool
+- [x] Add tool
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
