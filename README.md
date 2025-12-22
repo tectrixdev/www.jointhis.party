@@ -11,7 +11,7 @@ This project aims to provide a free subdomain for everything, and we also aim to
 
 Contributions are welcome using PRs. For editing the guides and documentation you can just simply use the button on the page you want to edit.
 
-Running locally:
+## Running locally:
 
 clone the repository:
 
