@@ -35,9 +35,12 @@ export default function SubdomainManagerClient() {
 				data: r.data,
 			}));
 			setRecords(mapped);
+			if (!res.ok) {
+				toast.error(json?.error || "Failed to fetch records.");
+			}
 		} catch (err: any) {
 			console.error(err);
-			toast.error(err.message || "Failed to create record");
+			toast.error("Failed to fetch records.");
 		} finally {
 			setLoading(false);
 		}

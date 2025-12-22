@@ -15,7 +15,6 @@ export async function GET(request: Request) {
 		if (!session) {
 			return NextResponse.json({ error: "Please log in." }, { status: 401 });
 		}
-
 		const userRecords = await client.dns.records.list({
 			zone_id: ZONE_ID,
 			comment: {
