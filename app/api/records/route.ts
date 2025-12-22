@@ -36,14 +36,56 @@ export async function GET(request: Request) {
 // create subdomain
 export async function POST(request: Request) {
 	try {
+		const body = await request.json();
+		const { name, type, value, port } = body;
 		const session = await auth();
 		if (!session) {
 			return NextResponse.json({ error: "Please log in." }, { status: 401 });
 		}
-
-		const body = await request.json();
-		const { name, type, value, port } = body;
-
+		// limitations
+		const userRecords = await client.dns.records.list({
+			zone_id: ZONE_ID,
+			comment: {
+				contains: session.user?.id,
+			},
+		});
+		const UserRecords = userRecords.result;
+		if (UserRecords.length >= 5) {
+			return NextResponse.json(
+				{
+					error:
+						"Maximum amount of records reached. If you need more, please create a support ticket.",
+				},
+				{ status: 403 },
+			);
+		}
+		if (
+			[
+				"*",
+				"@",
+				"mc",
+				"www",
+				"docs",
+				"official",
+				"minecraft",
+				"join",
+				"jointhis.party",
+				"tool",
+				"discord",
+				"hub",
+				"main",
+				"site",
+			].includes(name)
+		) {
+			return NextResponse.json(
+				{
+					error:
+						"Subdomain name not allowed! If this is a mistake, please create a support ticket.",
+				},
+				{ status: 403 },
+			);
+		}
+		// creation.
 		const payload: any = {
 			zone_id: ZONE_ID,
 			name: `${name}`,

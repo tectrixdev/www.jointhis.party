@@ -37,7 +37,7 @@ export default function SubdomainManagerClient() {
 			setRecords(mapped);
 		} catch (err: any) {
 			console.error(err);
-			toast.error("Failed to load records");
+			toast.error(err.message || "Failed to create record");
 		} finally {
 			setLoading(false);
 		}
