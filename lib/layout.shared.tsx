@@ -10,7 +10,7 @@ import Authbutton from "@/components/authbutton";
 export function baseOptions(): BaseLayoutProps {
 	return {
 		themeSwitch: {
-			enabled: false, // light theme is currently broken
+			enabled: true,
 			mode: "light-dark-system",
 		},
 		nav: {

@@ -25,15 +25,16 @@ const rubik = Rubik({
 });
 
 export default function HomePage() {
+	const cardClassName = `shadow-2xl backdrop-blur-lg hover:*:text-black dark:hover:bg-black/40 hover:bg-white/40 dark:hover:*:text-white dark:hover:border-white`;
 	return (
 		<MainHome ClassName="p-10 md:p-20">
 			<h1
-				className={`${Glitch.className} text-center text-4xl pb-2 drop-shadow-xl md:text-8xl`}
+				className={`${Glitch.className} text-white text-center text-4xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
 				JoinThisParty
 			</h1>
 			<h2
-				className={`${rubik.className} text-center text-md drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+				className={`${rubik.className} text-white text-center text-md drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
 			>
 				Guides and documentation to help{" "}
 				<p className="font-extrabold text-amber-400 drop-shadow-xl">you</p>{" "}
@@ -41,7 +42,7 @@ export default function HomePage() {
 			</h2>
 			<Cards>
 				<Card
-					className="shadow-2xl backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
+					className={cardClassName}
 					icon={<Globe />}
 					href="/docs/web"
 					title="Websites"
@@ -49,7 +50,7 @@ export default function HomePage() {
 					Host websites with SSL, cloudflare proxying and the right ports!
 				</Card>
 				<Card
-					className="shadow-2xl backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
+					className={cardClassName}
 					icon={<Gamepad />}
 					href="/docs/games"
 					title="Games"
@@ -57,23 +58,23 @@ export default function HomePage() {
 					Host your games with the right ports and of course, a free subdomain!
 				</Card>
 				<Card
+					className={cardClassName}
 					icon={<Gamepad />}
-					className="shadow-2xls backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
 					href="/docs/minecraft"
 					title="Minecraft"
 				>
 					Get your java domain clean and smooth! We can even remap ports!
 				</Card>
 				<Card
+					className={cardClassName}
 					icon={<Wrench />}
-					className="shadow-2xls backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
 					href="/docs/discord-bot"
 					title="Discord bot"
 				>
 					Host your new discord bot! No custom ports or network mapping needed.
 				</Card>
 				<Card
-					className="shadow-2xls backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
+					className={cardClassName}
 					icon={<Wrench />}
 					href="/docs/custom"
 					title="Custom"
@@ -81,7 +82,7 @@ export default function HomePage() {
 					Host your services with a free subdomain!
 				</Card>
 				<Card
-					className="shadow-2xls backdrop-blur-lg hover:bg-black/40 hover:*:text-white hover:border-white"
+					className={cardClassName}
 					icon={<Wrench />}
 					href="/tool"
 					title="Explore our subdomain tool!"

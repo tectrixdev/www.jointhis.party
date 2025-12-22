@@ -1,10 +1,11 @@
 - [x] logos and branding
 - [x] Add homepage
 - [x] Add tool
+- [x] fix light theme
+- [x] Fix clutter in nav.
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
-- [ ] fix light theme
 - [ ] Code cleanup
 - [ ] open source it all
 - [ ] Add to tectrix.dev

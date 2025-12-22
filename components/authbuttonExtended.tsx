@@ -11,7 +11,7 @@ export default async function AuthbuttonExtended() {
 				className="w-full"
 				action={async () => {
 					"use server";
-					await signIn();
+					await signIn("discord");
 				}}
 			>
 				<button
