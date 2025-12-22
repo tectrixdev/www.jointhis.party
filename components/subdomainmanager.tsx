@@ -40,7 +40,7 @@ export default function SubdomainManagerClient() {
 			}
 		} catch (err: any) {
 			console.error(err);
-			toast.error("Failed to fetch records.");
+			toast.error("Network error");
 		} finally {
 			setLoading(false);
 		}
