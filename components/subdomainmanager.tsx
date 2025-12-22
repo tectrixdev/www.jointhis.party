@@ -40,7 +40,7 @@ export default function SubdomainManagerClient() {
 			}
 		} catch (err: any) {
 			console.error(err);
-			toast.error(err?.message || err || "Network error");
+			toast.error(err?.message || "Network error");
 		} finally {
 			setLoading(false);
 		}
