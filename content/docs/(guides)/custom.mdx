@@ -4,7 +4,8 @@ icon: Wrench
 ---
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
-import { Globe } from "lucide-react";
+import { EarthLock } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 <Steps>
 <Step>
@@ -15,15 +16,15 @@ import { Globe } from "lucide-react";
 
 <Accordions>
 <Accordion title="Benefits">
-- Faster network
+- Faster network (lower ping)
 - Easier configuration for ports
 - Full control
 </Accordion>
 <Accordion title="Cons">
 
 - Requires access to the router
-- Can be impossible on certain ISPs
-- Can be exploited by malicious actors
+- Can be impossible on certain ISPs (CGNAT)
+- Can be exploited by malicious actors (see [Port forwarding](../(forwarding)/portforwarding.mdx))
 </Accordion>
 </Accordions>
 
@@ -50,16 +51,23 @@ import { Globe } from "lucide-react";
 
 # Forwarding to the network
 <Tabs items={['Reverse proxy', 'Port forwarding']}>
-  <Tab value="Reverse proxy"><Callout title="Safer method">
-	Using a reverse-proxy is generally much safer.
-</Callout><Card icon={<Globe />} href="/docs/reverseproxy"  title="Setting up a reverse proxy">
-		Click to open the dedicated guide.
-	</Card>
-</Tab>
-  <Tab value="Port forwarding"><Callout title="Advanced users only" type="warning">
-	Port forwarding poses multiple security risks if you don't know what you're
-	doing so we only recommend this if you do know what you're doing.
-</Callout></Tab>
+	<Tab value="Reverse proxy">
+		<Callout title="Safer method">
+			Using a reverse-proxy is generally much safer.
+		</Callout>
+		<Card icon={<EarthLock />} href="/docs/reverseproxy" title="Setting up a reverse proxy">
+			Click to open the dedicated guide.
+		</Card>
+	</Tab>
+	<Tab value="Port forwarding">
+		<Callout title="Advanced users only" type="warning">
+			Port forwarding poses multiple security risks if you don't know what you're
+			doing so we only recommend this if you do know what you're doing.
+		</Callout>
+		<Card icon={<ArrowUpDown />} href="/docs/portforwarding" title="Setting up port forwarding">
+			Click to open the dedicated guide.
+		</Card>
+	</Tab>
 </Tabs>
 
 </Step>
