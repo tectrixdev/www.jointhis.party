@@ -4,9 +4,9 @@
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
-- [ ] cloudflare proxy support using overwrite
-- [ ] more editing options
 - [ ] fix light theme
 - [ ] Code cleanup
 - [ ] open source it all
 - [ ] Add to tectrix.dev
+- [ ] cloudflare proxy support using overwrite
+- [ ] more editing options
