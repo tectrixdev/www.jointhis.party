@@ -5,7 +5,7 @@
 - [x] Fix clutter in nav.
 - [x] Code cleanup
 - [x] open source it all
-- [ ] Restrictions on subdomain creation like limitations and certain names.
+- [x] Restrictions on subdomain creation like limitations and certain names.
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
