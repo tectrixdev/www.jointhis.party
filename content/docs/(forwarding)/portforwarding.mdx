@@ -1,0 +1,206 @@
+---
+title: Port forwarding
+icon: ArrowUpDown
+---
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Globe } from "lucide-react";
+import { Speech } from "lucide-react";
+import { Gamepad } from "lucide-react";
+import { Wrench } from "lucide-react";
+
+<Callout type="warning" title="For advanced users only!">
+	Opening ports on your network can pose security risks on all of the connected devices if not configured properly. This guide will have security advisories but following it will not make your system waterproof.
+</Callout>
+
+## Networking basics.
+*You may skip this section if you're just looking on how to port forward and don't want to learn how this all actually works.*<br/>
+### Local networks (LAN)
+A local network is a network of connected devices that is only accessible to users connected to a private (home) network. It mostly consists of IPs that look like this: `192.168.\*.\*`. Where 192.168 is a reserved prefix for local networks, `192.168.*` stands for the subnet. Mostly 192.168.0.1 or 192.168.1.1 is reserved for you router. If you want, you can type it in now and test it out. The last part, `192.168.*.*` is for the device. This has a maximum of 256 devices including `192.168.*.0`. Which means that the absolute last device in the last subnet will be `192.168.255.255`. The device IP gets decided by the router via DHCP. On most local networks, ports are freely shared and all open which means that any server in your private network is accessible to anyone on your private network.
+### Global networks (WAN)
+Global networks are essentially the same but with the global internet. Any private network has one IP on the global network. This is the IP that most people are generally referring to if they for example ask for it.
+<Callout type="warning" title="Sharing your public IP">
+	In most situations, this is a bad idea. Sharing your IP can give people a general idea of your location and in some edge cases give them access to things on your local network. Be careful with this information.
+</Callout>
+The big difference is that ports are not shared by default, and your devices all have the same public IP if they are on the same network.
+If you want people to connect to services on your local network via another local network you will need to **open ports**, which is what port forwarding does. But there are alternatives, like a [reverse proxy](./reverseproxy.mdx). This is especially useful if your network is behind a CGNAT(see next section). Opening ports is essentially accepting connections from an outside network on a certain port and telling your router to forward that connection/packet to the appropriate device.
+
+#### CGNAT
+In ordinary network configurations, every connection/household/business has an unique IP address. Which, in most cases, allows for port forwarding. A CGNAT, which stands for Carrier Grade Network Address Translation. Only uses a single IP for the whole carrier. **This does not allow for port forwarding**. You can check if you're behind a CGNAT [here](https://voxelmanip.se/2024/09/07/check-if-you-are-behind-cgnat/). If you are, there are a several options to bypass this. For one, a [reverse proxy](./reverseproxy.mdx) will work in almost, if not all cases. Your ISP(Internet Service Provider) might also offer a dedicated IP(v4) which would allow you to port forward.
+
+*Please note that these are only the basics, there are a lot more topics which you could expand on like IPv6, TCP, UDP, NAT itself, ...
+If you are reading this and want these topics to be covered, feel free to contribute.*
+
+# How to port forward
+<Steps>
+<Step>
+# Check if you're behind a CGNAT
+View the CGNAT section above to check this, if not, continue with this guide. 
+
+If you are however, I recommend this guide:
+<Card icon={<Globe />} href="/docs/reverseproxy"  title="Setting up a reverse proxy">
+		Click to open the dedicated guide.
+	</Card>
+</Step>
+<br/>
+<Step>
+# Configure your device/server
+First of all, make sure your device is connected to the internet using a LAN-cable. I do not recommend Wi-Fi. If you're hosting on windows, this guide will not cover that and I do not recommend hosting on windows either.
+Now we will have to find our local IP, you can do this by executing this command:
+```bash
+hostname -I
+```
+This will output something like this:
+```bash
+192.168.1.58 2a02:a03f:8ad0:5c00:4277:cede:fdc3:213 
+```
+The first one being your local IPv4, which we will use. And the second is your IPv6. We will not need that for this guide.
+Next you'll want to setup a firewall. If you're running ubuntu (server) you can use UFW, if you're running another distro you can look up their documentation on setting up a firewall. The goal of this firewall is to essentially make sure devices will only connect to the right ports and to maintain security. **This does not magically keep your server safe from intruders**.
+
+We'll start by enabling UFW:
+```bash
+sudo ufw enable
+```
+Now we'll set the defaults for incoming connections, which will be DENY.
+```bash
+sudo ufw default deny incoming
+```
+We're going to allow outgoing connections to allow the server to communicate with clients:
+```bash
+sudo ufw default allow outgoing
+```
+Now, if you're using SSH to connect to your server and configure it, you should also allow that. We'll have to make sure no one can remotely get into our server via ssh so we'll limit it to local connections. You're going to take the subnet from your local IP you got from your server, in my case: `192.168.1.58` and transform it into `192.168.1.0/24` (in my case). This will allow all local connections from that subnet.
+```bash
+sudo ufw allow from 192.168.1.0/24 to any port 22 proto tcp
+```
+This will make sure no one from the outside network can access your server via SSH. Make sure to double check before implementing this rule because this might lock you out of your system.
+
+Now we should configure the connections for your service. This is service-dependant so you should read their documentation to find out what port it is using. 
+Here are some common service's ports:
+- Minecraft: 25565
+- Minecraft bedrock: 19132
+- HTTP: 80
+- HTTPS: 443
+
+For minecraft, you would use this command:
+```bash
+sudo ufw allow 25565
+```
+For other services, replace port with the right port for your service:
+```bash
+sudo ufw allow (port)
+```
+
+Now we'll want to configure logging to detect possible malicious connections:
+```bash
+sudo ufw logging on
+```
+You can view these by using this command:
+```bash
+tail -F /var/log/ufw.log
+```
+Now to apply our changes, we're going to reload UFW:
+```bash
+sudo ufw reload
+```
+## Blocking IPs or subnets
+If you're noticing malicious connections or want to IP-ban someone you can use this to ban them from ever accessing your server:
+```bash
+sudo ufw deny from 203.0.113.100
+```
+While replacing `203.0.113.100` with their IP of course.
+
+If you want to ban a whole subnet you can use the /24 modifier like this:
+```bash
+sudo ufw deny from 203.0.113.0/24
+```
+While replacing `203.0.113.0` with their subnet of course.
+</Step>
+<Step>
+# Configuring port forwarding
+## Finding the router
+Now that we have configured our server, we can proceed to the port forwarding.
+You'll first need to find and configure your main router.
+
+To find it, there are several methods. You can try scanning for it or "guessing it" or you just know.
+What I am referring to with "the main router" is the ISP-provided one that should be in front of the rest.
+
+You can first try visiting the common IPs for your main router:
+- [192.168.0.1](http://192.168.0.1/)
+- [192.168.1.0](http://192.168.1.0/)
+- [192.168.1.1](http://192.168.1.1/)
+
+If that does not get you to your main router you can try scanning for it:
+```bash
+sudo apt install nmap -y
+nmap -sn 192.168.0-10.0-255 -T5
+```
+This will search for all devices on your network and provides you with their names.
+Your router will probably be named "mymodem", "vg-gateway", or similar. If none of these names show up, you can try manually going through the IPs.
+## Logging in to your router
+Now that you have found your router, you probably will come across a login screen.
+The password for this is either a default password, or is specified on the physical router.
+You should first try these common combinations:
+|User|Password|
+|---|---|
+|Admin|Password|
+|Admin|Admin|
+|Admin|0000|
+|Admin|1234|
+|Admin|xq7|
+
+If none of these work, you should try physically finding your router.
+There should be a label on there that specifies a username and a password.
+</Step>
+<Step>
+# Configuring the router
+Now that you've logged in, you can start configuring the port forward.
+This is ver router-specific but I'll provide a general idea on what input you're going to have to give it.
+
+**external port**:
+This is the port that will be connected to, if you want your service to just work, consider using the actual service port.
+For extra security and to avoid automatic scanning you can use another port and resolve this with an SRV record. This will mostly just apply to [minecraft](../(guides)/minecraft.mdx), it is also specified in that guide.
+
+**internal port**:
+This should be the service's port, this is the port that external traffic will connect to.
+
+**internal IP address**:
+This should be the IP we got from the `hostname -I` command. In my case this was: `192.168.1.58`
+
+**protocol**:
+I recommend leaving this on `TCP + UDP` as this will generally work for everything. If this is not an option, use the protocol specified by your server. For minecraft, this is TCP. For http(s), this is also tcp. For minecraft bedrock however it is UDP.
+
+If you need any extra help or your port forwarding is not working, you can always make use of our support:
+<Card icon={<Speech />} href="/discord" title="Support">
+		Do you have no idea what to do? Or just want some help over chat? Don't worry! Our support team got you covered, join our discord and make a ticket to access it.
+</Card>
+</Step>
+<br/>
+<Step>
+# Setting a static IP
+To make sure your local server IP won't change and mess up your configuration, you can assign a static IP.
+In your router, there will be an option for DHCP or Static IP. You should be able to select a device and assign an IP.
+
+You should select your device from the dropdown, and assign the same IP as we got from the `hostname -I` command. In my case this was: `192.168.1.58`
+Finally, you should make sure to save this configuration.
+
+You should now be all set, again if there are any issues or you don't know what to do at any point, contact our support team here:
+<Card icon={<Speech />} href="/discord" title="Support">
+		Do you have no idea what to do? Or just want some help over chat? Don't worry! Our support team got you covered, join our discord and make a ticket to access it.
+</Card>
+</Step>
+</Steps>
+You have now setup port forwarding and can continue to one of our guides:
+<Cards>
+	<Card icon={<Gamepad />} href="/docs/minecraft" title="Minecraft">
+		Get your java domain clean and smooth! We can even remap ports!
+	</Card>
+	<Card icon={<Globe />} href="/docs/web" title="Websites">
+		Host websites with SSL, cloudflare proxying and the right ports!
+	</Card>
+	<Card icon={<Gamepad />} href="/docs/games" title="Games">
+		Host your games with the right ports and of course, a free subdomain!
+	</Card>
+	<Card icon={<Wrench />} href="/docs/custom" title="Custom">
+		Host your services with a free subdomain!
+	</Card>
+</Cards>
