@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function RecordForm() {
 	const [loading, setLoading] = useState(false);

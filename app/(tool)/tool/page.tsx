@@ -1,14 +1,11 @@
-import Link from "next/link";
-import Form from "next/form";
-import Image from "next/image";
 import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
-import { MainHome } from "@/components/main";
-import RecordForm from "@/components/RecordForm";
-import SubdomainManagerClient from "@/components/SubdomainManagerClient";
 import { Toaster } from "react-hot-toast";
-import AuthbuttonExtended from "@/components/authbuttonExtended";
+import { MainHome } from "@/components/main";
+import AuthbuttonExtended from "@/components/authbuttonextended";
+import RecordForm from "@/components/recordform";
+import SubdomainManagerClient from "@/components/subdomainmanager";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -40,7 +37,7 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
-			<AuthbuttonExtended />
+			<AuthbuttonExtended /> {/* quickly logging in on mobile */}
 			<RecordForm />
 			<SubdomainManagerClient />
 		</MainHome>

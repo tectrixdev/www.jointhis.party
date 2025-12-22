@@ -1,15 +1,10 @@
-import Link from "next/link";
-import Form from "next/form";
-import Image from "next/image";
 import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { Card, Cards } from "fumadocs-ui/components/card";
-import { House } from "lucide-react";
 import { Globe } from "lucide-react";
 import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
-import { Speech } from "lucide-react";
 import { MainHome } from "@/components/main";
 
 const Glitch = Rubik_Glitch({

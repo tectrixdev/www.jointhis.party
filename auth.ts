@@ -15,3 +15,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		},
 	},
 });
+// Discord auth only for now to identify quickly for moderation.

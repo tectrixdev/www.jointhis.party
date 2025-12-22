@@ -3,11 +3,12 @@
 - [x] Add tool
 - [x] fix light theme
 - [x] Fix clutter in nav.
+- [x] Code cleanup
+- [ ] open source it all
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
-- [ ] Code cleanup
-- [ ] open source it all
 - [ ] Add to tectrix.dev
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
+- [ ] second code cleanup (if needed)
