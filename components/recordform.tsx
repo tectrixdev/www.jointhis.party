@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function RecordForm() {
 	const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ export default function RecordForm() {
 		<>
 			<form
 				onSubmit={onSubmit}
-				className="flex flex-col gap-4 w-full mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-5/6 border-white border"
+				className="text-white flex flex-col gap-4 w-full mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-5/6 border-white border"
 			>
 				<div className="flex flex-col gap-2">
 					<label htmlFor="name" className="font-semibold">

@@ -69,7 +69,7 @@ export default function SubdomainManagerClient() {
 	}
 
 	return (
-		<div className="w-full flex flex-col gap-4 mx-auto bg-black/25 text-center backdrop-blur-lg p-5 rounded-lg md:w-5/6 border-white border mt-10">
+		<div className="text-white w-full flex flex-col gap-4 mx-auto bg-black/25 text-center backdrop-blur-lg p-5 rounded-lg md:w-5/6 border-white border mt-10">
 			<div className="flex items-center justify-between mb-4">
 				<h3 className="text-2xl font-semibold">Your DNS Records</h3>
 				<div className="flex gap-2">

@@ -9,10 +9,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				return session;
 			const url = new URL(session.user.image);
 			const userId = url.pathname.split("/")[2];
-
 			session.user.id = userId;
 
 			return session;
 		},
 	},
 });
+// Discord auth only for now to identify quickly for moderation.

@@ -1,14 +1,11 @@
-import Link from "next/link";
-import Form from "next/form";
-import Image from "next/image";
 import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
-import { MainHome } from "@/components/main";
-import RecordForm from "@/components/RecordForm";
-import SubdomainManagerClient from "@/components/SubdomainManagerClient";
 import { Toaster } from "react-hot-toast";
-import AuthbuttonExtended from "@/components/authbuttonExtended";
+import { MainHome } from "@/components/main";
+import AuthbuttonExtended from "@/components/authbuttonextended";
+import RecordForm from "@/components/recordform";
+import SubdomainManagerClient from "@/components/subdomainmanager";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -27,12 +24,12 @@ export default function HomePage() {
 		<MainHome ClassName="p-10">
 			<Toaster />
 			<h1
-				className={`${Glitch.className} text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
+				className={`${Glitch.className} text-white text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
 			>
 				Subdomain configurator
 			</h1>
 			<h2
-				className={`${rubik.className} text-center text-xl drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+				className={`${rubik.className} text-white text-center text-xl drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
 			>
 				Get your{" "}
 				<p className="font-extrabold text-amber-400 drop-shadow-xl">
@@ -40,7 +37,7 @@ export default function HomePage() {
 				</p>{" "}
 				here!
 			</h2>
-			<AuthbuttonExtended />
+			<AuthbuttonExtended /> {/* quickly logging in on mobile */}
 			<RecordForm />
 			<SubdomainManagerClient />
 		</MainHome>
