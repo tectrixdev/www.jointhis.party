@@ -1,7 +1,7 @@
 # [www.jointhis.party](https://www.jointhis.party/)!
 
 > [!NOTE]  
-> The project is still in beta, to view it visit: [beta.jointhis.party](https://beta.jointhis.party/)
+> The project is still in beta, to view it, visit: [beta.jointhis.party](https://beta.jointhis.party/)
 
 Jointhis.party is a project aimed to continue a previous project but larger and with a slightly different goal. The goal of this previous project was to provide free subdomains for users that self-hosted a minecraft server with a certain reverse-proxy provider.
 
