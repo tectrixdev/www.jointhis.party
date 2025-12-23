@@ -2,3 +2,24 @@
 title: Minecraft
 icon: Gamepad
 ---
+<Callout title="Unfinished guide" type="error">
+This guide is still in development, and not production-ready.
+</Callout>
+## Self-hosting a minecraft server.
+
+This guide will fully guide you through setting up a local minecraft server and forwarding it to the network.
+
+# Setting up the server.
+You should have some dedicated server hardware, although you can just run it on your computer locally.
+I recommend using ubuntu (server) on your hardware, this guide will be made for that too. Although I will try my best to also provide instructions for windows.
+
+In order to install ubuntu server you'll need to prepare an installation media, I recommend using [balena etcher](https://etcher.balena.io/) to flash your ISO to that medium. The ISO itself, you can download on the official ubuntu site.
+
+For beginners, I recommend their desktop version:
+[https://ubuntu.com/desktop](https://ubuntu.com/desktop)
+
+For advanced users I would recommend ubuntu server:
+[https://ubuntu.com/server](https://ubuntu.com/server)
+
+Once you have the ISO and balena etcher installed, flashing is very easy.
+When you're done with flashing, you can proceed to installing. On the computer itself, open the BIOS, using the `DELETE` key while starting up on desktop, or `F12`, `ESC`, `F10`, `F9` or `F11` on a laptop. If you're inside of the BIOS, navigate to security and disable secure boot. Now proceed to navigate to boot and select `LEGACY` as boot mode. This will ensure the best compatibility with ubuntu, while it does probably support UEFI, it may not work properly and cause complications. Now if you have that ready
