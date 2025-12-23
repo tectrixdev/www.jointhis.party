@@ -9,6 +9,8 @@
 - [ ] Finish guides
 - [ ] SEO
 - [ ] Add og-image
+- [ ] Deploy to production
+- [ ] SEO(google)
 - [ ] Add to tectrix.dev
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
