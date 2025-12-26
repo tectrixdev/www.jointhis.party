@@ -5,7 +5,9 @@ import { Card, Cards } from "fumadocs-ui/components/card";
 import { Globe } from "lucide-react";
 import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
+import { ServerCog } from "lucide-react";
 import { MainHome } from "@/components/main";
+import { Server } from "lucide-react";
 
 const Glitch = Rubik_Glitch({
 	subsets: ["latin"],
@@ -36,6 +38,24 @@ export default function HomePage() {
 				self-host!
 			</h2>
 			<Cards>
+				<Card
+					className={cardClassName}
+					icon={<Server />}
+					href="/docs/aternos"
+					title="Aternos"
+				>
+					Get a nice and clean .jointhis.party subdomain for Aternos hosted
+					servers!
+				</Card>
+				<Card
+					className={cardClassName}
+					icon={<ServerCog />}
+					href="/docs/embotic"
+					title="Embotic"
+				>
+					Get a nice and clean .jointhis.party subdomain for Embotic hosted
+					servers!
+				</Card>
 				<Card
 					className={cardClassName}
 					icon={<Globe />}

@@ -37,7 +37,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 			</DocsBody>
 			<Card
 				title={"Edit on Github"}
-				href={`https://github.com/tectrixdev/www.jointhis.party/blob/main/content/docs/${page.path}`}
+				href={`https://github.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
 				icon={<Pencil />}
 			>
 				Found a mistake? Want to improve the documentation?
