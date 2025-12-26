@@ -6,9 +6,9 @@
 - [x] Code cleanup
 - [x] open source it all
 - [x] Restrictions on subdomain creation like limitations and certain names.
+- [x] Add og-image
 - [ ] Finish guides
 - [ ] SEO
-- [ ] Add og-image
 - [ ] Deploy to production
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
