@@ -51,6 +51,7 @@ export const metadata: Metadata = {
 	applicationName: "jointhis.party",
 	openGraph: {
 		images: "/opengraph-image.png",
+		url: "/opengraph-image.png"
 	},
 	keywords: [
 		"Free domain",
