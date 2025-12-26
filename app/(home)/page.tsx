@@ -114,6 +114,10 @@ export const metadata: Metadata = {
 	description: "Start your self-hosting journey here! Free subdomain included!",
 	generator: "Next.js",
 	applicationName: "jointhis.party",
+	openGraph: {
+		images: "/opengraph-image.png",
+		url: "/opengraph-image.png",
+	},
 	keywords: [
 		"Free domain",
 		"Free subdomain",
