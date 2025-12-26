@@ -43,7 +43,7 @@ export default function RecordForm() {
 			>
 				<div className="flex flex-col gap-2">
 					<label htmlFor="name" className="font-semibold">
-						Subdomain Name
+						Subdomain name
 					</label>
 					<input
 						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
@@ -55,7 +55,7 @@ export default function RecordForm() {
 				</div>
 				<div className="flex flex-col gap-2">
 					<label className="font-semibold" htmlFor="type">
-						Record Type
+						Record type
 					</label>
 					<select
 						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
@@ -83,7 +83,7 @@ export default function RecordForm() {
 						placeholder="169.134.121.60"
 					/>
 					<label className="font-semibold" htmlFor="port">
-						Minecraft port (SRV-only)
+						Port (SRV-only)
 					</label>
 					<input
 						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
