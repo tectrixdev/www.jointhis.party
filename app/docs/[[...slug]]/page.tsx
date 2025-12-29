@@ -36,7 +36,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				/>
 			</DocsBody>
 			<Card
-				title={"Edit on Gitlab"}
+				title={"Edit on GitLab"}
 				href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
 				icon={<Pencil />}
 			>
