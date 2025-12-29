@@ -36,8 +36,8 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				/>
 			</DocsBody>
 			<Card
-				title={"Edit on Github"}
-				href={`https://github.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
+				title={"Edit on Gitlab"}
+				href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
 				icon={<Pencil />}
 			>
 				Found a mistake? Want to improve the documentation?
@@ -63,5 +63,6 @@ export async function generateMetadata(
 		openGraph: {
 			images: getPageImage(page).url,
 		},
+		metadataBase: new URL("https://www.jointhis.party/tool"),
 	};
 }

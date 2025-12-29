@@ -1,3 +1,5 @@
+# TODO
+
 - [x] logos and branding
 - [x] Add homepage
 - [x] Add tool
@@ -7,11 +9,15 @@
 - [x] open source it all
 - [x] Restrictions on subdomain creation like limitations and certain names.
 - [x] Add og-image
-- [ ] Finish guides
+- [ ] Finish guides (minecraft, discord bot)
+- [ ] Terms of service / privacy policy
 - [ ] SEO
-- [ ] Deploy to production
+- [ ] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
+- [ ] Finish more guides (web, games), add new guides from poll.
+- [ ] Minecraft unified server hub. (opt-in)
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
+- [ ] custom guide import markdown files in the tabs.
 - [ ] second code cleanup (if needed)
