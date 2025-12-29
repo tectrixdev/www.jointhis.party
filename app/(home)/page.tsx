@@ -58,22 +58,6 @@ export default function HomePage() {
 				</Card>
 				<Card
 					className={cardClassName}
-					icon={<Globe />}
-					href="/docs/web"
-					title="Websites"
-				>
-					Host websites with SSL, cloudflare proxying and the right ports!
-				</Card>
-				<Card
-					className={cardClassName}
-					icon={<Gamepad />}
-					href="/docs/games"
-					title="Games"
-				>
-					Host your games with the right ports and of course, a free subdomain!
-				</Card>
-				<Card
-					className={cardClassName}
 					icon={<Gamepad />}
 					href="/docs/minecraft"
 					title="Minecraft"
@@ -87,6 +71,22 @@ export default function HomePage() {
 					title="Discord bot"
 				>
 					Host your new discord bot! No custom ports or network mapping needed.
+				</Card>
+				<Card
+					className={cardClassName}
+					icon={<Gamepad />}
+					href="/docs/games"
+					title="Games"
+				>
+					Host your games with the right ports and of course, a free subdomain!
+				</Card>
+				<Card
+					className={cardClassName}
+					icon={<Globe />}
+					href="/docs/web"
+					title="Websites"
+				>
+					Host websites with SSL, cloudflare proxying and the right ports!
 				</Card>
 				<Card
 					className={cardClassName}
