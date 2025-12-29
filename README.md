@@ -31,7 +31,7 @@ Requirements:
 clone the repository:
 
 ```bash
-git clone https://github.com/tectrixdev/www.jointhis.party.git
+git clone https://gitlab.com/tectrixdev/www.jointhis.party.git
 ```
 
 ```bash
