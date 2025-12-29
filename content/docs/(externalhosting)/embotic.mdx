@@ -12,8 +12,8 @@ This allows us to use an SRV record to link our subdomain to their servers.
 
 ## SRV record
 
-*This section will explain what an SRV record is and how it works,
-if you just want to configure and not learn, skip this section.*
+_This section will explain what an SRV record is and how it works,
+if you just want to configure and not learn, skip this section._
 An SRV record is a way to tell your computer to connect to another port
 instead of the default expected. It can be configured for
 a list of fixed services including minecraft java edition,
@@ -32,7 +32,7 @@ including Embotic.
 Start by figuring out your IP and port,
 head to [the panel](https://panel.embotic.xyz/), navigate to your server and view your IP and port.
 ![IP](./panel.png)
-*I've blurred the port to avoid people joining the server.*
+_I've blurred the port to avoid people joining the server._
 
 ### Configuring the A record
 
@@ -61,7 +61,7 @@ I'll use the port `3490` but this will be different for you,
 it's the part after the colon in the IP.
 
 **Subdomain name**:
-_minecraft._tcp.[Subdomain name from the A record]
+\_minecraft.\_tcp.[Subdomain name from the A record]
 
 **Record type**:
 SRV
@@ -74,6 +74,5 @@ Port from embotic.
 
 Example:
 ![SRV record](./SRV.png)
-
 
 You can now connect to your server on: `[subdomain name].jointhis.party.`!

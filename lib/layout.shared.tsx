@@ -57,6 +57,6 @@ export function baseOptions(): BaseLayoutProps {
 				secondary: true,
 			},
 		],
-		githubUrl: "https://github.com/tectrixdev/www.jointhis.party",
+		githubUrl: "https://gitlab.com/tectrixdev/www.jointhis.party",
 	};
 }
