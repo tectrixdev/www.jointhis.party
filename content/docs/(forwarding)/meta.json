@@ -1,5 +1,6 @@
 {
 	"title": "Forwarding",
 	"icon": "GlobeLock",
+	"pages": ["reverseproxy", "portforwarding"],
 	"defaultOpen": false
 }
