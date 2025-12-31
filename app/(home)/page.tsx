@@ -26,12 +26,12 @@ export default function HomePage() {
 	return (
 		<MainHome ClassName="p-10 md:p-20">
 			<h1
-				className={`${Glitch.className} text-white text-center text-4xl pb-2 drop-shadow-xl md:text-8xl`}
+				className={`${Glitch.className} pb-2 text-center text-4xl text-white drop-shadow-xl md:text-8xl`}
 			>
 				JoinThisParty
 			</h1>
 			<h2
-				className={`${rubik.className} text-white text-center text-md drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+				className={`${rubik.className} text-md flex flex-row gap-2 self-center truncate pb-10 text-center text-white drop-shadow-xl md:text-4xl`}
 			>
 				Guides and documentation to help{" "}
 				<p className="font-extrabold text-amber-400 drop-shadow-xl">you</p>{" "}

@@ -52,7 +52,7 @@ export const Accordions = forwardRef<
 			onValueChange={setValue}
 			collapsible={type === "single" ? true : undefined}
 			className={cn(
-				"divide-y divide-fd-border overflow-hidden rounded-lg border bg-fd-card",
+				"divide-fd-border bg-fd-card divide-y overflow-hidden rounded-lg border",
 				className,
 			)}
 			{...props}
@@ -86,16 +86,16 @@ export const Accordion = forwardRef<
 				<AccordionPrimitive.Header
 					id={id}
 					data-accordion-value={value}
-					className="not-prose flex flex-row items-center text-fd-card-foreground font-medium has-focus-visible:bg-fd-accent"
+					className="not-prose text-fd-card-foreground has-focus-visible:bg-fd-accent flex flex-row items-center font-medium"
 				>
 					<AccordionPrimitive.Trigger className="group flex flex-1 items-center gap-2 px-3 py-2.5 text-start focus-visible:outline-none">
-						<ChevronRight className="size-4 shrink-0 text-fd-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+						<ChevronRight className="text-fd-muted-foreground size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-90" />
 						{title}
 					</AccordionPrimitive.Trigger>
 					{id ? <CopyButton id={id} /> : null}
 				</AccordionPrimitive.Header>
-				<AccordionPrimitive.Content className="overflow-hidden data-[state=closed]:animate-fd-accordion-up data-[state=open]:animate-fd-accordion-down">
-					<div className="px-4 pb-2 text-[0.9375rem] prose-no-margin">
+				<AccordionPrimitive.Content className="data-[state=closed]:animate-fd-accordion-up data-[state=open]:animate-fd-accordion-down overflow-hidden">
+					<div className="prose-no-margin px-4 pb-2 text-[0.9375rem]">
 						{children}
 					</div>
 				</AccordionPrimitive.Content>

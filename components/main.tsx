@@ -12,7 +12,7 @@ export const MainHome: React.FC<HomeLayoutProps> = ({
 }) => {
 	return (
 		<main
-			className={`bg-[url(/bg.webp)] flex flex-col justify-start flex-1 bg-no-repeat bg-cover overflow-hidden bg-center bg-fixed h-max w-screen pb-5 ${ClassName}`}
+			className={`flex h-max w-screen flex-1 flex-col justify-start overflow-hidden bg-[url(/bg.webp)] bg-cover bg-fixed bg-center bg-no-repeat pb-5 ${ClassName}`}
 		>
 			{children}
 		</main>

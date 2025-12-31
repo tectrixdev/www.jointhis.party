@@ -39,14 +39,14 @@ export default function RecordForm() {
 		<>
 			<form
 				onSubmit={onSubmit}
-				className="text-white flex flex-col gap-4 w-full mx-auto bg-black/25 backdrop-blur-lg p-10 rounded-lg md:w-5/6 border-white border"
+				className="mx-auto flex w-full flex-col gap-4 rounded-lg border border-white bg-black/25 p-10 text-white backdrop-blur-lg md:w-5/6"
 			>
 				<div className="flex flex-col gap-2">
 					<label htmlFor="name" className="font-semibold">
 						Subdomain name
 					</label>
 					<input
-						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
+						className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
 						id="name"
 						name="name"
 						required
@@ -58,7 +58,7 @@ export default function RecordForm() {
 						Record type
 					</label>
 					<select
-						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
+						className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
 						id="type"
 						name="type"
 						required
@@ -76,7 +76,7 @@ export default function RecordForm() {
 						Value
 					</label>
 					<input
-						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
+						className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
 						id="value"
 						name="value"
 						required
@@ -86,7 +86,7 @@ export default function RecordForm() {
 						Port (SRV-only)
 					</label>
 					<input
-						className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
+						className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
 						id="port"
 						name="port"
 						type="number"
@@ -94,7 +94,7 @@ export default function RecordForm() {
 					/>
 				</div>
 				<button
-					className="px-4 py-2 bg-amber-400 text-black font-bold rounded-md hover:bg-amber-500 transition-colors"
+					className="rounded-md bg-amber-400 px-4 py-2 font-bold text-black transition-colors hover:bg-amber-500"
 					type="submit"
 					disabled={loading}
 				>

@@ -72,13 +72,13 @@ export default function SubdomainManagerClient() {
 	}
 
 	return (
-		<div className="text-white w-full flex flex-col gap-4 mx-auto bg-black/25 text-center backdrop-blur-lg p-5 rounded-lg md:w-5/6 border-white border mt-10">
-			<div className="flex items-center justify-between mb-4">
+		<div className="mx-auto mt-10 flex w-full flex-col gap-4 rounded-lg border border-white bg-black/25 p-5 text-center text-white backdrop-blur-lg md:w-5/6">
+			<div className="mb-4 flex items-center justify-between">
 				<h3 className="text-2xl font-semibold">Your DNS Records</h3>
 				<div className="flex gap-2">
 					<button
 						onClick={() => fetchRecords()}
-						className="px-3 py-1 ml-5 bg-amber-400  text-black rounded"
+						className="ml-5 rounded bg-amber-400 px-3 py-1 text-black"
 					>
 						Refresh
 					</button>
@@ -94,9 +94,9 @@ export default function SubdomainManagerClient() {
 					{records.map((r) => (
 						<div
 							key={r.id}
-							className="p-3 border border-white rounded-lg w-full mx-auto flex items-start justify-between"
+							className="mx-auto flex w-full items-start justify-between rounded-lg border border-white p-3"
 						>
-							<div className="flex gap-5 justify-center align-middle self-center content-center text-center ">
+							<div className="flex content-center justify-center gap-5 self-center text-center align-middle">
 								<div className="font-medium">{r.name}</div>
 								{/* <div className="text-sm text-white font-bold">{r.type}</div>
 								<div className="mt-2 text-sm text-slate-200">
@@ -105,7 +105,7 @@ export default function SubdomainManagerClient() {
 							</div>
 							<button
 								onClick={() => handleDelete(r.id)}
-								className="ml-4 h-full px-3 py-1 bg-red-600 text-white rounded"
+								className="ml-4 h-full rounded bg-red-600 px-3 py-1 text-white"
 							>
 								<Trash />
 							</button>

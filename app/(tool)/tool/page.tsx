@@ -24,12 +24,12 @@ export default function HomePage() {
 		<MainHome ClassName="p-10">
 			<Toaster />
 			<h1
-				className={`${Glitch.className} text-white text-center text-5xl pb-2 drop-shadow-xl md:text-8xl`}
+				className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
 			>
 				Subdomain configurator
 			</h1>
 			<h2
-				className={`${rubik.className} text-white text-center text-xl drop-shadow-xl md:text-4xl flex flex-row gap-2 self-center truncate pb-10`}
+				className={`${rubik.className} flex flex-row gap-2 self-center truncate pb-10 text-center text-xl text-white drop-shadow-xl md:text-4xl`}
 			>
 				Get your{" "}
 				<p className="font-extrabold text-amber-400 drop-shadow-xl">
