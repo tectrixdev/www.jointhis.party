@@ -15,7 +15,7 @@ but also for beginners that don't know how to self-host anything.
 
 ## Development / contributing
 
-Contributions are welcome using PRs.
+Contributions are welcome using MRs.
 For editing the guides and documentation,
 you can just simply use the button on the page you want to edit.
 
@@ -24,6 +24,8 @@ Requirements:
 - [Prettier code formatter](https://prettier.io/)
 - [https://github.com/rvben/rumdl](https://github.com/rvben/rumdl)
 - A working installation of pnpm
+- A cspell extension for your IDE.
+- I recommend Zed IDE -> my config: <https://gitlab.com/-/snippets/4918855>
 - ...
 
 ### Running locally

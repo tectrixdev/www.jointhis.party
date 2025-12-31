@@ -10,13 +10,13 @@
 - [x] Restrictions on subdomain creation like limitations and certain names.
 - [x] Add og-image
 - [x] re-order documentation in forwarding and guides.
-- [ ] Finish guides (minecraft, discord bot)
+- [ ] Finish guides (minecraft, ~~discord bot~~)
 - [ ] Terms of service / privacy policy
 - [ ] SEO
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
-- [ ] Finish more guides (web, games), add new guides from poll.
+- [ ] Finish more guides (web, games, discord bot), add new guides from poll.
 - [ ] Minecraft unified server hub. (opt-in)
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
