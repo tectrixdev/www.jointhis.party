@@ -16,8 +16,8 @@ import { Speech } from "lucide-react";
 </Callout>
 
 <Callout type="warning" title="Recent changes in playit.">
-    Playit has seen a lot of abuse, which has led them to limit their service for
-    free users. You can now only make minecraft and terraria tunnels.
+  Playit has seen a lot of abuse, which has led them to limit their service for
+  free users. You can now only make minecraft and terraria tunnels.
 </Callout>
 
 I'll start by explaining what this is to give you a bit of context.
@@ -76,8 +76,10 @@ on your own machine windows is fine.
 For debian-based servers, I highly recommend using their debian application:
 
 ```bash
-curl -SsL https://playit-cloud.github.io/ppa/key.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/playit.gpg >/dev/null
-echo "deb [signed-by=/etc/apt/trusted.gpg.d/playit.gpg] https://playit-cloud.github.io/ppa/data ./" | sudo tee /etc/apt/sources.list.d/playit-cloud.list
+curl -SsL https://playit-cloud.github.io/ppa/key.gpg | \
+gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/playit.gpg >/dev/null
+echo "deb [signed-by=/etc/apt/trusted.gpg.d/playit.gpg] https://playit-cloud.github.io/ppa/data ./" | \
+sudo tee /etc/apt/sources.list.d/playit-cloud.list
 sudo apt update
 sudo apt install playit
 ```
@@ -97,18 +99,18 @@ You have successfully registered playit,
 and can now continue to a guide to follow:
 
 <Cards>
-    <Card icon={<Gamepad />} href="/docs/minecraft" title="Minecraft">
-        Get your java domain clean and smooth! We can even remap ports!
-    </Card>
-    <Card icon={<Globe />} href="/docs/web" title="Websites">
-        Host websites with SSL, cloudflare proxying and the right ports!
-    </Card>
-    <Card icon={<Gamepad />} href="/docs/games" title="Games">
-        Host your games with the right ports and of course, a free subdomain!
-    </Card>
-    <Card icon={<Wrench />} href="/docs/custom" title="Custom">
-        Host your services with a free subdomain!
-    </Card>
+  <Card icon={<Gamepad />} href="/docs/minecraft" title="Minecraft">
+    Get your java domain clean and smooth! We can even remap ports!
+  </Card>
+  <Card icon={<Globe />} href="/docs/web" title="Websites">
+    Host websites with SSL, cloudflare proxying and the right ports!
+  </Card>
+  <Card icon={<Gamepad />} href="/docs/games" title="Games">
+    Host your games with the right ports and of course, a free subdomain!
+  </Card>
+  <Card icon={<Wrench />} href="/docs/custom" title="Custom">
+    Host your services with a free subdomain!
+  </Card>
 </Cards>
 
 </Step>

@@ -3,8 +3,10 @@ title: Minecraft
 icon: Gamepad
 ---
 
+import { EarthLock } from "lucide-react";
+
 <Callout title="Unfinished guide" type="error">
-    This guide is still in development, and not production-ready.
+  This guide is still in development, and not production-ready.
 </Callout>
 
 ## Setting up the server
@@ -14,8 +16,153 @@ ubuntu desktop or ubuntu server on your hardware.
 For this guide we're assuming you already have that installed.
 
 <Callout title="Expansion" type="info">
-    This section may be expanded in the future to include the installation process
-    for ubuntu (server).
+    This section may be expanded in the future to include the
+    installation process for ubuntu (server). {/*<!-- rumdl-disable-line MD046 MD013 -->*/}
 </Callout>
 
 ## Setting up the minecraft server
+
+First of all, you'll have to choose your minecraft fork. You can use vanilla,
+however it may not perform as well as you'd expect it to.
+My personal recommendation would be [PurpurMC](https://purpurmc.org/) it is a fork of paper
+that has some really nice features. If you're asking yourself:
+What does this "fork" mean? I'll quickly explain it for you.
+
+_\*Vanilla refers to the unmodified binary provided by Mojang._
+
+### Minecraft forks
+
+_Once again, skip this section if you want._
+
+Minecraft is written in java, the server binary is too. It gets released
+on [Mojangs site](https://www.minecraft.net/en-us/download/server).
+After that the team at [Bukkit](https://dev.bukkit.org/) will add modding support and
+make a wrapper to add this functionality. This will be passed down to the
+[Spigot](https://www.spigotmc.org/) team. [PaperMC](https://papermc.io/) will then make their
+most performant wrapper, [PaperMC](https://papermc.io/) is the most popular
+server software, known for its performance. This will then be used by
+[pufferfish](https://pufferfish.host/downloads) as a base to make their
+server software that should be slightly more performant.
+They use [pufferfish+](https://docs.pufferfish.host/setup/pufferfish-plus-installation-guide/)
+on their host which is their proprietary version.
+Finally, [PurpurMC](https://purpurmc.org/) will make their fork
+Which has some extra features and combines all of the features of the
+forked server software.
+
+### Setup process
+
+Once you have obtained the server binary,
+you can get started with running it. There are multiple ways,
+including open source self-hosted control panels but we'll be using
+the slightly more advanced but simpler method of straight up running it.
+
+#### File structure
+
+We'll first make our file structure, this is to keep our server files
+together and avoid problems. I'm assuming the binary file is currently
+in your Downloads folder. We'll create a new folder inside your Documents
+folder for example, this may be anywhere as long as it makes sense for you.
+Once you've found your spot you should decide on the name, you may just name
+it minecraft or server or ... but I like to name it like the server name.
+For example: `mycoolserver`. Once you've done that, just place the binary
+inside your newly created folder. Proceed to change your directory in the
+terminal to said folder.
+
+#### Startup script
+
+The first thing you'll need is a startup script. For generating this I recommend
+[Flags.sh](https://flags.sh/), select your server memory, Do not enable GUI as it
+degrades performance according to some sources. And it does not add much
+functionality. Auto-restart is useful because it automatically
+recovers from crashes. I recommend keeping Aikar's Flags on.
+Once you have generated your script, you can download the file and
+Also put it in your dedicated folder.
+
+#### Running the minecraft server
+
+Now that we have prepared our files, we can start using our server.
+So first, we'll have to give ourselves permission to execute our startup script.
+
+```bash
+chmod +x ./start.sh
+```
+
+This will mark the script as executable and allow us to execute it.
+Now we'll accept the EULA. Start by starting your server for the first time.
+
+```bash
+./start.sh
+```
+
+This will start our server, but it'll stop immediately. If you've selected
+auto restart, it might loop. To stop, press `control` `+` `C`.
+This will stop executing the script, next we'll accept the EULA.
+In the folder you'll have a file named EULA.txt, we'll edit this using `nano`.
+This is built-in on most linux distributions, including ubuntu.
+
+```bash
+nano eula.txt
+```
+
+You'll end up seeing something like this:
+
+```yaml
+#By changing the setting below to TRUE you are indicating your agreement to our
+# EULA (https://aka.ms/MinecraftEULA).
+eula=false
+```
+
+We'll start by reading through the [EULA](https://aka.ms/MinecraftEULA).
+Once you've read it, confirm that you agree. This is important.
+Once that's alright, we'll tell minecraft we agree by changing the file.
+
+```yaml
+#By changing the setting below to TRUE you are indicating your agreement to our
+# EULA (https://aka.ms/MinecraftEULA).
+eula=TRUE
+```
+
+You should change `eula=false` to `eula=TRUE`
+Now that we have accepted the EULA
+Now, to exit nano, just press `control` `+` `X`.
+And enter `Y` to save changes. Now press `enter` to confirm.
+
+Now you can start your server again. After doing that, your
+server should start like normal. Now we should setup autostart.
+Get the full path of your folder, for example:
+
+```zsh
+~/Documents/mycoolserver/
+```
+
+And execute:
+
+```bash
+crontab -e
+```
+
+This will open nano again.
+You'll most likely have a blank file.
+Now to add the autostart entry, add this line:
+
+```bash
+@reboot sh ~/Documents/mycoolserver/start.sh
+```
+
+Now, to exit nano, just press `control` `+` `X`.
+And enter `Y` to save changes. Now press `enter` to confirm.
+Now that we have that setup, you should be good to go!
+Now we'll setup networking.
+
+## Networking
+
+For the networking we'll be using a reverse proxy.
+Use this guide to set it up:
+
+<Card icon={<EarthLock />} href="/docs/reverseproxy" title="Setting up a reverse proxy"> {/*<!-- rumdl-disable-line MD013 -->*/}
+  Click to open the dedicated guide.
+</Card>
+
+Now that you've done that, we can make our jointhis.party record.
+
+## Configuring the record

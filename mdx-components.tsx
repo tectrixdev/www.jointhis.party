@@ -3,9 +3,9 @@ import type { MDXComponents } from "mdx/types";
 import * as TabsComponents from "fumadocs-ui/components/tabs";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
-	return {
-		...TabsComponents,
-		...defaultMdxComponents,
-		...components,
-	};
+  return {
+    ...TabsComponents,
+    ...defaultMdxComponents,
+    ...components,
+  };
 }

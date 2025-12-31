@@ -9,7 +9,7 @@
 - [x] open source it all
 - [x] Restrictions on subdomain creation like limitations and certain names.
 - [x] Add og-image
-- [ ] re-order documentation in forwarding and guides.
+- [x] re-order documentation in forwarding and guides.
 - [ ] Finish guides (minecraft, discord bot)
 - [ ] Terms of service / privacy policy
 - [ ] SEO

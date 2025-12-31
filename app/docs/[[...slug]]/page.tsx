@@ -1,9 +1,9 @@
 import { getPageImage, source } from "@/lib/source";
 import {
-	DocsBody,
-	DocsDescription,
-	DocsPage,
-	DocsTitle,
+  DocsBody,
+  DocsDescription,
+  DocsPage,
+  DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
@@ -13,56 +13,56 @@ import { Pencil } from "lucide-react";
 import { Card } from "fumadocs-ui/components/card";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
-	const params = await props.params;
-	const page = source.getPage(params.slug);
-	if (!page) notFound();
+  const params = await props.params;
+  const page = source.getPage(params.slug);
+  if (!page) notFound();
 
-	const MDX = page.data.body;
+  const MDX = page.data.body;
 
-	return (
-		<DocsPage
-			tableOfContent={{ style: "clerk" }}
-			toc={page.data.toc}
-			full={page.data.full}
-		>
-			<DocsTitle>{page.data.title}</DocsTitle>
-			<DocsDescription>{page.data.description}</DocsDescription>
-			<DocsBody>
-				<MDX
-					components={getMDXComponents({
-						// this allows you to link to other pages with relative file paths
-						a: createRelativeLink(source, page),
-					})}
-				/>
-			</DocsBody>
-			<Card
-				title={"Edit on GitLab"}
-				href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
-				icon={<Pencil />}
-			>
-				Found a mistake? Want to improve the documentation?
-			</Card>
-		</DocsPage>
-	);
+  return (
+    <DocsPage
+      tableOfContent={{ style: "clerk" }}
+      toc={page.data.toc}
+      full={page.data.full}
+    >
+      <DocsTitle>{page.data.title}</DocsTitle>
+      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsBody>
+        <MDX
+          components={getMDXComponents({
+            // this allows you to link to other pages with relative file paths
+            a: createRelativeLink(source, page),
+          })}
+        />
+      </DocsBody>
+      <Card
+        title={"Edit on GitLab"}
+        href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
+        icon={<Pencil />}
+      >
+        Found a mistake? Want to improve the documentation?
+      </Card>
+    </DocsPage>
+  );
 }
 
 export async function generateStaticParams() {
-	return source.generateParams();
+  return source.generateParams();
 }
 
 export async function generateMetadata(
-	props: PageProps<"/docs/[[...slug]]">,
+  props: PageProps<"/docs/[[...slug]]">,
 ): Promise<Metadata> {
-	const params = await props.params;
-	const page = source.getPage(params.slug);
-	if (!page) notFound();
+  const params = await props.params;
+  const page = source.getPage(params.slug);
+  if (!page) notFound();
 
-	return {
-		title: page.data.title,
-		description: page.data.description,
-		openGraph: {
-			images: getPageImage(page).url,
-		},
-		metadataBase: new URL("https://www.jointhis.party/tool"),
-	};
+  return {
+    title: page.data.title,
+    description: page.data.description,
+    openGraph: {
+      images: getPageImage(page).url,
+    },
+    metadataBase: new URL("https://www.jointhis.party/tool"),
+  };
 }

@@ -6,31 +6,31 @@ import { createElement } from "react";
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
-	baseUrl: "/docs",
-	source: docs.toFumadocsSource(),
-	plugins: [lucideIconsPlugin()],
-	icon(icon) {
-		if (!icon) {
-			return createElement(icons["Newspaper"]);
-		}
+  baseUrl: "/docs",
+  source: docs.toFumadocsSource(),
+  plugins: [lucideIconsPlugin()],
+  icon(icon) {
+    if (!icon) {
+      return createElement(icons["Newspaper"]);
+    }
 
-		if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
-	},
+    if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
+  },
 });
 
 export function getPageImage(page: InferPageType<typeof source>) {
-	const segments = [...page.slugs, "image.png"];
+  const segments = [...page.slugs, "image.png"];
 
-	return {
-		segments,
-		url: `/og/docs/${segments.join("/")}`,
-	};
+  return {
+    segments,
+    url: `/og/docs/${segments.join("/")}`,
+  };
 }
 
 export async function getLLMText(page: InferPageType<typeof source>) {
-	const processed = await page.data.getText("processed");
+  const processed = await page.data.getText("processed");
 
-	return `# ${page.data.title}
+  return `# ${page.data.title}
 
 ${processed}`;
 }
