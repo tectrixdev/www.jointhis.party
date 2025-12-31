@@ -1,1 +1,22 @@
-words = ["configurator"]
+words = [
+    "aternos",
+    "cgnat",
+    "cloudflare",
+    "configurator",
+    "dearmor",
+    "distros",
+    "embotic",
+    "fdc",
+    "fumadocs",
+    "jointhis",
+    "lucide",
+    "mymodem",
+    "nmap",
+    "playit",
+    "simplevoicechat",
+    "systemctl",
+    "terraria",
+    "udp",
+    "ufw",
+    "yoursubdomain",
+]
