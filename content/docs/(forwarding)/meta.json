@@ -1,6 +1,6 @@
 {
-	"title": "Forwarding",
-	"icon": "GlobeLock",
-	"pages": ["reverseproxy", "portforwarding"],
-	"defaultOpen": false
+  "title": "Forwarding",
+  "icon": "GlobeLock",
+  "pages": ["reverseproxy", "portforwarding"],
+  "defaultOpen": false
 }

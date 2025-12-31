@@ -8,73 +8,73 @@ import RecordForm from "@/components/recordform";
 import SubdomainManagerClient from "@/components/subdomainmanager";
 
 const Glitch = Rubik_Glitch({
-	subsets: ["latin"],
-	weight: ["400"],
-	style: ["normal"],
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal"],
 });
 
 const rubik = Rubik({
-	subsets: ["latin"],
-	weight: ["400"],
-	style: ["normal"],
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal"],
 });
 
 export default function HomePage() {
-	return (
-		<MainHome ClassName="p-10">
-			<Toaster />
-			<h1
-				className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
-			>
-				Subdomain configurator
-			</h1>
-			<h2
-				className={`${rubik.className} flex flex-row gap-2 self-center truncate pb-10 text-center text-xl text-white drop-shadow-xl md:text-4xl`}
-			>
-				Get your{" "}
-				<p className="font-extrabold text-amber-400 drop-shadow-xl">
-					free subdomain
-				</p>{" "}
-				here!
-			</h2>
-			<AuthbuttonExtended /> {/* quickly logging in on mobile */}
-			<RecordForm />
-			<SubdomainManagerClient />
-		</MainHome>
-	);
+  return (
+    <MainHome ClassName="p-10">
+      <Toaster />
+      <h1
+        className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
+      >
+        Subdomain configurator
+      </h1>
+      <h2
+        className={`${rubik.className} flex flex-row gap-2 self-center truncate pb-10 text-center text-xl text-white drop-shadow-xl md:text-4xl`}
+      >
+        Get your{" "}
+        <p className="font-extrabold text-amber-400 drop-shadow-xl">
+          free subdomain
+        </p>{" "}
+        here!
+      </h2>
+      <AuthbuttonExtended /> {/* quickly logging in on mobile */}
+      <RecordForm />
+      <SubdomainManagerClient />
+    </MainHome>
+  );
 }
 
 export const metadata: Metadata = {
-	title: "JoinThisParty - Subdomain Tool",
-	description: "Create your free subdomain now!",
-	generator: "Next.js",
-	applicationName: "jointhis.party",
-	openGraph: {
-		images: "/opengraph-image.png",
-		url: "/opengraph-image.png",
-	},
-	keywords: [
-		"Free domain",
-		"Free subdomain",
-		"Self hosting",
-		"TecTrix",
-		"Self hosting",
-		"Self hosting subdomain",
-		"Free subdomain",
-		"minecraft subdomain",
-		"Free srv record",
-	],
-	robots: "index, follow",
-	alternates: {
-		canonical: "https://www.jointhis.party/tool",
-	},
-	authors: [{ name: "Joran Hennion" }],
-	creator: "Joran Hennion",
-	publisher: "Joran Hennion",
-	formatDetection: {
-		email: false,
-		address: false,
-		telephone: false,
-	},
-	metadataBase: new URL("https://www.jointhis.party/tool"),
+  title: "JoinThisParty - Subdomain Tool",
+  description: "Create your free subdomain now!",
+  generator: "Next.js",
+  applicationName: "jointhis.party",
+  openGraph: {
+    images: "/opengraph-image.png",
+    url: "/opengraph-image.png",
+  },
+  keywords: [
+    "Free domain",
+    "Free subdomain",
+    "Self hosting",
+    "TecTrix",
+    "Self hosting",
+    "Self hosting subdomain",
+    "Free subdomain",
+    "minecraft subdomain",
+    "Free srv record",
+  ],
+  robots: "index, follow",
+  alternates: {
+    canonical: "https://www.jointhis.party/tool",
+  },
+  authors: [{ name: "Joran Hennion" }],
+  creator: "Joran Hennion",
+  publisher: "Joran Hennion",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://www.jointhis.party/tool"),
 };
