@@ -11,8 +11,8 @@
 - [x] Add og-image
 - [x] re-order documentation in forwarding and guides.
 - [x] Finish guides (minecraft, ~~discord bot~~)
-- [ ] Terms of service / privacy policy
-- [ ] SEO
+- [x] Terms of service / privacy policy
+- [ ] SEO (sitemap for example)
 - [ ] Update unplayit.
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
