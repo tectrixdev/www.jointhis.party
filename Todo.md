@@ -14,7 +14,7 @@
 - [x] Terms of service / privacy policy
 - [x] SEO (sitemap for example) (sitemap done, that should be everything!)
 - [x] Add release and happy new year banner
-- [ ] Update unplayit.
+- [x] Update unplayit.
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
