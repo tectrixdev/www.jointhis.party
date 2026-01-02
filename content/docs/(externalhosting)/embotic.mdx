@@ -38,18 +38,12 @@ _I've blurred the port to avoid people joining the server._
 
 Our SRV record needs an A record first, we'll start by configuring that.
 
-**Subdomain name**:
-Your server name will become -> [subdomain name].jointhis.party.
-
-**Record type**:
-A
-
-**Value**:
-The IP from embotic, excluding the port
-(include only everything before the colon.)
-
-**Port**:
-Leave this empty.
+| Identifier     | Value                                                                               |
+| -------------- | ----------------------------------------------------------------------------------- |
+| Subdomain name | Your server name will become -> [subdomain name].jointhis.party.                    |
+| Record type    | A                                                                                   |
+| Value          | The IP from embotic, excluding the port (include only everything before the colon.) |
+| Port           | Leave this empty.                                                                   |
 
 Example:
 ![A record](./arecord.png)
@@ -60,19 +54,14 @@ Now for the SRV-record, we'll need to use our port. For my example,
 I'll use the port `3490` but this will be different for you,
 it's the part after the colon in the IP.
 
-**Subdomain name**:
-\_minecraft.\_tcp.[Subdomain name from the A record]
-
-**Record type**:
-SRV
-
-**Value**:
-[Subdomain name from the A record].jointhis.party
-
-**Port**:
-Port from embotic.
+| Identifier     | Value                                                |
+| -------------- | ---------------------------------------------------- |
+| Subdomain name | \_minecraft.\_tcp.[Subdomain name from the A record] |
+| Record type    | SRV                                                  |
+| Value          | [Subdomain name from the A record].jointhis.party    |
+| Port           | Port from embotic.                                   |
 
 Example:
 ![SRV record](./SRV.png)
 
-You can now connect to your server on: `[subdomain name].jointhis.party.`!
+You can now connect to your server on: `[subdomain name].jointhis.party`!
