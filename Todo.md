@@ -15,9 +15,9 @@
 - [x] SEO (sitemap for example) (sitemap done, that should be everything!)
 - [x] Add release and happy new year banner
 - [x] Update unplayit.
-- [ ] Deploy to production (release)
-- [ ] SEO(google)
-- [ ] Add to tectrix.dev
+- [x] Deploy to production (release)
+- [x] SEO(google)
+- [x] Add to tectrix.dev
 - [ ] Finish more guides (web, games, discord bot), add new guides from poll.
 - [ ] Minecraft unified server hub. (opt-in)
 - [ ] Translations
