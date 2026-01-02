@@ -1,0 +1,6 @@
+{
+  "title": "Legal",
+  "icon": "Scale",
+  "pages": ["terms", "policy", "copy"],
+  "defaultOpen": false
+}
