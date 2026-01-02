@@ -15,7 +15,7 @@
 - [x] SEO (sitemap for example) (sitemap done, that should be everything!)
 - [x] Add release and happy new year banner
 - [x] Update unplayit.
-- [ ] Deploy to production (release)
+- [x] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
 - [ ] Finish more guides (web, games, discord bot), add new guides from poll.
