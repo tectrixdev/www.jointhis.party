@@ -11,6 +11,7 @@ import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { Pencil } from "lucide-react";
 import { Card } from "fumadocs-ui/components/card";
+import { baseUrl } from "@/lib/metadata";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -63,6 +64,6 @@ export async function generateMetadata(
     openGraph: {
       images: getPageImage(page).url,
     },
-    metadataBase: new URL("https://www.jointhis.party/tool"),
+    metadataBase: new URL(baseUrl),
   };
 }

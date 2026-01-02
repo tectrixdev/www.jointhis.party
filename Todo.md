@@ -13,12 +13,14 @@
 - [x] Finish guides (minecraft, ~~discord bot~~)
 - [x] Terms of service / privacy policy
 - [ ] SEO (sitemap for example)
+- [ ] Add release and happy new year banner
 - [ ] Update unplayit.
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev
 - [ ] Finish more guides (web, games, discord bot), add new guides from poll.
 - [ ] Minecraft unified server hub. (opt-in)
+- [ ] Translations
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
 - [ ] custom guide import markdown files in the tabs.
