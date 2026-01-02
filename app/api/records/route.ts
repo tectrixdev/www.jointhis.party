@@ -3,6 +3,28 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+const blacklist = [
+  "*",
+  "@",
+  "mc",
+  "www",
+  "docs",
+  "official",
+  "minecraft",
+  "join",
+  "jointhis.party",
+  "tool",
+  "discord",
+  "hub",
+  "main",
+  "site",
+  "tectrix",
+  "jointhis",
+  "party",
+  "beta",
+  "play",
+];
+
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 });
@@ -58,24 +80,7 @@ export async function POST(request: Request) {
         { status: 403 },
       );
     }
-    if (
-      [
-        "*",
-        "@",
-        "mc",
-        "www",
-        "docs",
-        "official",
-        "minecraft",
-        "join",
-        "jointhis.party",
-        "tool",
-        "discord",
-        "hub",
-        "main",
-        "site",
-      ].includes(name)
-    ) {
+    if (blacklist.includes(name)) {
       return NextResponse.json(
         {
           error:
