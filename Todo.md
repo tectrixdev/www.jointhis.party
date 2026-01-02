@@ -10,7 +10,7 @@
 - [x] Restrictions on subdomain creation like limitations and certain names.
 - [x] Add og-image
 - [x] re-order documentation in forwarding and guides.
-- [ ] Finish guides (minecraft, ~~discord bot~~)
+- [x] Finish guides (minecraft, ~~discord bot~~)
 - [ ] Terms of service / privacy policy
 - [ ] SEO
 - [ ] Update unplayit.
