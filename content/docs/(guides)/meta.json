@@ -2,5 +2,5 @@
   "title": "Guides",
   "icon": "Newspaper",
   "pages": ["custom", "minecraft", "discord-bot", "games", "web"],
-  "defaultOpen": true
+  "defaultOpen": false
 }
