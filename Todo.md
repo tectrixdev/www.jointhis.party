@@ -13,6 +13,7 @@
 - [ ] Finish guides (minecraft, ~~discord bot~~)
 - [ ] Terms of service / privacy policy
 - [ ] SEO
+- [ ] Update unplayit.
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
 - [ ] Add to tectrix.dev

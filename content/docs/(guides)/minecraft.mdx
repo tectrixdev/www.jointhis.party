@@ -5,10 +5,6 @@ icon: Gamepad
 
 import { EarthLock } from "lucide-react";
 
-<Callout title="Unfinished guide" type="error">
-  This guide is still in development, and not production-ready.
-</Callout>
-
 ## Setting up the server
 
 Setting up the server. I recommend that you install
@@ -166,3 +162,29 @@ Use this guide to set it up:
 Now that you've done that, we can make our jointhis.party record.
 
 ## Configuring the record
+
+Now, for minecraft we'll only need an SRV record. Which is neat!
+If you want bedrock support too, you're either going to have to use their
+random port alongside an A or CNAME record, or use port forwarding which
+is not recommended. We're just going to focus on java for this tutorial,
+which will allow us to get rid of the random port.
+
+Now for the SRV-record, we'll need to use our playit port. For my example,
+I'll use the port `1368` but this will be different for you,
+it's the part after the colon in the IP.
+
+Your subdomain name may be anything, just know that this will be
+prefixed before .jointhis.party, this should in most cases be the
+server name, but you may get creative!
+
+| Identifier     | Value                              |
+| -------------- | ---------------------------------- |
+| Subdomain name | \_minecraft.\_tcp.[subdomain name] |
+| Record type    | SRV                                |
+| Value          | Playit "IP", see playit guide.     |
+| Port           | Playit provided port.              |
+
+Example:
+![SRV record](./SRVrecord.png)
+
+You can now connect to your server on: `[subdomain name].jointhis.party`!
