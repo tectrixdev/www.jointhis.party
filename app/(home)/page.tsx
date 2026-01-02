@@ -8,6 +8,7 @@ import { Wrench } from "lucide-react";
 import { ServerCog } from "lucide-react";
 import { MainHome } from "@/components/main";
 import { Server } from "lucide-react";
+import { baseUrl } from "@/lib/metadata";
 
 const Glitch = Rubik_Glitch({
   subsets: ["latin"],
@@ -134,7 +135,7 @@ export const metadata: Metadata = {
   ],
   robots: "index, follow",
   alternates: {
-    canonical: "https://www.jointhis.party",
+    canonical: "https://www.jointhis.party/",
   },
   authors: [{ name: "Joran Hennion" }],
   creator: "Joran Hennion",
@@ -144,5 +145,5 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://www.jointhis.party"),
+  metadataBase: new URL(baseUrl),
 };

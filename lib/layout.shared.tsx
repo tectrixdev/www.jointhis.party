@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import { Book, icons } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Speech } from "lucide-react";
 import { BookOpenText } from "lucide-react";

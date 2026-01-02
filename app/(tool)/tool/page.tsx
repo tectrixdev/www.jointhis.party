@@ -6,6 +6,7 @@ import { MainHome } from "@/components/main";
 import AuthbuttonExtended from "@/components/authbuttonextended";
 import RecordForm from "@/components/recordform";
 import SubdomainManagerClient from "@/components/subdomainmanager";
+import { baseUrl } from "@/lib/metadata";
 
 const Glitch = Rubik_Glitch({
   subsets: ["latin"],
@@ -76,5 +77,5 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://www.jointhis.party/tool"),
+  metadataBase: new URL(baseUrl),
 };
