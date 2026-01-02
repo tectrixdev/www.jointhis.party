@@ -13,7 +13,7 @@
 - [x] Finish guides (minecraft, ~~discord bot~~)
 - [x] Terms of service / privacy policy
 - [x] SEO (sitemap for example) (sitemap done, that should be everything!)
-- [ ] Add release and happy new year banner
+- [x] Add release and happy new year banner
 - [ ] Update unplayit.
 - [ ] Deploy to production (release)
 - [ ] SEO(google)
