@@ -129,14 +129,14 @@ export default function Tool() {
       {/* Record form */}
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex w-full flex-col gap-4 rounded-lg bg-black/50 px-5 py-10 text-white backdrop-blur-xl md:w-5/6"
+        className="mx-auto flex w-full flex-col gap-4 rounded-lg bg-white/50 px-5 py-10 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="font-semibold">
             Subdomain name
           </label>
           <input
-            className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
             id="name"
             name="name"
             required
@@ -150,7 +150,7 @@ export default function Tool() {
           <select
             value={recordType}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
             id="type"
             name="type"
             required
@@ -167,7 +167,7 @@ export default function Tool() {
             Value
           </label>
           <input
-            className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
             id="value"
             name="value"
             required
@@ -179,7 +179,7 @@ export default function Tool() {
                 Port
               </label>
               <input
-                className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
                 id="port"
                 name="port"
                 type="number"
@@ -209,7 +209,7 @@ export default function Tool() {
         </button>
       </form>
       {/* Record Manager */}
-      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-lg bg-black/50 px-5 py-10 text-white backdrop-blur-xl md:w-5/6">
+      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-lg bg-white/50 px-5 py-10 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-2xl font-semibold">Your DNS Records</h3>
           <div className="flex gap-2">
@@ -233,7 +233,7 @@ export default function Tool() {
             {records.map((r) => (
               <div
                 key={r.id}
-                className="mx-auto flex w-full items-start justify-between rounded-lg border p-3"
+                className="mx-auto flex w-full items-start justify-between rounded-lg border border-black p-3 dark:border-gray-300"
               >
                 <div className="flex content-center justify-center gap-5 self-center text-center align-middle">
                   <div className="font-medium">{r.name}</div>
