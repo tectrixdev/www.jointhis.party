@@ -211,7 +211,7 @@ export default function Tool() {
       {/* Record Manager */}
       <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 py-6 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-2xl font-semibold">Your DNS Records</h3>
+          <h3 className="text-2xl font-semibold">DNS Records</h3>
           <div className="flex gap-2">
             <button
               onClick={() => fetchRecords()}
