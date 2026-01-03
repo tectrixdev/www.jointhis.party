@@ -129,7 +129,7 @@ export default function Tool() {
       {/* Record form */}
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 pb-12 pt-6 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
+        className="mx-auto flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 pt-6 pb-12 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="font-semibold">
@@ -156,7 +156,11 @@ export default function Tool() {
             required
           >
             {options.map((option) => (
-              <option key={option.id} value={`${option.name}`}>
+              <option
+                className="bg-amber-400 dark:text-black"
+                key={option.id}
+                value={`${option.name}`}
+              >
                 {option.name}
               </option>
             ))}
@@ -235,14 +239,14 @@ export default function Tool() {
                 key={r.id}
                 className="flex w-full items-center rounded-lg border border-black p-3 dark:border-gray-300"
               >
-                <div className="grid w-full grid-cols-1 gap-y-2 grid-rows-4 items-center justify-center text-center font-medium md:grid-cols-5 md:grid-rows-1">
+                <div className="grid w-full grid-cols-1 grid-rows-4 items-center justify-center gap-y-2 text-center font-medium md:grid-cols-5 md:grid-rows-1">
                   <p>{r.name}</p>
                   <p>{r.type}</p>
                   <p className="hidden md:block">{`-->`}</p>
                   <p>{`${r.content}`}</p>
                   <button
                     onClick={() => handleDelete(r.id)}
-                    className="md:ml-auto h-full md:w-min flex justify-center rounded bg-red-600 px-3 py-1 text-white"
+                    className="flex h-full justify-center rounded bg-red-600 px-3 py-1 text-white md:ml-auto md:w-min"
                   >
                     <Trash />
                   </button>
