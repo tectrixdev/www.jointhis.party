@@ -129,7 +129,7 @@ export default function Tool() {
       {/* Record form */}
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex w-full flex-col gap-4 rounded-lg bg-white/50 px-5 py-10 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
+        className="mx-auto flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 py-12 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="font-semibold">
@@ -209,7 +209,7 @@ export default function Tool() {
         </button>
       </form>
       {/* Record Manager */}
-      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-lg bg-white/50 px-5 py-10 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white">
+      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 py-12 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-2xl font-semibold">Your DNS Records</h3>
           <div className="flex gap-2">
@@ -233,17 +233,20 @@ export default function Tool() {
             {records.map((r) => (
               <div
                 key={r.id}
-                className="mx-auto flex w-full items-start justify-between rounded-lg border border-black p-3 dark:border-gray-300"
+                className="flex w-full items-center rounded-lg border border-black p-3 dark:border-gray-300"
               >
-                <div className="flex content-center justify-center gap-5 self-center text-center align-middle">
-                  <div className="font-medium">{r.name}</div>
+                <div className="grid w-full grid-cols-1 gap-y-2 grid-rows-4 items-center justify-center text-center font-medium md:grid-cols-5 md:grid-rows-1">
+                  <p>{r.name}</p>
+                  <p>{r.type}</p>
+                  <p className="hidden md:block">{`-->`}</p>
+                  <p>{`${r.content}`}</p>
+                  <button
+                    onClick={() => handleDelete(r.id)}
+                    className="md:ml-auto h-full md:w-min flex justify-center rounded bg-red-600 px-3 py-1 text-white"
+                  >
+                    <Trash />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDelete(r.id)}
-                  className="ml-4 h-full rounded bg-red-600 px-3 py-1 text-white"
-                >
-                  <Trash />
-                </button>
               </div>
             ))}
           </div>
