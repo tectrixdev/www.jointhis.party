@@ -4,6 +4,10 @@
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Trash } from "lucide-react";
+import { Grid } from "ldrs/react";
+import "ldrs/react/Grid.css";
+import { Zoomies } from "ldrs/react";
+import "ldrs/react/Zoomies.css";
 
 // manager
 type RecordItem = {
@@ -18,8 +22,21 @@ export default function Tool() {
   const [loading, setLoading] = useState(false);
   const [records, setRecords] = useState<RecordItem[]>([]);
   const [loadingRecords, setLoadingRecords] = useState(false);
+  const [recordType, setrecordType] = useState("");
 
   // form
+  const options = [
+    { id: "0", name: "A" },
+    { id: "1", name: "AAAA" },
+    { id: "2", name: "CNAME" },
+    { id: "3", name: "TXT" },
+    { id: "4", name: "SRV" },
+  ];
+
+  const handleChange = (event: any) => {
+    setrecordType(event.target.value);
+  };
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
@@ -112,7 +129,7 @@ export default function Tool() {
       {/* Record form */}
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex w-full flex-col gap-4 rounded-lg border border-white bg-black/25 p-10 text-white backdrop-blur-lg md:w-5/6"
+        className="mx-auto flex w-full flex-col gap-4 rounded-lg bg-black/50 px-5 py-10 text-white backdrop-blur-xl md:w-5/6"
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="font-semibold">
@@ -131,17 +148,18 @@ export default function Tool() {
             Record type
           </label>
           <select
+            value={recordType}
+            onChange={handleChange}
             className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
             id="type"
             name="type"
             required
           >
-            <option value="">Select a type</option>
-            <option value="A">A</option>
-            <option value="AAAA">AAAA</option>
-            <option value="CNAME">CNAME</option>
-            <option value="TXT">TXT</option>
-            <option value="SRV">SRV</option>
+            {options.map((option) => (
+              <option key={option.id} value={`${option.name}`}>
+                {option.name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex flex-col gap-2">
@@ -155,33 +173,49 @@ export default function Tool() {
             required
             placeholder="169.134.121.60"
           />
-          <label className="font-semibold" htmlFor="port">
-            Port (SRV-only)
-          </label>
-          <input
-            className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
-            id="port"
-            name="port"
-            type="number"
-            placeholder="2345"
-          />
+          {recordType == "SRV" ? (
+            <>
+              <label className="font-semibold" htmlFor="port">
+                Port
+              </label>
+              <input
+                className="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                id="port"
+                name="port"
+                type="number"
+                placeholder="2345"
+              />
+            </>
+          ) : (
+            ``
+          )}
         </div>
         <button
           className="h-16 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_10px_0_0_#fd9a00,0_15px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
           type="submit"
           disabled={loading}
         >
-          {loading ? "Creating..." : "Create Record"}
+          {loading ? (
+            <Zoomies
+              size="250"
+              stroke="5"
+              bgOpacity="0.1"
+              speed="1.4"
+              color="black"
+            />
+          ) : (
+            "Create Record"
+          )}
         </button>
       </form>
       {/* Record Manager */}
-      <div className="mx-auto mt-10 flex w-full flex-col gap-4 rounded-lg border border-white bg-black/25 p-5 text-center text-white backdrop-blur-lg md:w-5/6">
+      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-lg bg-black/50 px-5 py-10 text-white backdrop-blur-xl md:w-5/6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-2xl font-semibold">Your DNS Records</h3>
           <div className="flex gap-2">
             <button
               onClick={() => fetchRecords()}
-              className="ml-5 rounded bg-amber-400 px-3 py-1 text-black"
+              className="-mt-2.5 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_5px_0_0_#fd9a00,0_10px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
             >
               Refresh
             </button>
@@ -189,7 +223,9 @@ export default function Tool() {
         </div>
 
         {loadingRecords ? (
-          <div>Loading...</div>
+          <div className="m-5 flex w-full items-center justify-center">
+            <Grid size="60" speed="1.5" color="white" />
+          </div>
         ) : records.length === 0 ? (
           <div className="text-muted">No records found.</div>
         ) : (
@@ -197,14 +233,10 @@ export default function Tool() {
             {records.map((r) => (
               <div
                 key={r.id}
-                className="mx-auto flex w-full items-start justify-between rounded-lg border border-white p-3"
+                className="mx-auto flex w-full items-start justify-between rounded-lg border p-3"
               >
                 <div className="flex content-center justify-center gap-5 self-center text-center align-middle">
                   <div className="font-medium">{r.name}</div>
-                  {/* <div className="text-sm text-white font-bold">{r.type}</div>
-								<div className="mt-2 text-sm text-slate-200">
-									{r.type === "SRV" ? r.data?.target || r.content : r.content}
-								</div> */}
                 </div>
                 <button
                   onClick={() => handleDelete(r.id)}

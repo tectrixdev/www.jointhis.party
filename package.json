@@ -22,6 +22,7 @@
     "fumadocs-core": "16.2.4",
     "fumadocs-mdx": "14.1.0",
     "fumadocs-ui": "16.2.4",
+    "ldrs": "^1.1.9",
     "lucide-react": "^0.556.0",
     "next": "16.0.10",
     "next-auth": "5.0.0-beta.30",
