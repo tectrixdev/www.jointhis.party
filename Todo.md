@@ -4,10 +4,10 @@
 - [x] Add homepage
 - [x] Add tool
 - [x] fix light theme
-- [x] Fix clutter in nav.
+- [x] Fix clutter in nav
 - [x] Code cleanup
 - [x] open source it all
-- [x] Restrictions on subdomain creation like limitations and certain names.
+- [x] Restrictions on subdomain creation like limitations and certain names
 - [x] Add og-image
 - [x] re-order documentation in forwarding and guides.
 - [x] Finish guides (minecraft, ~~discord bot~~)
@@ -18,10 +18,11 @@
 - [x] Deploy to production (release)
 - [x] SEO(google)
 - [x] Add to tectrix.dev
-- [ ] Finish more guides (web, games, discord bot), add new guides from poll.
+- [x] Subdomain tool UI overhaul
+- [ ] Finish more guides (web, games, discord bot), add new guides from poll
 - [ ] Minecraft unified server hub. (opt-in)
 - [ ] Translations
 - [ ] cloudflare proxy support using overwrite
 - [ ] more editing options
-- [ ] custom guide import markdown files in the tabs.
+- [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
