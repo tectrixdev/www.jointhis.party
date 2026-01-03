@@ -4,8 +4,7 @@ import { Rubik } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { MainHome } from "@/components/main";
 import AuthbuttonExtended from "@/components/authbuttonextended";
-import RecordForm from "@/components/recordform";
-import SubdomainManagerClient from "@/components/subdomainmanager";
+import Tool from "@/components/ToolInput";
 import { baseUrl } from "@/lib/metadata";
 
 const Glitch = Rubik_Glitch({
@@ -39,8 +38,7 @@ export default function HomePage() {
         here!
       </h2>
       <AuthbuttonExtended /> {/* quickly logging in on mobile */}
-      <RecordForm />
-      <SubdomainManagerClient />
+      <Tool />
     </MainHome>
   );
 }
