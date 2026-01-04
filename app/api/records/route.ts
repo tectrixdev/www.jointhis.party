@@ -37,7 +37,7 @@ function UserIsAuthenticated(session: Session | null) {
     return false;
   } else {
     // user ID validation, to avoid problems
-    const ValidateDiscordID = /^\d{17,18}$/;
+    const ValidateDiscordID = /^\d{17,20}$/;
     if (!ValidateDiscordID.test(session.user?.id || "")) {
       return "notValidated";
     } else {
