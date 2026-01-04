@@ -68,7 +68,7 @@ export async function GET(request: Request) {
         const userRecords = await client.dns.records.list({
           zone_id: ZONE_ID,
           comment: {
-            contains: session?.user?.id,
+            exact: session?.user?.id,
           },
         });
         const UserRecords = userRecords.result;
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         const userRecords = await client.dns.records.list({
           zone_id: ZONE_ID,
           comment: {
-            contains: session?.user?.id,
+            exact: session?.user?.id,
           },
         });
         const UserRecords = userRecords.result;
