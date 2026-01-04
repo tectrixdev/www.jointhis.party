@@ -33,10 +33,25 @@ const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
 // List user owned subdomains
 export async function GET(request: Request) {
   try {
+    // auth validation
     const session = await auth();
     if (!session) {
       return NextResponse.json({ error: "Please log in." }, { status: 401 });
     }
+
+    // user ID validation, to avoid problems
+    const ValidateDiscordID = /^\d{17,18}$/;
+    if (!ValidateDiscordID.test(session.user?.id || "")) {
+      return NextResponse.json(
+        {
+          error:
+            "Discord user ID could not be validated, please make a support ticket.",
+        },
+        { status: 500 },
+      );
+    }
+
+    // Get records associated with user id, possibly dangerous if it's empty. Should be fine with the validation of the userID
     const userRecords = await client.dns.records.list({
       zone_id: ZONE_ID,
       comment: {

@@ -19,6 +19,7 @@
 - [x] SEO(google)
 - [x] Add to tectrix.dev
 - [x] Subdomain tool UI overhaul
+- [ ] Store whole user object in domain comments + email user identification.
 - [ ] Finish more guides (web, games, discord bot), add new guides from poll
 - [ ] Minecraft unified server hub. (opt-in)
 - [ ] Translations
