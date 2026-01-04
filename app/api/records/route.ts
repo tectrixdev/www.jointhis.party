@@ -3,6 +3,7 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { Session } from "next-auth";
+import { ValidateDiscordID } from "@/auth";
 
 const blacklist = [
   "*",
@@ -37,7 +38,6 @@ function UserIsAuthenticated(session: Session | null) {
     return false;
   } else {
     // user ID validation, to avoid problems
-    const ValidateDiscordID = /^\d{17,20}$/;
     if (!ValidateDiscordID.test(session.user?.id || "")) {
       return "notValidated";
     } else {
