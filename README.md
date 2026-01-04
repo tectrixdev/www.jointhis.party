@@ -1,7 +1,7 @@
 # [www.jointhis.party](https://www.jointhis.party/)
 
 > [!NOTE]  
-> The project is still in beta, to view it, visit: [beta.jointhis.party](https://beta.jointhis.party/)
+> 1.0 is officially out!, you can view it at: [www.jointhis.party](https://www.jointhis.party/)
 
 Jointhis.party is a project aimed to continue a previous project but larger and
 with a slightly different goal. The goal of this previous project was to provide
