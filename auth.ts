@@ -7,7 +7,8 @@ import Discord from "next-auth/providers/discord";
 export function UserIdFromAvatar(avatar: string) {
   var userId;
   const url = new URL(avatar);
-  const ValidateDiscordID = /^\d{17,18}$/;
+  const ValidateDiscordID = /^\d{17,20}$/;
+
   if (ValidateDiscordID.test(url.pathname.split("/")[2])) {
     userId = url.pathname.split("/")[2];
   } else if (ValidateDiscordID.test((userId = url.pathname.split("/")[3]))) {
