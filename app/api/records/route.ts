@@ -2,6 +2,7 @@
 import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { Session } from "next-auth";
 
 const blacklist = [
   "*",
@@ -30,18 +31,42 @@ const client = new Cloudflare({
 });
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
 
+function UserIsAuthenticated(session: Session | null) {
+  // auth validation
+  if (!session) {
+    return false;
+  }
+  // user ID validation, to avoid problems
+  const ValidateDiscordID = /^\d{17,18}$/;
+  if (!ValidateDiscordID.test(session.user?.id || "")) {
+    return "notValidated";
+  } else {
+    return true;
+  }
+}
+
 // List user owned subdomains
 export async function GET(request: Request) {
   try {
-    // auth validation
     const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: "Please log in." }, { status: 401 });
+    switch (UserIsAuthenticated(session)) {
+      case false: {
+        return NextResponse.json({ error: "Please log in." }, { status: 401 });
+      }
+      case "notValidated": {
+        return NextResponse.json(
+          {
+            error:
+              "Discord user ID could not be validated, please make a support ticket.",
+          },
+          { status: 500 },
+        );
+      }
     }
 
     // user ID validation, to avoid problems
     const ValidateDiscordID = /^\d{17,18}$/;
-    if (!ValidateDiscordID.test(session.user?.id || "")) {
+    if (!ValidateDiscordID.test(session?.user?.id || "")) {
       return NextResponse.json(
         {
           error:
@@ -55,7 +80,7 @@ export async function GET(request: Request) {
     const userRecords = await client.dns.records.list({
       zone_id: ZONE_ID,
       comment: {
-        contains: session.user?.id,
+        contains: session?.user?.id,
       },
     });
     const UserRecords = userRecords.result;
@@ -179,8 +204,19 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: "Please log in." }, { status: 401 });
+    switch (UserIsAuthenticated(session)) {
+      case false: {
+        return NextResponse.json({ error: "Please log in." }, { status: 401 });
+      }
+      case "notValidated": {
+        return NextResponse.json(
+          {
+            error:
+              "Discord user ID could not be validated, please make a support ticket.",
+          },
+          { status: 500 },
+        );
+      }
     }
 
     const body = await request.json();
@@ -197,7 +233,7 @@ export async function PUT(request: Request) {
       name: name ? `${name}` : undefined,
       type: type ? `${type}` : undefined,
       ttl: 3600,
-      comment: session.user?.id ?? undefined,
+      comment: session?.user?.id ?? undefined,
     };
 
     if (type === "SRV") {
@@ -232,7 +268,7 @@ export async function PUT(request: Request) {
             {
               id: 652627557,
               title: "New subdomain edited!",
-              description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session.user?.id}>`,
+              description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
               color: 2326507,
               fields: [
                 {
@@ -271,8 +307,19 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: "Please log in." }, { status: 401 });
+    switch (UserIsAuthenticated(session)) {
+      case false: {
+        return NextResponse.json({ error: "Please log in." }, { status: 401 });
+      }
+      case "notValidated": {
+        return NextResponse.json(
+          {
+            error:
+              "Discord user ID could not be validated, please make a support ticket.",
+          },
+          { status: 500 },
+        );
+      }
     }
 
     const body = await request.json();
@@ -303,7 +350,7 @@ export async function DELETE(request: Request) {
             {
               id: 652627557,
               title: "New subdomain deleted!",
-              description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session.user?.id}>`,
+              description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
               color: 2326507,
               fields: [
                 {
