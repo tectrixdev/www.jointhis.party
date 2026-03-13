@@ -27,3 +27,6 @@
 - [ ] more editing options
 - [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
+
+## Better auth migration
+- [ ] get discord user id properly

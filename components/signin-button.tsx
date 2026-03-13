@@ -1,12 +1,14 @@
-import { signIn } from "@/auth";
+"use client";
+import { authClient } from "@/auth-client";
 import { LogIn } from "lucide-react";
 
 export function SignIn() {
   return (
     <form
       action={async () => {
-        "use server";
-        await signIn("discord");
+        const { data, error } = await authClient.signIn.social({
+          provider: "discord",
+        });
       }}
     >
       <button

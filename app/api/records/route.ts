@@ -2,8 +2,9 @@
 import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { Session } from "next-auth";
+import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
+import { Session, User } from "better-auth";
 
 const blacklist = [
   "*",
@@ -32,13 +33,13 @@ const client = new Cloudflare({
 });
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
 
-function UserIsAuthenticated(session: Session | null) {
+function UserIsAuthenticated(session: User | undefined) {
   // auth validation
   if (!session) {
     return false;
   } else {
     // user ID validation, to avoid problems
-    if (!ValidateDiscordID.test(session.user?.id || "")) {
+    if (!ValidateDiscordID.test(session.id || "")) {
       return "notValidated";
     } else {
       return true;
@@ -49,8 +50,10 @@ function UserIsAuthenticated(session: Session | null) {
 // List user owned subdomains
 export async function GET(request: Request) {
   try {
-    const session = await auth();
-    switch (UserIsAuthenticated(session)) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    switch (UserIsAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -87,8 +90,10 @@ export async function GET(request: Request) {
 // create subdomain
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    switch (UserIsAuthenticated(session)) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    switch (UserIsAuthenticated(session.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -206,8 +211,10 @@ export async function POST(request: Request) {
 // edit
 export async function PUT(request: Request) {
   try {
-    const session = await auth();
-    switch (UserIsAuthenticated(session)) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    switch (UserIsAuthenticated(session.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -313,8 +320,10 @@ export async function PUT(request: Request) {
 // Delete subdomain
 export async function DELETE(request: Request) {
   try {
-    const session = await auth();
-    switch (UserIsAuthenticated(session)) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    switch (UserIsAuthenticated(session.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }

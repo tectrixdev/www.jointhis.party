@@ -1,6 +1,13 @@
-import NextAuth from "next-auth";
-import Discord from "next-auth/providers/discord";
+import { betterAuth } from "better-auth";
 
+export const auth = betterAuth({
+  socialProviders: {
+    discord: {
+      clientId: process.env.AUTH_DISCORD_ID!,
+      clientSecret: process.env.AUTH_DISCORD_SECRET!,
+    },
+  },
+});
 // There should be 2 types of avatar URLs:
 // https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png
 // https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}
@@ -18,17 +25,17 @@ export function UserIdFromAvatar(avatar: string) {
   return userId;
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Discord],
-  callbacks: {
-    async session({ session }) {
-      if (session.user.image == null || session.user.image == undefined) {
-        return session;
-      } else {
-        session.user.id = UserIdFromAvatar(session.user.image) || "undefined";
-      }
-      return session;
-    },
-  },
-});
+// export const { handlers, signIn, signOut, auth } = NextAuth({
+//   providers: [Discord],
+//   callbacks: {
+//     async session({ session }) {
+//       if (session.user.image == null || session.user.image == undefined) {
+//         return session;
+//       } else {
+//         session.user.id = UserIdFromAvatar(session.user.image) || "undefined";
+//       }
+//       return session;
+//     },
+//   },
+// });
 // Discord auth only for now to identify quickly for moderation.
