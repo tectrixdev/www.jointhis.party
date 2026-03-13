@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
-import { User } from "better-auth";
 
 const blacklist = [
   "*",
@@ -37,6 +36,8 @@ function UserIsAuthenticated(session: customSession | undefined) {
   // auth validation
   if (!session) {
     return false;
+  } else if (!session.verified) {
+    return "notValidated";
   } else {
     // user ID validation, to avoid problems
     if (!ValidateDiscordID.test(session.id || "")) {
@@ -61,7 +62,7 @@ export async function GET(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Discord user ID could not be validated, please make a support ticket.",
+              "Discord user ID or e-mail could not be validated, please make a support ticket.",
           },
           { status: 500 },
         );
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Discord user ID could not be validated, please make a support ticket.",
+              "Discord user ID or e-mail could not be validated, please make a support ticket.",
           },
           { status: 500 },
         );
@@ -222,7 +223,7 @@ export async function PUT(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Discord user ID could not be validated, please make a support ticket.",
+              "Discord user ID or e-mail could not be validated, please make a support ticket.",
           },
           { status: 500 },
         );
@@ -331,7 +332,7 @@ export async function DELETE(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Discord user ID could not be validated, please make a support ticket.",
+              "Discord user ID or e-mail could not be validated, please make a support ticket.",
           },
           { status: 500 },
         );
