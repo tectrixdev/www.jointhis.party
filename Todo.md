@@ -32,5 +32,8 @@
 
 - [x] get discord user id
 - [ ] fix duplicate records overwriting
+- [ ] Add bearer auth
+- [ ] Add a way to communicate this with the CLI
+- [ ] Finish CLI logic
 - [ ] get discord user id properly
 - [ ] implement alt mitigation better with profile info.
