@@ -29,4 +29,8 @@
 - [ ] second code cleanup (if needed)
 
 ## Better auth migration
+
+- [x] get discord user id
+- [ ] fix duplicate records overwriting
 - [ ] get discord user id properly
+- [ ] implement alt mitigation better with profile info.

@@ -1,10 +1,10 @@
 "use server";
 import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth, customSession } from "@/auth";
 import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
-import { Session, User } from "better-auth";
+import { User } from "better-auth";
 
 const blacklist = [
   "*",
@@ -33,7 +33,7 @@ const client = new Cloudflare({
 });
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
 
-function UserIsAuthenticated(session: User | undefined) {
+function UserIsAuthenticated(session: customSession | undefined) {
   // auth validation
   if (!session) {
     return false;
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session.user)) {
+    switch (UserIsAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -214,7 +214,7 @@ export async function PUT(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session.user)) {
+    switch (UserIsAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -323,7 +323,7 @@ export async function DELETE(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session.user)) {
+    switch (UserIsAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
