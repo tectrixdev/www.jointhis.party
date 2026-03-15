@@ -27,6 +27,7 @@
 - [ ] more editing options
 - [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
+- [ ] Add logging name consistency.
 
 ## Better auth migration
 
