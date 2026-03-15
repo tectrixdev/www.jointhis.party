@@ -1,0 +1,7 @@
+1. Migrated to better-auth.
+2. Added mandatory verified email on discord.
+3. Small SEO changes.
+4. Fixed some small issues with the DNS manager and form.
+5. Changed the banner.
+6. Added a dashboard.
+7. Logging in now redirects you back to the same page, instead of the homepage.
