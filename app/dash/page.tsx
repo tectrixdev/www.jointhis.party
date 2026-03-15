@@ -1,12 +1,13 @@
 import { Metadata } from "next";
+import { baseUrl } from "@/lib/metadata";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { MainHome } from "@/components/main";
-import { baseUrl } from "@/lib/metadata";
-import Link from "fumadocs-core/link";
-import { Zoomies } from "ldrs/react";
 import "ldrs/react/Zoomies.css";
-import Tool, { Manager } from "@/components/ToolInput";
+import { Manager } from "@/components/ToolInput";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { SignIn } from "@/components/signin-button";
 
 const Glitch = Rubik_Glitch({
   subsets: ["latin"],
@@ -43,20 +44,48 @@ export function Dash({ children, name, className }: Props) {
   );
 }
 
-export default function HomePage() {
-  return (
-    <MainHome ClassName="p-10">
-      <h1
-        className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
-      >
-        Dashboard
-      </h1>
-      <Dash name="Proxy">placeholder</Dash>
-      <Dash name="DNS">
-        <Manager />
-      </Dash>
-    </MainHome>
-  );
+export default async function HomePage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session?.session?.id) {
+    return (
+      <MainHome ClassName="p-10">
+        <h1
+          className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
+        >
+          Dashboard
+        </h1>
+        <Dash name="Tunnel(s)">placeholder</Dash>
+        <Dash name="DNS">
+          <Manager />
+        </Dash>
+      </MainHome>
+    );
+  } else {
+    return (
+      <MainHome ClassName="p-10">
+        <h1
+          className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
+        >
+          Dashboard
+        </h1>
+        <Dash
+          className="text-bold flex items-center justify-center text-center align-middle text-3xl"
+          name="Tunnel(s)"
+        >
+          <p>Log-in required.</p>
+        </Dash>
+        <Dash
+          className="text-bold flex items-center justify-center text-center align-middle text-3xl"
+          name="DNS"
+        >
+          <p>Log-in required.</p>
+        </Dash>
+      </MainHome>
+    );
+  }
 }
 
 export const metadata: Metadata = {

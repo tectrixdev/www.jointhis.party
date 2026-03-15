@@ -1,13 +1,17 @@
 "use client";
 import { authClient } from "@/auth-client";
 import { LogIn } from "lucide-react";
+import { usePathname } from "fumadocs-core/framework";
+import { baseUrl } from "@/lib/metadata";
 
 export function SignIn() {
+  const callback = `${baseUrl}${usePathname()}`;
   return (
     <form
       action={async () => {
         const { data, error } = await authClient.signIn.social({
           provider: "discord",
+          callbackURL: callback,
         });
       }}
     >
