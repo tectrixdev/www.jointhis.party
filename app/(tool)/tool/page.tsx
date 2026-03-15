@@ -4,7 +4,7 @@ import { Rubik } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { MainHome } from "@/components/main";
 import AuthbuttonExtended from "@/components/authbuttonextended";
-import Tool from "@/components/ToolInput";
+import Tool, { Form, Manager } from "@/components/ToolInput";
 import { baseUrl } from "@/lib/metadata";
 
 const Glitch = Rubik_Glitch({
@@ -38,7 +38,14 @@ export default function HomePage() {
         here!
       </h2>
       <AuthbuttonExtended /> {/* quickly logging in on mobile */}
-      <Tool />
+      <div className="flex w-full flex-col items-center gap-2 self-center">
+        <div className="rounded-xl bg-white/50 backdrop-blur-xl md:w-5/6 dark:bg-black/50">
+          <Form />
+        </div>
+        <div className="rounded-xl bg-white/50 backdrop-blur-xl md:w-5/6 dark:bg-black/50">
+          <Manager />
+        </div>
+      </div>
     </MainHome>
   );
 }
@@ -53,15 +60,20 @@ export const metadata: Metadata = {
     url: "/opengraph-image.png",
   },
   keywords: [
-    "Free domain",
-    "Free subdomain",
-    "Self hosting",
-    "TecTrix",
-    "Self hosting",
-    "Self hosting subdomain",
-    "Free subdomain",
-    "minecraft subdomain",
-    "Free srv record",
+    "Subdomain manager",
+    "DNS subdomain management",
+    "Create subdomains",
+    "Manage subdomains",
+    "Free subdomain creation",
+    "TecTrix subdomain manager",
+    "Subdomain configuration",
+    "Minecraft subdomain setup",
+    "SRV record manager",
+    "Free SRV records",
+    "Configure DNS records",
+    "Subdomain routing",
+    "Port forwarding with subdomains",
+    "Reverse proxy subdomains",
   ],
   robots: "index, follow",
   alternates: {

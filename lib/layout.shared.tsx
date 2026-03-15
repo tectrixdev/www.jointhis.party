@@ -5,6 +5,7 @@ import { BookOpenText } from "lucide-react";
 import { Home } from "lucide-react";
 import Image from "next/image";
 import Authbutton from "@/components/authbutton";
+import { LayoutDashboard } from "lucide-react";
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -44,6 +45,11 @@ export function baseOptions(): BaseLayoutProps {
         text: "Documentation",
         url: "/docs",
         icon: <BookOpenText />,
+      },
+      {
+        text: "Dashboard",
+        url: "/dash",
+        icon: <LayoutDashboard />,
       },
       {
         text: "Support",
