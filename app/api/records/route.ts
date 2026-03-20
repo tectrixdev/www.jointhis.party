@@ -25,6 +25,17 @@ const blacklist = [
   "party",
   "beta",
   "play",
+  "proxy",
+  "proxy1",
+  "proxy2",
+  "proxy3",
+  "proxy4",
+  "proxyserver",
+  "vps",
+  "vps1",
+  "vps2",
+  "vps3",
+  "vps4",
 ];
 
 const client = new Cloudflare({
