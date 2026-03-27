@@ -5,3 +5,4 @@
 5. Changed the banner.
 6. Added a dashboard.
 7. Logging in now redirects you back to the same page, instead of the homepage.
+8. Updated TOS and Privacy Policy.
