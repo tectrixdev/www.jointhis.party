@@ -1,13 +1,13 @@
 import { betterAuth } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { createPool } from "mysql2/promise";
-import { oneTimeToken } from "better-auth/plugins/one-time-token"; 
+import { oneTimeToken } from "better-auth/plugins/one-time-token";
 
 export const auth = betterAuth({
   database: createPool({
-    host: `${process.env.MYSQLHOST}`,
+    host: process.env.MYSQLHOST,
     user: "auth",
-    password: `${process.env.MYSQLPW}`,
+    password: process.env.MYSQLPW,
     database: "betterauth",
     timezone: "Z", // Important to ensure consistent timezone values
   }),
