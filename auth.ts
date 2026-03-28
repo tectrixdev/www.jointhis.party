@@ -1,7 +1,15 @@
 import { betterAuth } from "better-auth";
 import { customSession } from "better-auth/plugins";
+import { createPool } from "mysql2/promise";
 
 export const auth = betterAuth({
+  database: createPool({
+    host: `${process.env.MYSQLHOST}`,
+    user: "auth",
+    password: `${process.env.MYSQLPW}`,
+    database: "betterauth",
+    timezone: "Z", // Important to ensure consistent timezone values
+  }),
   socialProviders: {
     discord: {
       clientId: process.env.AUTH_DISCORD_ID as string,
