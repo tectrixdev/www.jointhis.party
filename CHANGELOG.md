@@ -8,3 +8,5 @@
 6. Added a dashboard.
 7. Logging in now redirects you back to the same page, instead of the homepage.
 8. Updated TOS and Privacy Policy.
+9. Added database for authentication.
+10. Updated TOS and Privacy Policy.
