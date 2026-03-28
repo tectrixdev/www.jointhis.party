@@ -50,6 +50,9 @@ export default async function HomePage() {
   });
 
   if (session?.session?.id) {
+    const data = await auth.api.generateOneTimeToken({
+      headers: await headers(),
+    });
     return (
       <MainHome ClassName="p-10">
         <h1
@@ -57,7 +60,7 @@ export default async function HomePage() {
         >
           Dashboard
         </h1>
-        <Dash name="Tunnel(s)">placeholder</Dash>
+        <Dash name="Tunnel(s)">{data.token}</Dash>
         <Dash name="DNS">
           <Manager />
         </Dash>
