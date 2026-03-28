@@ -1,3 +1,5 @@
+# Changelog
+
 1. Migrated to better-auth.
 2. Added mandatory verified email on discord.
 3. Small SEO changes.
