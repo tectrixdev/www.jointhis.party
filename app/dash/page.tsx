@@ -7,7 +7,8 @@ import "ldrs/react/Zoomies.css";
 import { Manager } from "@/components/ToolInput";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
-import { SignIn } from "@/components/signin-button";
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
+import TokenViewer from "@/components/viewtoken";
 
 const Glitch = Rubik_Glitch({
   subsets: ["latin"],
@@ -60,8 +61,10 @@ export default async function HomePage() {
         >
           Dashboard
         </h1>
-        <Dash name="Tunnel(s)">{data.token}</Dash>
-        <Dash name="DNS">
+        <Dash name="JoinThis.proxy">
+          <TokenViewer token={data.token} />
+        </Dash>
+        <Dash name="JoinThis.party">
           <Manager />
         </Dash>
       </MainHome>
