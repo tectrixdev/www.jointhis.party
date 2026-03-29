@@ -26,21 +26,53 @@ We, as jointhis.party, collect the following data by default:
 
 We, as jointhis.party, collect the following data when you log in:
 
-- Your discord user ID
+- The IP of the nearest cloudflare server (Authentication DB, this is the
+  cloudflare IP due to the server being proxied. Your real IP is not stored. )
+- Your User agent (Authentication DB, is accessible by me.)
+- Your discord user ID (Authentication DB, is accessible by me.)
 - The records you create and their contents (moderation purposes)
-- Your discord email (unused, but we have access)
-- Your discord username (unused, but we have access)
+- Your discord email (Authentication DB, is accessible by me.)
+- If your discord email is verified (Authentication DB, is accessible by me.)
+- Your discord profile picture (Authentication DB, is accessible by me.)
+- Your discord username (Authentication DB, is accessible by me.)
 
 What happens to your data:
 
-| Data                      | Access                            | Storage                                             | Storage retention                      |
-| ------------------------- | --------------------------------- | --------------------------------------------------- | -------------------------------------- |
-| User ID                   | jointhis.party Discord moderators | DNS records / Cloudflare                            | As long as the DNS records are active. |
-| Your activity on the tool | jointhis.party Discord moderators | Discord webhook messages, DNS records / Cloudflare. | Forever                                |
-| Your IP                   | Cloudflare                        | Cloudflare                                          | 1 month                                |
-| User agent                | Me, Vercel                        | Vercel                                              | 1 month                                |
-| Your referrer             | Me, Vercel                        | Vercel                                              | 1 month                                |
-| Pages you access          | Me, Vercel                        | Vercel                                              | 1 month                                |
+Regular data:
+
+| Data             | Access                            | Storage                  | Storage retention                      |
+| ---------------- | --------------------------------- | ------------------------ | -------------------------------------- |
+| Discord user ID  | jointhis.party Discord moderators | DNS records / Cloudflare | As long as the DNS records are active. |
+| Your IP          | Cloudflare                        | Cloudflare               | 1 month                                |
+| User agent       | Me, Vercel                        | Vercel                   | 1 month                                |
+| Your referrer    | Me, Vercel                        | Vercel                   | 1 month                                |
+| Pages you access | Me, Vercel                        | Vercel                   | 1 month                                |
+
+Data collected after authenticating:
+
+| Data                                     | Access                            | Storage                                             | Storage retention      |
+| ---------------------------------------- | --------------------------------- | --------------------------------------------------- | ---------------------- |
+| Discord user ID                          | Me                                | Authentication DB                                   | Until account deletion |
+| Your activity on the tool                | jointhis.party Discord moderators | Discord webhook messages, DNS records / Cloudflare. | Forever                |
+| Nearest cloudflare datacenter            | Me                                | Authentication DB                                   | 7 days                 |
+| User agent                               | Me, Vercel                        | Vercel, Authentication DB                           | 7 days                 |
+| Your referrer                            | Me, Vercel                        | Vercel                                              | 1 month                |
+| Pages you access                         | Me, Vercel                        | Vercel                                              | 1 month                |
+| The email linked to your discord account | Me                                | Authentication DB                                   | Until account deletion |
+| Wether your discord email is verified    | Me                                | Authentication DB                                   | Until account deletion |
+| Your Discord display name                | Me                                | Authentication DB                                   | Until account deletion |
+
+The authentication DB is self-hosted on a VPS in the United States. Only I can
+access the database. You can always request your data by sending an email to
+[data.jointhis@tectrix.dev](mailto:data.jointhis@tectrix.dev) requesting your data.
+
+You also have the right to deletion, in order for that to happen you can either
+make a ticket on the discord server or send an email to [data.jointhis@tectrix.dev](mailto:data.jointhis@tectrix.dev).
+
+If you don't want any of this data to get collected, you can always make a ticket
+in our discord support server to get the record manually made, or get your proxy
+tunnel manually created. We'd love to offer this service to anyone who likes some
+extra privacy.
 
 We don't sell your data in any way. They are only used for analytics, logging
 and moderation. We don't share this data with any advertising providers or
@@ -79,6 +111,23 @@ Local storage variables do not require user consent.
 | theme             | Remember user theme setting           | forever |
 | nd-banner-newyear | Track dismissal of the release banner | forever |
 
+When you do log in, some info about your session is also saved in local storage.
+
+## Specific to JoinThis.proxy
+
+This section only applies to users that utilize our jointhis.proxy tool.
+The following data is collected:
+
+| Data            | Function                                        | Storage              |
+| --------------- | ----------------------------------------------- | -------------------- |
+| IP              | Connection to the server and runtime logging    | RAM-only             |
+| Discord user ID | Associate authentication key with your account. | Self-hosted database |
+
+By using the service, you also agree that we may inspect packets if necessary
+to prevent abuse. As stated in the terms of service, we may also ask you what
+you are hosting and have the right to terminate your tunnel at any
+moment for any reason.
+
 ## Modifications to the Policy
 
 The Privacy Policy is subject to change, it can and will change.
@@ -86,5 +135,5 @@ If we do make changes to the terms, you will be notified in the
 discord server and when commits on the gitlab page get made.
 
 ```text
-Last update: 2026/01/02
+Last update: 2026/03/28
 ```

@@ -1,14 +1,17 @@
-import { auth } from "@/auth";
-import { signIn } from "@/auth";
+"use client";
+import { authClient } from "@/auth-client";
 
-export default async function AuthbuttonExtended() {
-  const session = await auth();
+export default function AuthbuttonExtended() {
+  const { data, error, refetch, isPending, isRefetching } =
+    authClient.useSession();
+  const session = data;
   return session ? null : (
     <form
-      className="md:w-5/6 mb-5 w-full flex md:hidden justify-center self-center"
+      className="mb-5 flex w-full justify-center self-center md:hidden md:w-5/6"
       action={async () => {
-        "use server";
-        await signIn("discord");
+        const { data, error } = await authClient.signIn.social({
+          provider: "discord",
+        });
       }}
     >
       <button

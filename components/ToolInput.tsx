@@ -18,10 +18,8 @@ type RecordItem = {
   data?: any;
 };
 
-export default function Tool() {
+export function Form() {
   const [loading, setLoading] = useState(false);
-  const [records, setRecords] = useState<RecordItem[]>([]);
-  const [loadingRecords, setLoadingRecords] = useState(false);
   const [recordType, setrecordType] = useState("");
 
   // form
@@ -36,7 +34,6 @@ export default function Tool() {
   const handleChange = (event: any) => {
     setrecordType(event.target.value);
   };
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
@@ -49,6 +46,7 @@ export default function Tool() {
     };
 
     try {
+      const t = toast.loading("Creating...");
       const res = await fetch("/api/records", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,10 +54,11 @@ export default function Tool() {
       });
       const data = await res.json();
       if (!res.ok) {
+        toast.dismiss(t);
         toast.error(data?.error || "Failed to create record");
       } else {
-        toast.success("Record created");
-        fetchRecords();
+        toast.dismiss(t);
+        toast.success("Record created, refresh the manager to view it.");
       }
     } catch (err: any) {
       toast.error(err?.message || "Network error");
@@ -67,8 +66,99 @@ export default function Tool() {
       setLoading(false);
     }
   }
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="mx-auto flex flex-col gap-4 rounded-md px-6 pt-6 pb-12 text-black dark:text-white"
+    >
+      <div className="flex flex-col gap-2">
+        <label htmlFor="name" className="font-semibold">
+          Subdomain name
+        </label>
+        <input
+          className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
+          id="name"
+          name="name"
+          required
+          placeholder="mycoolserver"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="font-semibold" htmlFor="type">
+          Record type
+        </label>
+        <select
+          value={recordType}
+          onChange={handleChange}
+          className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
+          id="type"
+          name="type"
+          required
+        >
+          {options.map((option) => (
+            <option
+              className="bg-amber-400 dark:text-black"
+              key={option.id}
+              value={`${option.name}`}
+            >
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="font-semibold" htmlFor="value">
+          Value
+        </label>
+        <input
+          className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
+          id="value"
+          name="value"
+          required
+          placeholder="169.134.121.60"
+        />
+        {recordType == "SRV" ? (
+          <>
+            <label className="font-semibold" htmlFor="port">
+              Port
+            </label>
+            <input
+              className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
+              id="port"
+              name="port"
+              type="number"
+              placeholder="2345"
+            />
+          </>
+        ) : (
+          ``
+        )}
+      </div>
+      <button
+        className="h-16 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_10px_0_0_#fd9a00,0_15px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
+        type="submit"
+        disabled={loading}
+      >
+        {loading ? (
+          <Zoomies
+            size="250"
+            stroke="5"
+            bgOpacity="0.1"
+            speed="1.4"
+            color="black"
+          />
+        ) : (
+          "Create Record"
+        )}
+      </button>
+    </form>
+  );
+}
 
-  // Manager
+export function Manager() {
+  const [records, setRecords] = useState<RecordItem[]>([]);
+  const [loadingRecords, setLoadingRecords] = useState(false);
+
   async function fetchRecords() {
     setLoadingRecords(true);
     try {
@@ -125,137 +215,59 @@ export default function Tool() {
   }
 
   return (
+    <div className="mx-auto mt-2 flex flex-col gap-4 rounded-md px-6 py-6 text-black dark:text-white">
+      <div className="mb-4 flex gap-2 items-center justify-between">
+        <h3 className="text-2xl font-semibold">DNS Records</h3>
+        <div className="flex gap-2">
+          <button
+            onClick={() => fetchRecords()}
+            className="-mt-2.5 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_5px_0_0_#fd9a00,0_10px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {loadingRecords ? (
+        <div className="m-5 flex w-full items-center justify-center">
+          <Grid size="60" speed="1.5" color="white" />
+        </div>
+      ) : records.length === 0 ? (
+        <div className="text-muted">No records found.</div>
+      ) : (
+        <div className="space-y-3">
+          {records.map((r) => (
+            <div
+              key={r.id}
+              className="flex w-full items-center rounded-lg border border-black p-3 dark:border-gray-300"
+            >
+              <div className="grid w-full grid-cols-1 grid-rows-4 items-center justify-center gap-y-2 text-center font-medium md:grid-cols-5 md:grid-rows-1">
+                <p>{r.name}</p>
+                <p>{r.type}</p>
+                <p className="hidden md:block">{`-->`}</p>
+                <p>{`${r.content}`}</p>
+                <button
+                  onClick={() => handleDelete(r.id)}
+                  className="flex h-full justify-center rounded bg-red-600 px-3 py-1 text-white md:ml-auto md:w-min"
+                >
+                  <Trash />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function Tool() {
+  return (
     <>
       {/* Record form */}
-      <form
-        onSubmit={onSubmit}
-        className="mx-auto flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 pt-6 pb-12 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white"
-      >
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="font-semibold">
-            Subdomain name
-          </label>
-          <input
-            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
-            id="name"
-            name="name"
-            required
-            placeholder="mycoolserver"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="font-semibold" htmlFor="type">
-            Record type
-          </label>
-          <select
-            value={recordType}
-            onChange={handleChange}
-            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
-            id="type"
-            name="type"
-            required
-          >
-            {options.map((option) => (
-              <option
-                className="bg-amber-400 dark:text-black"
-                key={option.id}
-                value={`${option.name}`}
-              >
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="font-semibold" htmlFor="value">
-            Value
-          </label>
-          <input
-            className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
-            id="value"
-            name="value"
-            required
-            placeholder="169.134.121.60"
-          />
-          {recordType == "SRV" ? (
-            <>
-              <label className="font-semibold" htmlFor="port">
-                Port
-              </label>
-              <input
-                className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
-                id="port"
-                name="port"
-                type="number"
-                placeholder="2345"
-              />
-            </>
-          ) : (
-            ``
-          )}
-        </div>
-        <button
-          className="h-16 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_10px_0_0_#fd9a00,0_15px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? (
-            <Zoomies
-              size="250"
-              stroke="5"
-              bgOpacity="0.1"
-              speed="1.4"
-              color="black"
-            />
-          ) : (
-            "Create Record"
-          )}
-        </button>
-      </form>
+      <Form />
       {/* Record Manager */}
-      <div className="mx-auto mt-2 flex w-full flex-col gap-4 rounded-md bg-white/50 px-6 py-6 text-black backdrop-blur-xl md:w-5/6 dark:bg-black/50 dark:text-white">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-2xl font-semibold">DNS Records</h3>
-          <div className="flex gap-2">
-            <button
-              onClick={() => fetchRecords()}
-              className="-mt-2.5 cursor-pointer rounded-md border-b border-amber-500 bg-amber-400 px-4 py-2 font-bold text-black [box-shadow:0_5px_0_0_#fd9a00,0_10px_0_0_#fd9a00] transition-all duration-150 select-none active:translate-y-2 active:border-b-0 active:[box-shadow:0_0px_0_0_#fd9a00,0_0px_0_0_#fd9a00]"
-            >
-              Refresh
-            </button>
-          </div>
-        </div>
-
-        {loadingRecords ? (
-          <div className="m-5 flex w-full items-center justify-center">
-            <Grid size="60" speed="1.5" color="white" />
-          </div>
-        ) : records.length === 0 ? (
-          <div className="text-muted">No records found.</div>
-        ) : (
-          <div className="space-y-3">
-            {records.map((r) => (
-              <div
-                key={r.id}
-                className="flex w-full items-center rounded-lg border border-black p-3 dark:border-gray-300"
-              >
-                <div className="grid w-full grid-cols-1 grid-rows-4 items-center justify-center gap-y-2 text-center font-medium md:grid-cols-5 md:grid-rows-1">
-                  <p>{r.name}</p>
-                  <p>{r.type}</p>
-                  <p className="hidden md:block">{`-->`}</p>
-                  <p>{`${r.content}`}</p>
-                  <button
-                    onClick={() => handleDelete(r.id)}
-                    className="flex h-full justify-center rounded bg-red-600 px-3 py-1 text-white md:ml-auto md:w-min"
-                  >
-                    <Trash />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <Manager />
     </>
   );
 }

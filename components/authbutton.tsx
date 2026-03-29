@@ -1,9 +1,12 @@
-import { auth } from "@/auth";
+"use client";
+import { authClient } from "@/auth-client";
 import { SignIn } from "./signin-button";
 import { SignOut } from "./signout-button";
 
-export default async function Authbutton() {
-  const session = await auth();
+export default function Authbutton() {
+  const { data, error, refetch, isPending, isRefetching } =
+    authClient.useSession();
+  const session = data;
   return (
     <div>
       {session ? (

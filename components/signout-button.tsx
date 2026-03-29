@@ -1,12 +1,12 @@
-import { signOut } from "@/auth";
+"use client";
+import { authClient } from "@/auth-client";
 import { LogOut } from "lucide-react";
 
 export function SignOut() {
   return (
     <form
       action={async () => {
-        "use server";
-        await signOut();
+        const { data, error } = await authClient.signOut();
       }}
     >
       <button

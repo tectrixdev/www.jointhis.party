@@ -27,3 +27,13 @@
 - [ ] more editing options
 - [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
+- [ ] Add logging name consistency.
+
+## Better auth migration
+
+- [x] get discord user id
+- [ ] fix duplicate records overwriting (DNS)
+- [x] Add OTT auth
+- [x] Add a way to communicate this with the CLI
+- [ ] get discord user id properly
+- [ ] implement alt mitigation better with profile info.
