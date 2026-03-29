@@ -10,3 +10,4 @@
 8. Updated TOS and Privacy Policy.
 9. Added database for authentication.
 10. Updated TOS and Privacy Policy.
+11. Removed system from the light/dark selector.
