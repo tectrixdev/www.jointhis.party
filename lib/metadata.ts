@@ -1,3 +1,1 @@
-export const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
-  : new URL("http://localhost:3000");
+export const baseUrl = new URL("https://www.jointhis.party");
