@@ -37,7 +37,6 @@ async function GetConfig(userID: string, innerTCP: string, innerUDP: string) {
     const [results, fields] = await connection.query<RowDataPacket[]>(
       `SELECT Token, TCP, UDP from AuthenticationTokens where OWNER = ${userID}`,
     );
-    console.log(results);
     const authKey = results[0].Token;
     const tcp = results[0].TCP;
     const udp = results[0].UDP;
