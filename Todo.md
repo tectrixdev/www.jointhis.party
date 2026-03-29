@@ -35,5 +35,8 @@
 - [ ] fix duplicate records overwriting (DNS)
 - [x] Add OTT auth
 - [x] Add a way to communicate this with the CLI
+
+These are now possible due to DB:
+
 - [ ] get discord user id properly
 - [ ] implement alt mitigation better with profile info.
