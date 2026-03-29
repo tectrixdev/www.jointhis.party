@@ -11,7 +11,7 @@ export function baseOptions(): BaseLayoutProps {
   return {
     themeSwitch: {
       enabled: true,
-      mode: "light-dark-system",
+      mode: "light-dark",
     },
     nav: {
       title: (
