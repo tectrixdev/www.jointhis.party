@@ -32,9 +32,8 @@
 ## Better auth migration
 
 - [x] get discord user id
-- [ ] fix duplicate records overwriting
-- [ ] Add bearer auth
-- [ ] Add a way to communicate this with the CLI
-- [ ] Finish CLI logic
+- [ ] fix duplicate records overwriting (DNS)
+- [x] Add OTT auth
+- [x] Add a way to communicate this with the CLI
 - [ ] get discord user id properly
 - [ ] implement alt mitigation better with profile info.
