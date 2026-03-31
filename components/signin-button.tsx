@@ -2,10 +2,20 @@
 import { authClient } from "@/auth-client";
 import { LogIn } from "lucide-react";
 import { usePathname } from "fumadocs-core/framework";
-import { baseUrl } from "@/lib/metadata";
+import { useState, useEffect } from "react";
 
 export function SignIn() {
-  const callback = `${baseUrl}${usePathname()}`;
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    setUrl(window.location.hostname);
+  }, []);
+  let baseURL;
+  if (url === "localhost") {
+    baseURL = "http://localhost:3000";
+  } else {
+    baseURL = `https://${url}`;
+  }
+  const callback = `${baseURL}${usePathname()}`;
   return (
     <form
       action={async () => {
