@@ -12,6 +12,6 @@
 10. Updated TOS and Privacy Policy.
 11. Removed system from the light/dark selector.
 12. Added a new dashboard with an overview of the DNS records and the
-CLI authentication token.
+    CLI authentication token.
 13. Add API route for getting a proxy configuration file. Usage will be automated by the
-CLI.
+    CLI.

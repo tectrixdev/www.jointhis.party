@@ -216,7 +216,7 @@ export function Manager() {
 
   return (
     <div className="mx-auto mt-2 flex flex-col gap-4 rounded-md px-6 py-6 text-black dark:text-white">
-      <div className="mb-4 flex gap-2 items-center justify-between">
+      <div className="mb-4 flex items-center justify-between gap-2">
         <h3 className="text-2xl font-semibold">DNS Records</h3>
         <div className="flex gap-2">
           <button

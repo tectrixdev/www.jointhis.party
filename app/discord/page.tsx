@@ -21,10 +21,21 @@ const rubik = Rubik({
 
 export default function HomePage() {
   return (
-    <MainHome ClassName="p-10"><div className="flex flex-col gap-10 bg-black/50 backdrop-blur-lg rounded-xl py-100 m-auto items-center h-full w-full justify-center">
-      <h1 className={`${Glitch.className} md:text-4xl w-full text-3xl text-center`}>Redirecting you to the jointhis.party discord...</h1>
-      <Zoomies color="white" size={250} />
-    <Link className="p-3 font-bold rounded-xl bg-white text-black" href="https://discord.com/invite/qFzhp9pCtc">Click here if you're not getting redirected.</Link></div>
+    <MainHome ClassName="p-10">
+      <div className="m-auto flex h-full w-full flex-col items-center justify-center gap-10 rounded-xl bg-black/50 py-100 backdrop-blur-lg">
+        <h1
+          className={`${Glitch.className} w-full text-center text-3xl md:text-4xl`}
+        >
+          Redirecting you to the jointhis.party discord...
+        </h1>
+        <Zoomies color="white" size={250} />
+        <Link
+          className="rounded-xl bg-white p-3 font-bold text-black"
+          href="https://discord.com/invite/qFzhp9pCtc"
+        >
+          Click here if you're not getting redirected.
+        </Link>
+      </div>
     </MainHome>
   );
 }
