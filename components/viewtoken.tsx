@@ -39,8 +39,8 @@ export default function TokenViewer({ token }: Props) {
       <Callout type="warning" title="Don't share your token!">
         This token is sensitive information and can lead to account compromises
         if shared. Please do not save, or share this token. It is only meant for
-        authenticating the CLI. Tokens invalidate automatically after the first use
-        or after 3 minutes.
+        authenticating the CLI. Tokens invalidate automatically after the first
+        use or after 3 minutes.
       </Callout>
     </div>
   );
