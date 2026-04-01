@@ -1,0 +1,6 @@
+{
+  "title": "Archive",
+  "icon": "Archive",
+  "pages": ["playit", "embotic"],
+  "defaultOpen": false
+}

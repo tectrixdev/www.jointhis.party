@@ -28,6 +28,7 @@
 - [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
 - [ ] Add logging name consistency.
+- [ ] Router refresh tool page when record is created.
 
 ## Better auth migration
 

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { Card, Cards } from "fumadocs-ui/components/card";
-import { Globe } from "lucide-react";
+import { Globe, LayoutDashboard } from "lucide-react";
 import { Gamepad } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { ServerCog } from "lucide-react";
@@ -46,15 +46,6 @@ export default function HomePage() {
           title="Aternos"
         >
           Get a nice and clean .jointhis.party subdomain for Aternos hosted
-          servers!
-        </Card>
-        <Card
-          className={cardClassName}
-          icon={<ServerCog />}
-          href="/docs/embotic"
-          title="Embotic"
-        >
-          Get a nice and clean .jointhis.party subdomain for Embotic hosted
           servers!
         </Card>
         <Card
@@ -105,6 +96,12 @@ export default function HomePage() {
         >
           Get your free subdomain here!
         </Card>
+        <Card
+          className={cardClassName}
+          icon={<LayoutDashboard />}
+          href="/dash"
+          title="Explore the dashboard!"
+        ></Card>
       </Cards>
     </MainHome>
   );

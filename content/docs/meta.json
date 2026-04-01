@@ -1,0 +1,12 @@
+{
+  "title": "Docs",
+  "description": "Documentation",
+  "root": true,
+  "pages": [
+    "(forwarding)",
+    "(guides)",
+    "(externalhosting)",
+    "(terms)",
+    "(archive)"
+  ]
+}
