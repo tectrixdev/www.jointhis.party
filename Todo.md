@@ -27,15 +27,17 @@
 - [ ] more editing options
 - [ ] custom guide import markdown files in the tabs
 - [ ] second code cleanup (if needed)
-- [ ] Add logging name consistency.
-- [ ] Router refresh tool page when record is created.
+- [x] Add logging name consistency.
+- [x] ~~Router refresh tool page when record is created.~~ **Not possible**
+- [ ] More rate limiting + better error handling.
 
 ## Better auth migration
 
 - [x] get discord user id
-- [ ] fix duplicate records overwriting (DNS)
+- [x] fix duplicate records overwriting (DNS)
 - [x] Add OTT auth
 - [x] Add a way to communicate this with the CLI
+- [ ] Implement captcha with cloudflare turnstile.
 
 These are now possible due to DB:
 

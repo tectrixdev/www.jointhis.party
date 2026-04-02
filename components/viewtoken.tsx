@@ -2,7 +2,7 @@
 import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { useState, useTransition } from "react";
 import { Callout } from "fumadocs-ui/components/callout";
-import { useRouter } from "fumadocs-core/framework";
+import { useRouter } from "next/navigation";
 import { Zoomies } from "ldrs/react";
 import "ldrs/react/Zoomies.css";
 

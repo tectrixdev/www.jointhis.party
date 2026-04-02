@@ -1,7 +1,7 @@
 "use client";
 import { authClient } from "@/auth-client";
 import { LogIn } from "lucide-react";
-import { usePathname } from "fumadocs-core/framework";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export function SignIn() {
