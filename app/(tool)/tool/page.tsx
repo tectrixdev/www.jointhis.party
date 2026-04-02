@@ -4,7 +4,7 @@ import { Rubik } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { MainHome } from "@/components/main";
 import AuthbuttonExtended from "@/components/authbuttonextended";
-import Tool, { Form, Manager } from "@/components/ToolInput";
+import { Form, Manager } from "@/components/ToolInput";
 import { baseUrl } from "@/lib/metadata";
 
 const Glitch = Rubik_Glitch({
