@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { createPool } from "mysql2/promise";
 import { oneTimeToken } from "better-auth/plugins/one-time-token";
+import { captcha } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: createPool({
@@ -39,6 +40,10 @@ export const auth = betterAuth({
         session,
       };
     }),
+    // captcha({
+    //   provider: "cloudflare-turnstile",
+    //   secretKey: process.env.TURNSTILE_SECRET_KEY!,
+    // }),
   ],
 });
 export type customSession = {

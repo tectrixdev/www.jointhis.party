@@ -7,7 +7,6 @@ import "ldrs/react/Zoomies.css";
 import { Manager } from "@/components/ToolInput";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
-import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import TokenViewer from "@/components/viewtoken";
 
 const Glitch = Rubik_Glitch({

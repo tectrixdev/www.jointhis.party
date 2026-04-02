@@ -36,6 +36,7 @@
 - [ ] fix duplicate records overwriting (DNS)
 - [x] Add OTT auth
 - [x] Add a way to communicate this with the CLI
+- [ ] Implement captcha with cloudflare turnstile.
 
 These are now possible due to DB:
 
