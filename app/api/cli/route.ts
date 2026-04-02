@@ -55,15 +55,20 @@ export async function POST(request: Request) {
   const body = await request.json();
   const token = body.OTT;
   try {
+    // GET authorization
     const data = await auth.api.verifyOneTimeToken({
       body: {
         token: token, // required
       },
     });
     const userID = UserIdFromAvatar(data?.user?.image);
+    // END
+    // Validate DISCORD ID
     if (ValidateDiscordID.test(userID || "")) {
+      // Get UDP, TCP, authentication token
       return await GetAuthentication(userID || "");
     } else {
+      // FAIL authorization
       return Response.json(
         {
           error: "Failed to verify Discord ID",

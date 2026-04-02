@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
+import { Result } from "cloudflare/resources/shared.mjs";
+import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
 
 const blacklist = [
   "*",
@@ -43,7 +45,7 @@ const client = new Cloudflare({
 });
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
 
-function UserIsAuthenticated(session: customSession | undefined) {
+function IsUserAuthenticated(session: customSession | undefined) {
   // auth validation
   if (!session) {
     return false;
@@ -65,7 +67,7 @@ export async function GET(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session?.user)) {
+    switch (IsUserAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -105,7 +107,7 @@ export async function POST(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session?.user)) {
+    switch (IsUserAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
@@ -128,87 +130,108 @@ export async function POST(request: Request) {
             exact: session?.user?.id,
           },
         });
-        const UserRecords = userRecords.result;
-        if (UserRecords.length >= 5) {
-          return NextResponse.json(
-            {
-              error:
-                "Maximum amount of records reached. If you need more, please create a support ticket.",
-            },
-            { status: 403 },
-          );
-        }
-        if (blacklist.includes(name)) {
-          return NextResponse.json(
-            {
-              error:
-                "Subdomain name not allowed! If this is a mistake, please create a support ticket.",
-            },
-            { status: 403 },
-          );
-        }
-        // creation.
-        const payload: any = {
+        const duplicates = await client.dns.records.list({
           zone_id: ZONE_ID,
-          name: `${name}`,
-          type: `${type}`,
-          ttl: 3600,
-          content: `${value}`,
-          comment: session?.user?.id ?? undefined,
-        };
-
-        if (type === "SRV") {
-          payload.data = {
+          name: { exact: `${name}.jointhis.party` },
+        });
+        function isOwned(result: RecordResponse) {
+          return result.comment !== `${session?.user?.id}`;
+        }
+        const unAuthorizedRecords = duplicates.result.filter(isOwned);
+        if (
+          !Array.isArray(unAuthorizedRecords) ||
+          !unAuthorizedRecords.length
+        ) {
+          const UserRecords = userRecords.result;
+          if (UserRecords.length >= 5) {
+            return NextResponse.json(
+              {
+                error:
+                  "Maximum amount of records reached. If you need more, please create a support ticket.",
+              },
+              { status: 403 },
+            );
+          }
+          if (blacklist.includes(name)) {
+            return NextResponse.json(
+              {
+                error:
+                  "Subdomain name not allowed! If this is a mistake, please create a support ticket.",
+              },
+              { status: 403 },
+            );
+          }
+          // creation.
+          const payload: any = {
+            zone_id: ZONE_ID,
             name: `${name}`,
-            priority: 0,
-            weight: 0,
-            port: Number(port || 0),
-            target: `${value}`,
+            type: `${type}`,
+            ttl: 3600,
+            content: `${value}`,
+            comment: session?.user?.id ?? undefined,
           };
-          delete payload.content;
-        }
 
-        const recordResponse = await client.dns.records.create(payload);
-        // Logging to the discord server for moderation purposes
-        if (process.env.LOGS_WEBHOOK) {
-          await fetch(process.env.LOGS_WEBHOOK, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+          if (type === "SRV") {
+            payload.data = {
+              name: `${name}`,
+              priority: 0,
+              weight: 0,
+              port: Number(port || 0),
+              target: `${value}`,
+            };
+            delete payload.content;
+          }
+
+          const recordResponse = await client.dns.records.create(payload);
+          // Logging to the discord server for moderation purposes
+          if (process.env.LOGS_WEBHOOK) {
+            await fetch(process.env.LOGS_WEBHOOK, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                content: "<@&1448781724803661927>",
+                tts: false,
+                embeds: [
+                  {
+                    id: 652627557,
+                    title: "New subdomain created!",
+                    description: `NAME: **${name}.jointhis.party**\nURL: https://${name}.jointhis.party\nOWNER: <@${session?.user?.id}>`,
+                    color: 2326507,
+                    fields: [
+                      {
+                        id: 986834541,
+                        name: "IP",
+                        value: `${value}`,
+                      },
+                      {
+                        id: 356214976,
+                        name: "Record Type",
+                        value: `${type}`,
+                      },
+                    ],
+                  },
+                ],
+                components: [],
+                actions: {},
+                flags: 0,
+              }),
+            });
+          }
+          return NextResponse.json(
+            { success: true, record: recordResponse },
+            { status: 200 },
+          );
+        } else {
+          return NextResponse.json(
+            {
+              error:
+                "Identical record already exists and is in use by another user.",
             },
-            body: JSON.stringify({
-              content: "<@&1448781724803661927>",
-              tts: false,
-              embeds: [
-                {
-                  id: 652627557,
-                  title: "New subdomain created!",
-                  description: `NAME: **${name}**\nURL: https://${name}.jointhis.party\nOWNER: <@${session?.user?.id}>`,
-                  color: 2326507,
-                  fields: [
-                    {
-                      id: 986834541,
-                      name: "IP",
-                      value: `${value}`,
-                    },
-                    {
-                      id: 356214976,
-                      name: "Record Type",
-                      value: `${type}`,
-                    },
-                  ],
-                },
-              ],
-              components: [],
-              actions: {},
-              flags: 0,
-            }),
-          });
+            { status: 403 },
+          );
         }
-        return NextResponse.json(
-          { success: true, record: recordResponse },
-          { status: 200 },
-        );
       }
     }
   } catch (err: any) {
@@ -221,113 +244,113 @@ export async function POST(request: Request) {
 }
 
 // edit
-export async function PUT(request: Request) {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-    switch (UserIsAuthenticated(session?.user)) {
-      case false: {
-        return NextResponse.json({ error: "Please log in." }, { status: 401 });
-      }
-      case "notValidated": {
-        return NextResponse.json(
-          {
-            error:
-              "Discord user ID or e-mail could not be validated, please make a support ticket.",
-          },
-          { status: 500 },
-        );
-      }
-      case true: {
-        const body = await request.json();
-        const { id, value, port } = body;
-        if (!id) {
-          return NextResponse.json(
-            { error: "Missing record id" },
-            { status: 400 },
-          );
-        }
-        const record = await client.dns.records.get(`${id}`, {
-          zone_id: ZONE_ID,
-        });
-        const name = record.name;
-        const type = record.type;
-        const payload: any = {
-          name: name ? `${name}` : undefined,
-          type: type ? `${type}` : undefined,
-          ttl: 3600,
-          comment: session?.user?.id ?? undefined,
-        };
+// export async function PUT(request: Request) {
+//   try {
+//     const session = await auth.api.getSession({
+//       headers: await headers(),
+//     });
+//     switch (IsUserAuthenticated(session?.user)) {
+//       case false: {
+//         return NextResponse.json({ error: "Please log in." }, { status: 401 });
+//       }
+//       case "notValidated": {
+//         return NextResponse.json(
+//           {
+//             error:
+//               "Discord user ID or e-mail could not be validated, please make a support ticket.",
+//           },
+//           { status: 500 },
+//         );
+//       }
+//       case true: {
+//         const body = await request.json();
+//         const { id, value, port } = body;
+//         if (!id) {
+//           return NextResponse.json(
+//             { error: "Missing record id" },
+//             { status: 400 },
+//           );
+//         }
+//         const record = await client.dns.records.get(`${id}`, {
+//           zone_id: ZONE_ID,
+//         });
+//         const name = record.name;
+//         const type = record.type;
+//         const payload: any = {
+//           name: name ? `${name}` : undefined,
+//           type: type ? `${type}` : undefined,
+//           ttl: 3600,
+//           comment: session?.user?.id ?? undefined,
+//         };
 
-        if (type === "SRV") {
-          payload.data = {
-            name: `_minecraft._tcp.${name}`,
-            priority: 0,
-            weight: 0,
-            port: Number(port || 0),
-            target: `${value}`,
-          };
-        } else if (value !== undefined) {
-          payload.content = `${value}`;
-        }
+//         if (type === "SRV") {
+//           payload.data = {
+//             name: `_minecraft._tcp.${name}`,
+//             priority: 0,
+//             weight: 0,
+//             port: Number(port || 0),
+//             target: `${value}`,
+//           };
+//         } else if (value !== undefined) {
+//           payload.content = `${value}`;
+//         }
 
-        Object.keys(payload).forEach(
-          (k) => payload[k] === undefined && delete payload[k],
-        );
+//         Object.keys(payload).forEach(
+//           (k) => payload[k] === undefined && delete payload[k],
+//         );
 
-        payload.zone_id = ZONE_ID;
+//         payload.zone_id = ZONE_ID;
 
-        const recordResponse = await client.dns.records.update(id, payload);
-        if (process.env.LOGS_WEBHOOK) {
-          await fetch(process.env.LOGS_WEBHOOK, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              content: "<@&1448781724803661927>",
-              tts: false,
-              embeds: [
-                {
-                  id: 652627557,
-                  title: "New subdomain edited!",
-                  description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
-                  color: 2326507,
-                  fields: [
-                    {
-                      id: 986834541,
-                      name: "IP",
-                      value: `${value}`,
-                    },
-                    {
-                      id: 356214976,
-                      name: "Record Type",
-                      value: `${type}`,
-                    },
-                  ],
-                },
-              ],
-              components: [],
-              actions: {},
-              flags: 0,
-            }),
-          });
-        }
-        return NextResponse.json(
-          { success: true, record: recordResponse },
-          { status: 200 },
-        );
-      }
-    }
-  } catch (err: any) {
-    console.error(err);
-    return NextResponse.json(
-      { error: err?.message || "Unknown error" },
-      { status: 500 },
-    );
-  }
-}
+//         const recordResponse = await client.dns.records.update(id, payload);
+//         if (process.env.LOGS_WEBHOOK) {
+//           await fetch(process.env.LOGS_WEBHOOK, {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//               content: "<@&1448781724803661927>",
+//               tts: false,
+//               embeds: [
+//                 {
+//                   id: 652627557,
+//                   title: "New subdomain edited!",
+//                   description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
+//                   color: 2326507,
+//                   fields: [
+//                     {
+//                       id: 986834541,
+//                       name: "IP",
+//                       value: `${value}`,
+//                     },
+//                     {
+//                       id: 356214976,
+//                       name: "Record Type",
+//                       value: `${type}`,
+//                     },
+//                   ],
+//                 },
+//               ],
+//               components: [],
+//               actions: {},
+//               flags: 0,
+//             }),
+//           });
+//         }
+//         return NextResponse.json(
+//           { success: true, record: recordResponse },
+//           { status: 200 },
+//         );
+//       }
+//     }
+//   } catch (err: any) {
+//     console.error(err);
+//     return NextResponse.json(
+//       { error: err?.message || "Unknown error" },
+//       { status: 500 },
+//     );
+//   }
+// }
 
 // Delete subdomain
 export async function DELETE(request: Request) {
@@ -335,7 +358,7 @@ export async function DELETE(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    switch (UserIsAuthenticated(session?.user)) {
+    switch (IsUserAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
