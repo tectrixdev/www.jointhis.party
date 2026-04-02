@@ -1,7 +1,9 @@
 "use server";
 import { auth, ValidateDiscordID } from "@/auth";
 import { UserIdFromAvatar } from "@/auth";
+import { baseUrl } from "@/lib/metadata";
 import mysql, { RowDataPacket } from "mysql2/promise";
+import { headers } from "next/headers";
 
 async function GetAuthentication(userID: string) {
   let connectionParams = {
@@ -61,6 +63,11 @@ export async function POST(request: Request) {
         token: token, // required
       },
     });
+    // const result = await fetch(`${baseUrl}/api/records/`, {
+    //   headers: {
+    //     Authorization: `Bearer ${data.session.token}`,
+    //   },
+    // });
     const userID = UserIdFromAvatar(data?.user?.image);
     // END
     // Validate DISCORD ID
