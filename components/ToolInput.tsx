@@ -8,7 +8,6 @@ import { Grid } from "ldrs/react";
 import "ldrs/react/Grid.css";
 import { Zoomies } from "ldrs/react";
 import "ldrs/react/Zoomies.css";
-import { useRouter } from "next/navigation";
 // manager
 type RecordItem = {
   id: string;

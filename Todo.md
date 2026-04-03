@@ -29,7 +29,8 @@
 - [ ] second code cleanup (if needed)
 - [x] Add logging name consistency.
 - [x] ~~Router refresh tool page when record is created.~~ **Not possible**
-- [ ] More rate limiting + better error handling.
+- [ ] More rate limiting + **better error handling.**
+- [ ] Heavily optimize APIs.
 
 ## Better auth migration
 

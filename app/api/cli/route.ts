@@ -21,12 +21,7 @@ async function GetAuthentication(userID: string) {
     );
   } catch (err: any) {
     console.error(err);
-    return Response.json(
-      {
-        error: "Unable to assign tunnel to user.",
-      },
-      { status: 500 },
-    );
+    return { error: "Database error." };
   }
   // Get Token, TCP, UDP
   try {
@@ -42,20 +37,28 @@ async function GetAuthentication(userID: string) {
     const tcp = results[0].TCP;
     const udp = results[0].UDP;
 
-    return Response.json({ TOKEN: authKey, TCP: tcp, UDP: udp });
+    return {
+      TOKEN: authKey,
+      TCP: tcp,
+      UDP: udp,
+    };
   } catch (err: any) {
-    return Response.json(
-      {
-        error: "Unable to fetch tunnel info.",
-      },
-      { status: 500 },
-    );
+    console.error(err);
+    return { error: "Database error." };
   }
 }
 
+interface body {
+  OTT: string;
+  SUBDOMAIN?: string;
+  TYPE?: "MC" | "CUSTOM" | "WEB";
+}
+
 export async function POST(request: Request) {
-  const body = await request.json();
+  const body: body = await request.json();
   const token = body.OTT;
+  const sub = body.SUBDOMAIN;
+  const type = body.TYPE;
   try {
     // GET authorization
     const data = await auth.api.verifyOneTimeToken({
@@ -63,17 +66,99 @@ export async function POST(request: Request) {
         token: token, // required
       },
     });
-    // const result = await fetch(`${baseUrl}/api/records/`, {
-    //   headers: {
-    //     Authorization: `Bearer ${data.session.token}`,
-    //   },
-    // });
     const userID = UserIdFromAvatar(data?.user?.image);
     // END
     // Validate DISCORD ID
     if (ValidateDiscordID.test(userID || "")) {
+      // Make DNS records
+      var DNS;
+      const Authentication = await GetAuthentication(userID || "");
       // Get UDP, TCP, authentication token
-      return await GetAuthentication(userID || "");
+      if (!Authentication.error) {
+        const { TOKEN, TCP, UDP } = Authentication;
+        if (sub && type) {
+          if (type == "CUSTOM" || type == "WEB") {
+            const payload = {
+              name: sub,
+              type: "A",
+              value: "82.38.134.1",
+            };
+            const result = await fetch(`${baseUrl}/api/records/`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${data.session.token}`,
+                "Content-Type": `application/json`,
+              },
+              body: JSON.stringify(payload),
+            });
+            const body = await result.json();
+            if (
+              result.ok ||
+              body?.error === "An identical record already exists."
+            ) {
+              DNS = "CREATED";
+            } else {
+              DNS = body?.error;
+            }
+          } else if (type == "MC") {
+            const payload = {
+              name: sub,
+              type: "A",
+              value: "82.38.134.1",
+            };
+            const result = await fetch(`${baseUrl}/api/records/`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${data.session.token}`,
+                "Content-Type": `application/json`,
+              },
+              body: JSON.stringify(payload),
+            });
+            const body = await result.json();
+            if (
+              result.ok ||
+              body?.error === "An identical record already exists."
+            ) {
+              // Create SRV record.
+              const payload = {
+                name: `_minecraft._tcp.${sub}`,
+                type: "SRV",
+                value: `${sub}.jointhis.party`,
+                port: TCP,
+              };
+              const result = await fetch(`${baseUrl}/api/records/`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${data.session.token}`,
+                  "Content-Type": `application/json`,
+                },
+                body: JSON.stringify(payload),
+              });
+              const body = await result.json();
+              if (
+                result.ok ||
+                body?.error === "An identical record already exists."
+              ) {
+                DNS = "CREATED";
+              } else {
+                DNS = body?.error;
+              }
+            } else {
+              DNS = body?.error;
+            }
+          } else {
+            DNS = "Unrecognized type.";
+          }
+        }
+        return Response.json({ TOKEN: TOKEN, TCP: TCP, UDP: UDP, DNS: DNS });
+      } else {
+        return Response.json(
+          {
+            error: Authentication.error,
+          },
+          { status: 500 },
+        );
+      }
     } else {
       // FAIL authorization
       return Response.json(
@@ -87,6 +172,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error: err?.body?.message,
+        DNSerror: DNS,
       },
       { status: err?.statusCode },
     );
