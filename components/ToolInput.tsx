@@ -183,7 +183,7 @@ export function Manager() {
       }
     } catch (err: any) {
       console.error(err);
-      toast.error("Unexpected error, try again in one minute.");
+      toast.error(err.message || "Unexpected error, try again in one minute.");
     } finally {
       setLoadingRecords(false);
     }
