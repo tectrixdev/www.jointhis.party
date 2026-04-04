@@ -29,7 +29,10 @@
 - [ ] second code cleanup (if needed)
 - [x] Add logging name consistency.
 - [x] ~~Router refresh tool page when record is created.~~ **Not possible**
-- [ ] More rate limiting + better error handling.
+- [ ] ~~More rate limiting~~ + **better error handling.**
+- [x] Optimize CLI API.
+- [x] Optimize records API.
+- [ ] Fix cloudflare bot protection blocking vercel.
 
 ## Better auth migration
 

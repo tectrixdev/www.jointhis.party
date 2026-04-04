@@ -1,8 +1,10 @@
 "use server";
 import { auth, ValidateDiscordID } from "@/auth";
 import { UserIdFromAvatar } from "@/auth";
+import { baseUrl } from "@/lib/metadata";
 import mysql, { RowDataPacket } from "mysql2/promise";
 
+// Get session from proxy server.
 async function GetAuthentication(userID: string) {
   let connectionParams = {
     host: process.env.PROXYHOST,
@@ -12,21 +14,16 @@ async function GetAuthentication(userID: string) {
     database: "jointhisproxy",
   };
   const connection = await mysql.createConnection(connectionParams);
-  // Assign OWNER
+  // Assign OWNER.
   try {
     await connection.query(
       `UPDATE AuthenticationTokens SET OWNER = ${userID} WHERE (OWNER = ${userID} OR ISNULL(OWNER)) ORDER BY OWNER DESC LIMIT 1`,
     );
   } catch (err: any) {
     console.error(err);
-    return Response.json(
-      {
-        error: "Unable to assign tunnel to user.",
-      },
-      { status: 500 },
-    );
+    return { error: "Database error." };
   }
-  // Get Token, TCP, UDP
+  // Get Token, TCP, UDP.
   try {
     type Row = {
       Token: string;
@@ -40,35 +37,111 @@ async function GetAuthentication(userID: string) {
     const tcp = results[0].TCP;
     const udp = results[0].UDP;
 
-    return Response.json({ TOKEN: authKey, TCP: tcp, UDP: udp });
+    return {
+      TOKEN: authKey,
+      TCP: tcp,
+      UDP: udp,
+    };
   } catch (err: any) {
-    return Response.json(
-      {
-        error: "Unable to fetch tunnel info.",
-      },
-      { status: 500 },
-    );
+    console.error(err);
+    return { error: "Database error." };
   }
 }
 
+// Expected API body.
+interface body {
+  OTT: string;
+  SUBDOMAIN?: string;
+  TYPE?: "MC" | "CUSTOM" | "WEB";
+}
+
 export async function POST(request: Request) {
-  const body = await request.json();
+  const body: body = await request.json();
   const token = body.OTT;
+  const sub = body.SUBDOMAIN;
+  const type = body.TYPE;
   try {
-    // GET authorization
+    // OTT --> SESSION.
     const data = await auth.api.verifyOneTimeToken({
       body: {
-        token: token, // required
+        token: token,
       },
     });
+    // Validate DISCORD ID.
     const userID = UserIdFromAvatar(data?.user?.image);
-    // END
-    // Validate DISCORD ID
     if (ValidateDiscordID.test(userID || "")) {
-      // Get UDP, TCP, authentication token
-      return await GetAuthentication(userID || "");
+      var DNS;
+      const Authentication = await GetAuthentication(userID || "");
+      if (!Authentication.error) {
+        const { TOKEN, TCP, UDP } = Authentication;
+        // Make DNS records.
+        if (sub && type) {
+          if (type == "CUSTOM" || type == "WEB") {
+            const payload = {
+              name: sub,
+              type: "CNAME",
+              value: "proxy.jointhis.party",
+            };
+            const result = await fetch(`${baseUrl.origin}/api/records/`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${data.session.token}`,
+                "Content-Type": `application/json`,
+              },
+              body: JSON.stringify(payload),
+            });
+            const body = await result.json();
+            if (
+              result.ok ||
+              body?.error === "An identical record already exists."
+            ) {
+              DNS = "CREATED";
+            } else {
+              DNS = body?.error;
+            }
+          } else if (type == "MC") {
+            // Create SRV record.
+            const payload = {
+              name: `_minecraft._tcp.${sub}`,
+              type: "SRV",
+              value: `proxy.jointhis.party`,
+              port: TCP,
+            };
+            const result = await fetch(`${baseUrl.origin}/api/records/`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${data.session.token}`,
+                "Content-Type": `application/json`,
+              },
+              body: JSON.stringify(payload),
+            });
+            const body = await result.json();
+            if (
+              result.ok ||
+              body?.error === "An identical record already exists."
+            ) {
+              DNS = "CREATED";
+            } else {
+              DNS = body?.error;
+            }
+          } else {
+            DNS = "Unrecognized type.";
+          }
+        } else {
+          DNS = "No record requested.";
+        }
+        return Response.json({ TOKEN: TOKEN, TCP: TCP, UDP: UDP, DNS: DNS });
+      } else {
+        // Failed to get session from proxy server.
+        return Response.json(
+          {
+            error: Authentication.error,
+          },
+          { status: 500 },
+        );
+      }
     } else {
-      // FAIL authorization
+      // FAIL authorization (for preventing injection and invalid authentication sessions.)
       return Response.json(
         {
           error: "Failed to verify Discord ID",
@@ -77,9 +150,12 @@ export async function POST(request: Request) {
       );
     }
   } catch (err: any) {
+    // Any unexpected error.
+    console.error(err);
     return Response.json(
       {
         error: err?.body?.message,
+        DNSerror: DNS,
       },
       { status: err?.statusCode },
     );
