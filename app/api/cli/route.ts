@@ -3,7 +3,6 @@ import { auth, ValidateDiscordID } from "@/auth";
 import { UserIdFromAvatar } from "@/auth";
 import { baseUrl } from "@/lib/metadata";
 import mysql, { RowDataPacket } from "mysql2/promise";
-import { headers } from "next/headers";
 
 async function GetAuthentication(userID: string) {
   let connectionParams = {
