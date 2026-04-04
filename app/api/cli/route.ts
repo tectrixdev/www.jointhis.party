@@ -116,6 +116,7 @@ export async function POST(request: Request) {
               body: JSON.stringify(payload),
             });
             console.log(await result);
+            console.log(await result.body);
             const body = await result.json();
             if (
               result.ok ||
