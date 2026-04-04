@@ -8,6 +8,7 @@ import { Manager } from "@/components/ToolInput";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
 import TokenViewer from "@/components/viewtoken";
+import { Toaster } from "react-hot-toast";
 
 const Glitch = Rubik_Glitch({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default async function HomePage() {
     });
     return (
       <MainHome ClassName="p-10">
+        <Toaster />
         <h1
           className={`${Glitch.className} pb-2 text-center text-5xl text-white drop-shadow-xl md:text-8xl`}
         >
