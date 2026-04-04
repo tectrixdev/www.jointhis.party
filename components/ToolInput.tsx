@@ -208,7 +208,7 @@ export function Manager() {
       fetchRecords();
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.message || "Delete failed");
+      toast.error(err.message || "Delete failed");
     } finally {
       toast.dismiss(t);
     }
