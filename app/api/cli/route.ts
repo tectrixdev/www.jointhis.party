@@ -82,7 +82,7 @@ export async function POST(request: Request) {
               type: "CNAME",
               value: "proxy.jointhis.party",
             };
-            const result = await fetch(`${baseUrl}/api/records/`, {
+            const result = await fetch(`${baseUrl.origin}/api/records/`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${data.session.token}`,
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
               value: `proxy.jointhis.party`,
               port: TCP,
             };
-            const result = await fetch(`${baseUrl}/api/records/`, {
+            const result = await fetch(`${baseUrl.origin}/api/records/`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${data.session.token}`,
@@ -151,6 +151,7 @@ export async function POST(request: Request) {
     }
   } catch (err: any) {
     // Any unexpected error.
+    console.error(err);
     return Response.json(
       {
         error: err?.body?.message,
