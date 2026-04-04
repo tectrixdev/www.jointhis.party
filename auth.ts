@@ -47,6 +47,13 @@ export const auth = betterAuth({
     //   secretKey: process.env.TURNSTILE_SECRET_KEY!,
     // }),
   ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+      strategy: "jwe",
+    },
+  },
 });
 export type customSession = {
   email: string;
