@@ -50,18 +50,16 @@ function IsUserAuthenticated(session: customSession | undefined) {
     return false;
   } else if (!session.verified) {
     return "notValidated";
-  } else {
+  } else if (!ValidateDiscordID.test(session.id || "")) {
     // user ID validation, to avoid problems
-    if (!ValidateDiscordID.test(session.id || "")) {
-      return "notValidated";
-    } else {
-      return true;
-    }
+    return "notValidated";
+  } else {
+    return true;
   }
 }
 
 // List user owned subdomains
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -129,20 +127,20 @@ export async function POST(request: Request) {
             exact: session?.user?.id,
           },
         });
+        const UserRecords = userRecords.result;
         const duplicates = await client.dns.records.list({
           zone_id: ZONE_ID,
           name: { exact: `${name}.jointhis.party` },
         });
-        function isOwned(result: RecordResponse) {
+        function isStolen(result: RecordResponse) {
           return result.comment !== `${session?.user?.id}`;
         }
-        const unAuthorizedRecords = duplicates.result.filter(isOwned);
+        const unAuthorizedRecords = duplicates.result.filter(isStolen);
         if (
           !Array.isArray(unAuthorizedRecords) ||
           !unAuthorizedRecords.length
         ) {
-          const UserRecords = userRecords.result;
-          if (UserRecords.length >= 5) {
+          if (UserRecords.length > 5) {
             return NextResponse.json(
               {
                 error:
@@ -160,7 +158,7 @@ export async function POST(request: Request) {
               { status: 403 },
             );
           }
-          // creation.
+          // Creation.
           const payload: any = {
             zone_id: ZONE_ID,
             name: `${name}`,
@@ -169,7 +167,7 @@ export async function POST(request: Request) {
             content: `${value}`,
             comment: session?.user?.id ?? undefined,
           };
-
+          // comment == undefined should NOT happen!
           if (type === "SRV") {
             payload.data = {
               name: `${name}`,
@@ -180,9 +178,9 @@ export async function POST(request: Request) {
             };
             delete payload.content;
           }
-
+          // Actually create the record here.
           const recordResponse = await client.dns.records.create(payload);
-          // Logging to the discord server for moderation purposes
+          // Logging to the discord server for moderation purposes.
           if (process.env.LOGS_WEBHOOK) {
             await fetch(process.env.LOGS_WEBHOOK, {
               method: "POST",
@@ -379,16 +377,18 @@ export async function DELETE(request: Request) {
             { status: 400 },
           );
         }
+        // For logging info. (We don't fetch this from the client, as we don't trust them.)
         const record = await client.dns.records.get(`${id}`, {
           zone_id: ZONE_ID,
         });
         const name = record.name;
         const value = record.content;
         const type = record.type;
+        // Actually deleting it.
         const deleteRecord = await client.dns.records.delete(`${id}`, {
           zone_id: ZONE_ID,
         });
-        // Logging to the discord server for moderation purposes
+        // Logging to the discord server for moderation purposes.
         if (process.env.LOGS_WEBHOOK) {
           await fetch(process.env.LOGS_WEBHOOK, {
             method: "POST",

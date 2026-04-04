@@ -31,7 +31,7 @@
 - [x] ~~Router refresh tool page when record is created.~~ **Not possible**
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [x] Optimize CLI API.
-- [ ] Optimize records API.
+- [x] Optimize records API.
 
 ## Better auth migration
 
