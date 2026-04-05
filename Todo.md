@@ -32,7 +32,8 @@
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [x] Optimize CLI API.
 - [x] Optimize records API.
-- [ ] Fix cloudflare bot protection blocking vercel.
+- [x] Fix cloudflare bot protection blocking vercel.
+- [x] Optimize CLI API to not fetch the dns api and just execute it instead.
 
 ## Better auth migration
 

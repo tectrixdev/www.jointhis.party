@@ -3,6 +3,7 @@ import { auth, ValidateDiscordID } from "@/auth";
 import { UserIdFromAvatar } from "@/auth";
 import { baseUrl } from "@/lib/metadata";
 import mysql, { RowDataPacket } from "mysql2/promise";
+import { createRecord } from "../records/route";
 
 // Get session from proxy server.
 async function GetAuthentication(userID: string) {
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
               type: "CNAME",
               value: "proxy.jointhis.party",
             };
-            const result = await fetch(`${baseUrl.origin}/api/records/`, {
+            const request = new Request(`${baseUrl.origin}/api/records/`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${data.session.token}`,
@@ -90,6 +91,7 @@ export async function POST(request: Request) {
               },
               body: JSON.stringify(payload),
             });
+            const result = await createRecord(request);
             const body = await result.json();
             if (
               result.ok ||
@@ -107,7 +109,7 @@ export async function POST(request: Request) {
               value: `proxy.jointhis.party`,
               port: TCP,
             };
-            const result = await fetch(`${baseUrl.origin}/api/records/`, {
+            const request = new Request(`${baseUrl.origin}/api/records/`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${data.session.token}`,
@@ -115,6 +117,7 @@ export async function POST(request: Request) {
               },
               body: JSON.stringify(payload),
             });
+            const result = await createRecord(request);
             const body = await result.json();
             if (
               result.ok ||
