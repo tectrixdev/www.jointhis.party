@@ -6,6 +6,25 @@ import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
 import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
 
+const client = new Cloudflare({
+  apiToken: process.env["CLOUDFLARE_API_TOKEN"],
+});
+const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
+
+function IsUserAuthenticated(session: customSession | undefined) {
+  // auth validation
+  if (!session) {
+    return false;
+  } else if (!session.verified) {
+    return "notValidated";
+  } else if (!ValidateDiscordID.test(session.id || "")) {
+    // user ID validation, to avoid problems
+    return "notValidated";
+  } else {
+    return true;
+  }
+}
+
 const blacklist = [
   "*",
   "@",
@@ -39,30 +58,10 @@ const blacklist = [
   "vps4",
 ];
 
-const client = new Cloudflare({
-  apiToken: process.env["CLOUDFLARE_API_TOKEN"],
-});
-const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
-
-function IsUserAuthenticated(session: customSession | undefined) {
-  // auth validation
-  if (!session) {
-    return false;
-  } else if (!session.verified) {
-    return "notValidated";
-  } else if (!ValidateDiscordID.test(session.id || "")) {
-    // user ID validation, to avoid problems
-    return "notValidated";
-  } else {
-    return true;
-  }
-}
-
-// List user owned subdomains
-export async function GET() {
+export async function getRecords(request: Request) {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: request.headers,
     });
     switch (IsUserAuthenticated(session?.user)) {
       case false: {
@@ -98,11 +97,10 @@ export async function GET() {
   }
 }
 
-// create subdomain
-export async function POST(request: Request) {
+export async function createRecord(request: Request) {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: request.headers,
     });
     switch (IsUserAuthenticated(session?.user)) {
       case false: {
@@ -240,120 +238,10 @@ export async function POST(request: Request) {
   }
 }
 
-// edit
-// export async function PUT(request: Request) {
-//   try {
-//     const session = await auth.api.getSession({
-//       headers: await headers(),
-//     });
-//     switch (IsUserAuthenticated(session?.user)) {
-//       case false: {
-//         return NextResponse.json({ error: "Please log in." }, { status: 401 });
-//       }
-//       case "notValidated": {
-//         return NextResponse.json(
-//           {
-//             error:
-//               "Discord user ID or e-mail could not be validated, please make a support ticket.",
-//           },
-//           { status: 500 },
-//         );
-//       }
-//       case true: {
-//         const body = await request.json();
-//         const { id, value, port } = body;
-//         if (!id) {
-//           return NextResponse.json(
-//             { error: "Missing record id" },
-//             { status: 400 },
-//           );
-//         }
-//         const record = await client.dns.records.get(`${id}`, {
-//           zone_id: ZONE_ID,
-//         });
-//         const name = record.name;
-//         const type = record.type;
-//         const payload: any = {
-//           name: name ? `${name}` : undefined,
-//           type: type ? `${type}` : undefined,
-//           ttl: 3600,
-//           comment: session?.user?.id ?? undefined,
-//         };
-
-//         if (type === "SRV") {
-//           payload.data = {
-//             name: `_minecraft._tcp.${name}`,
-//             priority: 0,
-//             weight: 0,
-//             port: Number(port || 0),
-//             target: `${value}`,
-//           };
-//         } else if (value !== undefined) {
-//           payload.content = `${value}`;
-//         }
-
-//         Object.keys(payload).forEach(
-//           (k) => payload[k] === undefined && delete payload[k],
-//         );
-
-//         payload.zone_id = ZONE_ID;
-
-//         const recordResponse = await client.dns.records.update(id, payload);
-//         if (process.env.LOGS_WEBHOOK) {
-//           await fetch(process.env.LOGS_WEBHOOK, {
-//             method: "POST",
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({
-//               content: "<@&1448781724803661927>",
-//               tts: false,
-//               embeds: [
-//                 {
-//                   id: 652627557,
-//                   title: "New subdomain edited!",
-//                   description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
-//                   color: 2326507,
-//                   fields: [
-//                     {
-//                       id: 986834541,
-//                       name: "IP",
-//                       value: `${value}`,
-//                     },
-//                     {
-//                       id: 356214976,
-//                       name: "Record Type",
-//                       value: `${type}`,
-//                     },
-//                   ],
-//                 },
-//               ],
-//               components: [],
-//               actions: {},
-//               flags: 0,
-//             }),
-//           });
-//         }
-//         return NextResponse.json(
-//           { success: true, record: recordResponse },
-//           { status: 200 },
-//         );
-//       }
-//     }
-//   } catch (err: any) {
-//     console.error(err);
-//     return NextResponse.json(
-//       { error: err?.message || "Unknown error" },
-//       { status: 500 },
-//     );
-//   }
-// }
-
-// Delete subdomain
-export async function DELETE(request: Request) {
+export async function deleteRecord(request: Request) {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: request.headers,
     });
     switch (IsUserAuthenticated(session?.user)) {
       case false: {
@@ -437,4 +325,19 @@ export async function DELETE(request: Request) {
       { status: 500 },
     );
   }
+}
+
+// List user owned subdomains
+export async function GET(request: Request) {
+  return getRecords(request);
+}
+
+// create subdomain
+export async function POST(request: Request) {
+  return createRecord(request);
+}
+
+// Delete subdomain
+export async function DELETE(request: Request) {
+  return deleteRecord(request);
 }
