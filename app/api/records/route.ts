@@ -2,7 +2,6 @@
 import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
-import { headers } from "next/headers";
 import { ValidateDiscordID } from "@/auth";
 import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
 
