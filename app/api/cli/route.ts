@@ -97,7 +97,7 @@ export async function POST(request: Request) {
               result.ok ||
               body?.error === "An identical record already exists."
             ) {
-              DNS = "CREATED";
+              DNS = `${sub}.jointhis.party`;
             } else {
               DNS = body?.error;
             }
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
               result.ok ||
               body?.error === "An identical record already exists."
             ) {
-              DNS = "CREATED";
+              DNS = `${sub}.jointhis.party`;
             } else {
               DNS = body?.error;
             }
