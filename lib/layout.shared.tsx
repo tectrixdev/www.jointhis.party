@@ -6,6 +6,7 @@ import { Home } from "lucide-react";
 import Image from "next/image";
 import Authbutton from "@/components/authbutton";
 import { LayoutDashboard } from "lucide-react";
+import { baseUrl } from "./metadata";
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -53,7 +54,8 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: "Support",
-        url: "/discord",
+        url: `${baseUrl}/discord`,
+        // Marking as external should trigger cloudflare redirect.
         icon: <Speech />,
       },
       {
