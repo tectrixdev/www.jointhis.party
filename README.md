@@ -1,7 +1,7 @@
 # [www.jointhis.party](https://www.jointhis.party/)
-
+1 DOLLLAAAAA
 > [!NOTE]  
-> 2.0 is officially out!, you can view it at: [www.jointhis.party](https://www.jointhis.party/)
+> 2.0 is officially out!, you can view it at: [www.jointhis.party](https://www.jointhis.party/) 
 
 Jointhis.party is a project aimed to continue a previous project but larger and
 with a slightly different goal. The goal of this previous project was to provide
