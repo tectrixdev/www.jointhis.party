@@ -18,13 +18,16 @@ export const auth = betterAuth({
       clientId: process.env.AUTH_DISCORD_ID as string,
       clientSecret: process.env.AUTH_DISCORD_SECRET as string,
       mapProfileToUser: (profile) => {
-        const discordId = typeof profile.id === 'string' ? BigInt(profile.id) : profile.id;
+        const discordId =
+          typeof profile.id === "string" ? BigInt(profile.id) : profile.id;
         return {
           discordId: profile.id,
           emailVerified: profile.verified,
           discordUsername: profile.username,
           discordDiscriminator: profile.discriminator,
-          accountCreatedAt: new Date(Number(discordId / 4194304n) + 1420070400000).toISOString(), // Approximate Discord account creation from snowflake
+          accountCreatedAt: new Date(
+            Number(discordId / 4194304n) + 1420070400000,
+          ).toISOString(), // Approximate Discord account creation from snowflake
         };
       },
     },
@@ -64,6 +67,5 @@ export type customSession = {
   image: string | null | undefined;
   id: string | undefined;
 };
-// There should be 2 types of avatar URLs:
-// https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png
-// https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}
+
+export const ValidateDiscordID = /^\d{17,30}$/; // snowflake = unix apparently, that's why newer accounts didn't work.
