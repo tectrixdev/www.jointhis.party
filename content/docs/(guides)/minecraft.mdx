@@ -150,28 +150,47 @@ And enter `Y` to save changes. Now press `enter` to confirm.
 Now that we have that setup, you should be good to go!
 Now we'll setup networking.
 
+**If you only have a root user on your server you can either create a new user account
+with a login and modify crontab there, or you can setup a custom systemd script
+to run in userspace, which is a little bit more complicated and you'll
+have to look up guides on the internet for now.**
+
 ## Networking
 
 For the networking we'll be using a reverse proxy.
 Use this guide to set it up:
 
-<Card icon={<EarthLock />} href="/docs/reverseproxy" title="Setting up a reverse proxy"> {/*<!-- rumdl-disable-line MD013 -->*/}
+<Card icon={<EarthLock />} href="/docs/jointhisproxy" title="Setting up JoinThis.proxy"> {/*<!-- rumdl-disable-line MD013 -->*/}
   Click to open the dedicated guide.
 </Card>
 
-Now that you've done that, we can make our jointhis.party record.
-
 ## Configuring the record
 
+<Callout title="Port forwarding only" type="warning">
+    This section only applies to users who port forward, if you've used the proxy,
+    you may skip this section. {/*<!-- rumdl-disable-line MD046 MD013 -->*/}
+</Callout>
+
+I recommend port forwarding to a different external port to mitigate automatic bots.
+
 Now, for minecraft we'll only need an SRV record. Which is neat!
-If you want bedrock support too, you're either going to have to use their
-random port alongside an A or CNAME record, or use port forwarding which
-is not recommended. We're just going to focus on java for this tutorial,
+If you want bedrock support too, you're either going to have to use your
+external port for 19132 alongside an A record to your external IP
+or set your external port to 19132 and just create an A record.
+We're just going to focus on java for this tutorial,
 which will allow us to get rid of the random port.
 
-Now for the SRV-record, we'll need to use our playit port. For my example,
+First of all, create an A record for bedrock and the SRV record, this
+will be the same name as your server IP.
+
+| Identifier     | Value            |
+| -------------- | ---------------- |
+| Subdomain name | [subdomain name] |
+| Record type    | A                |
+| Value          | Your external IP |
+
+Now for the SRV-record, we'll need to use our external port. For my example,
 I'll use the port `1368` but this will be different for you,
-it's the part after the colon in the IP.
 
 Your subdomain name may be anything, just know that this will be
 prefixed before .jointhis.party, this should in most cases be the
@@ -181,10 +200,8 @@ server name, but you may get creative!
 | -------------- | ---------------------------------- |
 | Subdomain name | \_minecraft.\_tcp.[subdomain name] |
 | Record type    | SRV                                |
-| Value          | Playit "IP", see playit guide.     |
-| Port           | Playit provided port.              |
-
-Example:
-![SRV record](./SRVrecord.png)
+| Value          | [subdomain name].jointhis.party    |
+| Port           | External port                      |
 
 You can now connect to your server on: `[subdomain name].jointhis.party`!
+And for bedrock, on `[subdomain name].jointhis.party` with your external port.

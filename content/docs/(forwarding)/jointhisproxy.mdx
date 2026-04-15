@@ -126,17 +126,6 @@ As a last step, your tunnel will run and you will get your external IP.
 This will be your subdomain for java and proxy.jointhis.party with a random port
 for bedrock.
 
-### Running the tunnel after creation
-
-If you've already went through the setup wizard or configured with CLI flags,
-you can choose to run your already created tunnel by using:
-
-```bash
-jointhis-proxy --run
-```
-
-Or choosing run existing tunnel in the CLI.
-
 ### Command-line usage
 
 For advanced users, you can use command-line flags.
@@ -147,6 +136,24 @@ jointhis-proxy --help
 ```
 
 This will output the current usage instructions.
+After running the first setup flags, please do run
+
+```bash
+jointhis-proxy --run
+```
+
+After the first setup, to avoid re-creation of the tunnel every time you run it.
+
+### Running the tunnel after creation
+
+If you've already went through the setup wizard or configured with CLI flags,
+you can choose to run your already created tunnel by using:
+
+```bash
+jointhis-proxy --run
+```
+
+Or choosing "run existing tunnel" in the CLI.
 
 ## Disclaimer
 
