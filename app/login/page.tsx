@@ -19,7 +19,7 @@ const rubik = Rubik({
 
 export default function LoginPage() {
   return (
-    <MainHome ClassName="p-10">
+    <MainHome>
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-10 bg-black/50 p-10 backdrop-blur-lg md:p-0">
         <h1
           className={`${Glitch.className} w-full text-center text-3xl md:text-4xl`}

@@ -37,6 +37,13 @@
 - [ ] Add proper login page (and use other identifier than discord user ID?)
 - [ ] Prevent user overwriting / hijacking SRV record.
 
+## Guides / docs
+
+- [ ] Finish discord guide
+- [ ] Finish web guide
+- [ ] Add guide for Euro truck
+- [ ] Others?
+
 ## Better auth migration
 
 - [x] get discord user id
