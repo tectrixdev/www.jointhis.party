@@ -1,11 +1,13 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import { Wrench } from "lucide-react";
+import { Gitlab, Wrench } from "lucide-react";
 import { Speech } from "lucide-react";
 import { BookOpenText } from "lucide-react";
 import { Home } from "lucide-react";
 import Image from "next/image";
 import Authbutton from "@/components/authbutton";
 import { LayoutDashboard } from "lucide-react";
+import { baseUrl } from "./metadata";
+import GitLab from "@/components/gitlabIcon";
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -53,7 +55,8 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: "Support",
-        url: "/discord",
+        url: `${baseUrl}/discord`,
+        // Marking as external should trigger cloudflare redirect.
         icon: <Speech />,
       },
       {
@@ -61,7 +64,13 @@ export function baseOptions(): BaseLayoutProps {
         children: <Authbutton />,
         secondary: true,
       },
+      {
+        type: "icon",
+        label: "GitLab",
+        text: "GitLab",
+        url: "https://gitlab.com/tectrixdev/www.jointhis.party",
+        icon: <GitLab />,
+      },
     ],
-    githubUrl: "https://gitlab.com/tectrixdev/www.jointhis.party",
   };
 }

@@ -264,57 +264,65 @@ export async function deleteRecord(request: Request) {
             { status: 400 },
           );
         }
-        // For logging info. (We don't fetch this from the client, as we don't trust them.)
+        // For logging info + check if user really owns the record.
         const record = await client.dns.records.get(`${id}`, {
           zone_id: ZONE_ID,
         });
         const name = record.name;
         const value = record.content;
         const type = record.type;
-        // Actually deleting it.
-        const deleteRecord = await client.dns.records.delete(`${id}`, {
-          zone_id: ZONE_ID,
-        });
-        // Logging to the discord server for moderation purposes.
-        if (process.env.LOGS_WEBHOOK) {
-          await fetch(process.env.LOGS_WEBHOOK, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              content: "<@&1448781724803661927>",
-              tts: false,
-              embeds: [
-                {
-                  id: 652627557,
-                  title: "New subdomain deleted!",
-                  description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
-                  color: 2326507,
-                  fields: [
-                    {
-                      id: 986834541,
-                      name: "IP",
-                      value: `${value}`,
-                    },
-                    {
-                      id: 356214976,
-                      name: "Record Type",
-                      value: `${type}`,
-                    },
-                  ],
-                },
-              ],
-              components: [],
-              actions: {},
-              flags: 0,
-            }),
+        const comment = record.comment;
+        if (comment == session?.user.id) {
+          // Actually deleting it.
+          const deleteRecord = await client.dns.records.delete(`${id}`, {
+            zone_id: ZONE_ID,
           });
+          // Logging to the discord server for moderation purposes.
+          if (process.env.LOGS_WEBHOOK) {
+            await fetch(process.env.LOGS_WEBHOOK, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                content: "<@&1448781724803661927>",
+                tts: false,
+                embeds: [
+                  {
+                    id: 652627557,
+                    title: "New subdomain deleted!",
+                    description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
+                    color: 2326507,
+                    fields: [
+                      {
+                        id: 986834541,
+                        name: "IP",
+                        value: `${value}`,
+                      },
+                      {
+                        id: 356214976,
+                        name: "Record Type",
+                        value: `${type}`,
+                      },
+                    ],
+                  },
+                ],
+                components: [],
+                actions: {},
+                flags: 0,
+              }),
+            });
+          }
+          return NextResponse.json(
+            { success: true, result: deleteRecord },
+            { status: 200 },
+          );
+        } else {
+          return NextResponse.json(
+            { error: "Record not owned by user." },
+            { status: 403 },
+          );
         }
-        return NextResponse.json(
-          { success: true, result: deleteRecord },
-          { status: 200 },
-        );
       }
     }
   } catch (err: any) {

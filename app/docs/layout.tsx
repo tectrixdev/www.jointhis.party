@@ -5,14 +5,8 @@ import { Banner } from "fumadocs-ui/components/banner";
 
 export default function Layout({ children }: LayoutProps<"/docs">) {
   return (
-    <>
-      <Banner id="proxy" variant="rainbow">
-        Introducing jointhis.proxy! Check the discord server for more
-        information!
-      </Banner>
-      <DocsLayout tree={source.pageTree} {...baseOptions()}>
-        {children}
-      </DocsLayout>
-    </>
+    <DocsLayout tree={source.pageTree} {...baseOptions()}>
+      {children}
+    </DocsLayout>
   );
 }

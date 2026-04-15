@@ -158,7 +158,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error: err?.body?.message,
-        DNSerror: DNS,
+        DNS: DNS,
       },
       { status: err?.statusCode },
     );

@@ -9,9 +9,11 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
-import { Pencil } from "lucide-react";
+import { Pencil, PencilIcon, SeparatorHorizontal } from "lucide-react";
 import { Card } from "fumadocs-ui/components/card";
 import { baseUrl } from "@/lib/metadata";
+import GitLab from "@/components/gitlabIcon";
+import { SidebarSeparator } from "@/components/layout/docs/sidebar";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -39,7 +41,13 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <Card
         title={"Edit on GitLab"}
         href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
-        icon={<Pencil />}
+        icon={
+          <div className="flex items-center justify-center gap-3 px-1 **:select-none">
+            <PencilIcon />
+            <div className="h-5 rounded-full border border-current" />
+            <GitLab />
+          </div>
+        }
       >
         Found a mistake? Want to improve the documentation?
       </Card>

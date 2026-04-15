@@ -35,6 +35,7 @@
 - [x] Fix cloudflare bot protection blocking vercel.
 - [x] Optimize CLI API to not fetch the dns api and just execute it instead.
 - [ ] Add proper login page (and use other identifier than discord user ID?)
+- [ ] Prevent user overwriting / hijacking SRV record.
 
 ## Better auth migration
 
