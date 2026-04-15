@@ -88,9 +88,35 @@ export async function getRecords(request: Request) {
       }
     }
   } catch (err: any) {
-    console.error(err);
+    console.error("Error fetching records:", err);
+    
+    // Handle specific Cloudflare API errors
+    if (err?.errors && Array.isArray(err.errors)) {
+      const cloudflareError = err.errors[0];
+      return NextResponse.json(
+        { error: cloudflareError.message || "Cloudflare API error" },
+        { status: cloudflareError.code === 1000 ? 401 : 500 },
+      );
+    }
+    
+    // Handle network errors
+    if (err?.code === 'ECONNREFUSED' || err?.code === 'ENOTFOUND') {
+      return NextResponse.json(
+        { error: "Unable to connect to DNS provider. Please try again later." },
+        { status: 503 },
+      );
+    }
+    
+    // Handle rate limiting
+    if (err?.code === 429 || err?.status === 429) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again later." },
+        { status: 429 },
+      );
+    }
+    
     return NextResponse.json(
-      { error: err?.errors[0].message || "Unknown error" },
+      { error: "An unexpected error occurred. Please try again later." },
       { status: 500 },
     );
   }
@@ -129,6 +155,21 @@ export async function createRecord(request: Request) {
           zone_id: ZONE_ID,
           name: { exact: `${name}.jointhis.party` },
         });
+        
+        // Prevent SRV record hijacking - check if any existing SRV record with same name belongs to another user
+        if (type === "SRV") {
+          const existingSrvRecords = duplicates.result.filter(r => r.type === "SRV");
+          const unauthorizedSrv = existingSrvRecords.filter(r => r.comment !== `${session?.user?.id}`);
+          if (unauthorizedSrv.length > 0) {
+            return NextResponse.json(
+              {
+                error: "An SRV record with this name already exists.",
+              },
+              { status: 403 },
+            );
+          }
+        }
+        
         function isStolen(result: RecordResponse) {
           return result.comment !== `${session?.user?.id}`;
         }
@@ -229,9 +270,35 @@ export async function createRecord(request: Request) {
       }
     }
   } catch (err: any) {
-    console.error(err);
+    console.error("Error creating record:", err);
+    
+    // Handle specific Cloudflare API errors
+    if (err?.errors && Array.isArray(err.errors)) {
+      const cloudflareError = err.errors[0];
+      return NextResponse.json(
+        { error: cloudflareError.message || "Cloudflare API error" },
+        { status: cloudflareError.code === 1000 ? 401 : 500 },
+      );
+    }
+    
+    // Handle network errors
+    if (err?.code === 'ECONNREFUSED' || err?.code === 'ENOTFOUND') {
+      return NextResponse.json(
+        { error: "Unable to connect to DNS provider. Please try again later." },
+        { status: 503 },
+      );
+    }
+    
+    // Handle rate limiting
+    if (err?.code === 429 || err?.status === 429) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again later." },
+        { status: 429 },
+      );
+    }
+    
     return NextResponse.json(
-      { error: err?.errors[0].message || "Unknown error" },
+      { error: "An unexpected error occurred while creating the record. Please try again later." },
       { status: 500 },
     );
   }
@@ -326,9 +393,35 @@ export async function deleteRecord(request: Request) {
       }
     }
   } catch (err: any) {
-    console.error(err);
+    console.error("Error deleting record:", err);
+    
+    // Handle specific Cloudflare API errors
+    if (err?.errors && Array.isArray(err.errors)) {
+      const cloudflareError = err.errors[0];
+      return NextResponse.json(
+        { error: cloudflareError.message || "Cloudflare API error" },
+        { status: cloudflareError.code === 1000 ? 401 : 500 },
+      );
+    }
+    
+    // Handle network errors
+    if (err?.code === 'ECONNREFUSED' || err?.code === 'ENOTFOUND') {
+      return NextResponse.json(
+        { error: "Unable to connect to DNS provider. Please try again later." },
+        { status: 503 },
+      );
+    }
+    
+    // Handle rate limiting
+    if (err?.code === 429 || err?.status === 429) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again later." },
+        { status: 429 },
+      );
+    }
+    
     return NextResponse.json(
-      { error: err?.message || "Unknown error" },
+      { error: "An unexpected error occurred while deleting the record. Please try again later." },
       { status: 500 },
     );
   }
