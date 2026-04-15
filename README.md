@@ -28,6 +28,9 @@ Requirements:
 - I recommend Zed IDE -> my config: <https://gitlab.com/-/snippets/4918855>
 - ...
 
+Disclaimer: By contributing, you agree to your code being distributed / licensed
+under GPLv3.
+
 ### Running locally
 
 clone the repository:
