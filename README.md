@@ -57,5 +57,5 @@ pnpm build
 
 ## license
 
-www\.jointhis.party © 2026 by Joran Hennion is licensed under GPLv3.
-To view a copy of this license, visit [https://www.gnu.org/licenses/gpl-3.0.txt](https://www.gnu.org/licenses/gpl-3.0.txt)
+www\.jointhis.party © 2026 by Joran Hennion is licensed under AGPLv3.
+To view a copy of this license, visit [https://www.gnu.org/licenses/agpl-3.0.txt](https://www.gnu.org/licenses/agpl-3.0.txt)
