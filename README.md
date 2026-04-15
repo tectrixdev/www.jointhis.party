@@ -57,12 +57,5 @@ pnpm build
 
 ## license
 
-www\.jointhis.party © 2026 by Joran Hennion is licensed under CC BY-NC-ND 4.0.
-To view a copy of this license, visit <https://creativecommons.org/licenses/by-nc-nd/4.0/>
-
-This is strictly for forking and contributing. You may fork and make MRs,
-but not distribute that modified work.
-This means that you'll have to keep you fork private.
-This license may change soon as this is temporary until I decide what license
-to really release this under, you can always ask if you have an idea as to
-which license we should use.
+www\.jointhis.party © 2026 by Joran Hennion is licensed under GPLv3.
+To view a copy of this license, visit [https://www.gnu.org/licenses/gpl-3.0.txt](https://www.gnu.org/licenses/gpl-3.0.txt)
