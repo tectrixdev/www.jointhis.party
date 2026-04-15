@@ -67,3 +67,19 @@ export type customSession = {
 // There should be 2 types of avatar URLs:
 // https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png
 // https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}
+export const ValidateDiscordID = /^\d{17,30}$/; // snowflake = unix apparently, that's why newer accounts didn't work.
+export function UserIdFromAvatar(avatar: string | null | undefined) {
+  if (avatar === null || avatar === undefined) {
+    return undefined;
+  }
+  var userId;
+  const url = new URL(avatar);
+  if (ValidateDiscordID.test(url.pathname.split("/")[2])) {
+    userId = url.pathname.split("/")[2];
+  } else if (ValidateDiscordID.test((userId = url.pathname.split("/")[3]))) {
+    userId = url.pathname.split("/")[3];
+  } else {
+    userId = undefined;
+  }
+  return userId;
+}
