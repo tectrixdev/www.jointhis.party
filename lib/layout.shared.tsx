@@ -55,7 +55,7 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: "Support",
-        url: `${baseUrl}/discord`,
+        url: `${baseUrl}discord`,
         // Marking as external should trigger cloudflare redirect.
         icon: <Speech />,
       },
