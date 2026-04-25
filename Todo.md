@@ -28,6 +28,9 @@
 - [x] Prevent user overwriting / hijacking SRV record.
 - [ ] Translations
 - [ ] ~~More rate limiting~~ + **better error handling.**
+- [ ] Landing page remake
+- [ ] Add moderation UI for moderators
+- [ ] Add discord user ID / IP blacklist.
 
 ## Guides / docs
 
