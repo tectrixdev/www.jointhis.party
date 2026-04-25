@@ -118,21 +118,43 @@ export async function createRecord(request: Request) {
         const body = await request.json();
         const { name, type, value, port } = body;
         // limitations
-        const userRecords = await client.dns.records.list({
+        const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
-          comment: {
-            exact: session?.user?.id,
-          },
         });
-        const UserRecords = userRecords.result;
-        const duplicates = await client.dns.records.list({
-          zone_id: ZONE_ID,
-          name: { exact: `${name}.jointhis.party` },
-        });
-        function isStolen(result: RecordResponse) {
-          return result.comment !== `${session?.user?.id}`;
+        function isOwned(result: RecordResponse) {
+          if (result.comment == session?.user?.id) {
+            return true;
+          } else {
+            return false;
+          }
         }
-        const unAuthorizedRecords = duplicates.result.filter(isStolen);
+        function isStolen(result: RecordResponse) {
+          if (
+            result.name == `${name}.jointhis.party` &&
+            result.comment !== `${session?.user?.id}`
+          ) {
+            // If it matches the record name and the user doesn't own it.
+            return true;
+          } else if (
+            result.type == `SRV` &&
+            result.comment !== `${session?.user?.id}` &&
+            result.name.endsWith(`${name}.jointhis.party`)
+          ) {
+            // If the user makes for example an A record that conflicts with an SRV record of another user.
+            return true;
+          } else if (
+            type == `SRV` &&
+            result.comment !== `${session?.user?.id}` &&
+            result.name !== `jointhis.party` &&
+            // Otherwise it'll deny about everything :0
+            `${name}.jointhis.party`.endsWith(result.name)
+          ) {
+            // If the user makes an SRV record that conflicts with for example an A record of another user.
+            return true;
+          }
+        }
+        const UserRecords = Records.result.filter(isOwned);
+        const unAuthorizedRecords = Records.result.filter(isStolen);
         if (
           !Array.isArray(unAuthorizedRecords) ||
           !unAuthorizedRecords.length
