@@ -31,6 +31,7 @@
 - [ ] Landing page remake
 - [ ] Add moderation UI for moderators
 - [ ] Add discord user ID / IP blacklist.
+- [ ] Add blacklist checking/matching in all APIs and login button.
 
 ## Guides / docs
 
