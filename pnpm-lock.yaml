@@ -4,10 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  "@types/react": 19.2.14
-  "@types/react-dom": 19.2.3
-
 importers:
   .:
     dependencies:
@@ -34,7 +30,7 @@ importers:
         version: 1.6.1(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
       better-auth:
         specifier: ^1.5.6
-        version: 1.5.6(@opentelemetry/api@1.9.1)(mongodb@7.1.0)(mysql2@3.20.0(@types/node@25.5.0))(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 1.5.6(@opentelemetry/api@1.9.1)(mysql2@3.20.0(@types/node@25.5.0))(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -774,12 +770,6 @@ packages:
         integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==,
       }
 
-  "@mongodb-js/saslprep@1.4.6":
-    resolution:
-      {
-        integrity: sha512-y+x3H1xBZd38n10NZF/rEBlvDOOMQ6LKUTHqr8R9VkJ+mmQOYtJFxIlkkK8fZrtOiL6VixbOBWMbZGBdal3Z1g==,
-      }
-
   "@next/env@16.2.4":
     resolution:
       {
@@ -915,8 +905,8 @@ packages:
         integrity: sha512-T4nygeh9YE9dLRPhAHSeOZi7HBXo+0kYIPJXayZfvWOWA0+n3dESrZbjfDPUABkUNym6Hd+f2IR113To8D2GPA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -931,8 +921,8 @@ packages:
         integrity: sha512-F+M1tLhO+mlQaOWspE8Wstg+z6PwxwRd8oQ8IXceWz92kfAmalTRf0EjrouQeo7QssEPfCn05B4Ihs1K9WQ/7w==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -947,8 +937,8 @@ packages:
         integrity: sha512-Uu+mSh4agx2ib1uIGPP4/CKNULyajb3p92LsVXmH2EHVMTfZWpll88XJ0j4W0z3f8NK1eYl1+Mf/szHPmcHzyA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -963,8 +953,8 @@ packages:
         integrity: sha512-Fh9rGN0MoI4ZFUNyfFVNU4y9LUz93u9/0K+yLgA2bwRojxM8JU1DyvvMBabnZPBgMWREAJvU2jjVzq+LrFUglw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -979,7 +969,7 @@ packages:
         integrity: sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -991,7 +981,7 @@ packages:
         integrity: sha512-jCi/QKUM2r1Ju5a3J64TH2A5SpKAgh0LpknyqdQ4m6DCV0xJ2HG1xARRwNGPQfi1SLdLWZ1OJz6F4OMBBNiGJA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1003,8 +993,8 @@ packages:
         integrity: sha512-TCglVRtzlffRNxRMEyR36DGBLJpeusFcgMVD9PZEzAKnUs1lKCgX5u9BmC2Yg+LL9MgZDugFFs1Vl+Jp4t/PGw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1019,7 +1009,7 @@ packages:
         integrity: sha512-1UEWRX6jnOA2y4H5WczZ44gOOjTEmlqv1uNW4GAJEO5+bauCBhv8snY65Iw5/VOS/ghKN9gr2KjnLKxrsvoMVw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1031,8 +1021,8 @@ packages:
         integrity: sha512-Nqcp+t5cTB8BinFkZgXiMJniQH0PsUt2k51FUhbdfeKvc4ACcG2uQniY/8+h1Yv6Kza4Q7lD7PQV0z0oicE0Mg==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1047,7 +1037,7 @@ packages:
         integrity: sha512-0rFg/Rj2Q62NCm62jZw0QX7a3sz6QCQU0LpZdNrJX8byRGaGVTqbrW9jAoIAHyMQqsNpeZ81YgSizOt5WXq0Pw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1059,8 +1049,8 @@ packages:
         integrity: sha512-t2ODlkXBQyn7jkl6TNaw/MtVEVvIGelJDCG41Okq/KwUsJBwQ4XVZsHAVUkK4mBv3ewiAS3PGuUWuY2BoK4ZUw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1075,7 +1065,7 @@ packages:
         integrity: sha512-kGkGegYIdQsOb4XjsfM97rXsiHaBwco+hFI66oO4s9LU+PLAC5oJ7khdOVFxkhsmlbpUqDAvXw11CluXP+jkHg==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1087,8 +1077,8 @@ packages:
         integrity: sha512-YB9mTFQvCOAQMHU+C/jVl96WmuWeltyUEpRJJky51huhds5W2FQr1J8D/16sQlf0ozxkPK8uF3niQMdUwZPv5w==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1103,8 +1093,8 @@ packages:
         integrity: sha512-kr0X2+6Yy/vJzLYJUPCZEc8SfQcf+1COFoAqauJm74umQhta9M7lNJHP7QQS3vkvcGLQUbWpMzwrXYwrYztHKA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1119,8 +1109,8 @@ packages:
         integrity: sha512-0NJQ4LFFUuWkE7Oxf0htBKS6zLkkjBH+hM1uk7Ng705ReR8m/uelduy1DBo0PyBXPKVnBA6YBlU94MBGXrSBCw==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1135,8 +1125,8 @@ packages:
         integrity: sha512-bpIxvq03if6UNwXZ+HTK71JLh4APvnXntDc6XOX8UVq4XQOVl7lwok0AvIl+b8zgCw3fSaVTZMpAPPagXbKmHQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1151,8 +1141,8 @@ packages:
         integrity: sha512-/jfEwNDdQVBCNvjkGit4h6pMOzq8bHkopq458dPt2lMjx+eBQUohZNG9A7DtO/O5ukSbxuaNGXMjHicgwy6rQQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1167,8 +1157,8 @@ packages:
         integrity: sha512-m9gTwRkhy2lvCPe6QJp4d3G1TYEUHn/FzJUtq9MjH46an1wJU+GdoGC5VLof8RX8Ft/DlpshApkhswDLZzHIcQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1183,8 +1173,8 @@ packages:
         integrity: sha512-7A6S9jSgm/S+7MdtNDSb+IU859vQqJ/QAtcYQcfFC6W8RS4IxIZDldLR0xqCFZ6DCyrQLjLPsxtTNch5jVA4lA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1199,8 +1189,8 @@ packages:
         integrity: sha512-tAXIa1g3sM5CGpVT0uIbUx/U3Gs5N8T52IICuCtObaos1S8fzsrPXG5WObkQN3S6NVl6wKgPhAIiBGbWnvc97A==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1215,7 +1205,7 @@ packages:
         integrity: sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1227,7 +1217,7 @@ packages:
         integrity: sha512-Jl+bCv8HxKnlTLVrcDE8zTMJ09R9/ukw4qBs/oZClOfoQk/cOTbDn+NceXfV7j09YPVQUryJPHurafcSg6EVKA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1239,8 +1229,8 @@ packages:
         integrity: sha512-7xdcatg7/U+7+Udyoj2zodtI9H/IIopqo+YOIcZOq1nJwXWBZ9p8xiu5llXlekDbZkca79a/fozEYQXIA4sW6A==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1255,7 +1245,7 @@ packages:
         integrity: sha512-FkBMwD+qbGQeMu1cOHnuGB6x4yzPjho8ap5WtbEJ26umhgqVXbhekKUQO+hZEL1vU92a3wHwdp0HAcqAUF5iDg==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1267,7 +1257,7 @@ packages:
         integrity: sha512-BjasUjixPFdS+NKkypcyyN5Pmg83Olst0+c6vGov0diwTEo6mgdqVR6hxcEgFuh4QrAs7Rc+9KuGJ9TVCj0Zzg==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1279,7 +1269,7 @@ packages:
         integrity: sha512-Qp8WbZOBe+blgpuUT+lw2xheLP8q0oatc9UpmiemEICxGvFLYmHm9QowVZGHtJlGbS6A6yJ3iViad/2cVjnOiA==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1291,7 +1281,7 @@ packages:
         integrity: sha512-Il0+boE7w/XebUHyBjroE+DbByORGR9KKmITzbR7MyQ4akpORYP/ZmbhAr0DG7RmmBqoOnZdy2QlvajJ2QA59g==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1303,7 +1293,7 @@ packages:
         integrity: sha512-RbJRS4UWQFkzHTTwVymMTUv8EqYhOp8dOOviLj2ugtTiXRaRQS7GLGxZTLL1jWhMeoSCf5zmcZkqTl9IiYfXcQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1315,7 +1305,7 @@ packages:
         integrity: sha512-2dHfToCj/pzca2Ck724OZ5L0EVrr3eHRNsG/b3xQJLA2hZpVCS99bLAX+hm1IHXDEnzU6by5z/5MIY794/a8NQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1327,7 +1317,7 @@ packages:
         integrity: sha512-QTYuDesS0VtuHNNvMh+CjlKJ4LJickCMUAqjlE3+j8w+RlRpwyX3apEQKGFzbZGdo7XNG1tXa+bQqIE7HIXT2w==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1339,7 +1329,7 @@ packages:
         integrity: sha512-ewrXRDTAqAXlkl6t/fkXWNAhFX9I+CkKlw6zjEwk86RSPKwZr3xpBRso655aqYafwtnbpHLj6toFzmd6xdVptQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -1351,8 +1341,8 @@ packages:
         integrity: sha512-pzJq12tEaaIhqjbzpCuv/OypJY/BPavOofm+dbab+MHLajy277+1lLm6JFcGgF5eskJ6mquGirhXY2GD/8u8Ug==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
-      "@types/react-dom": 19.2.3
+      "@types/react": "*"
+      "@types/react-dom": "*"
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -1637,7 +1627,7 @@ packages:
         integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==,
       }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": ^19.2.0
 
   "@types/react@19.2.14":
     resolution:
@@ -1657,23 +1647,12 @@ packages:
         integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==,
       }
 
-  "@types/webidl-conversions@7.0.3":
-    resolution:
-      {
-        integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==,
-      }
-
-  "@types/whatwg-url@13.0.0":
-    resolution:
-      {
-        integrity: sha512-N8WXpbE6Wgri7KUSvrmQcqrMllKZ9uxkYWMt+mCSGwNc0Hsw9VQTW7ApqI4XNrx6/SaM2QQJCzMPDEXE058s+Q==,
-      }
-
   "@ungap/structured-clone@1.3.0":
     resolution:
       {
         integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==,
       }
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   "@vercel/analytics@1.6.1":
     resolution:
@@ -1862,13 +1841,6 @@ packages:
       {
         integrity: sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==,
       }
-
-  bson@7.2.0:
-    resolution:
-      {
-        integrity: sha512-YCEo7KjMlbNlyHhz7zAZNDpIpQbd+wOEHJYezv0nMYTn4x31eIUM2yomNNubclAt63dObUzKHWsBLJ9QcZNSnQ==,
-      }
-    engines: { node: ">=20.19.0" }
 
   call-bind-apply-helpers@1.0.2:
     resolution:
@@ -2246,7 +2218,7 @@ packages:
       "@types/estree-jsx": "*"
       "@types/hast": "*"
       "@types/mdast": "*"
-      "@types/react": 19.2.14
+      "@types/react": "*"
       algoliasearch: 5.x.x
       flexsearch: "*"
       lucide-react: "*"
@@ -2303,7 +2275,7 @@ packages:
     peerDependencies:
       "@types/mdast": "*"
       "@types/mdx": "*"
-      "@types/react": 19.2.14
+      "@types/react": "*"
       fumadocs-core: ^15.0.0 || ^16.0.0
       mdast-util-directive: "*"
       next: ^15.3.0 || ^16.0.0
@@ -2333,7 +2305,7 @@ packages:
     peerDependencies:
       "@takumi-rs/image-response": "*"
       "@types/mdx": "*"
-      "@types/react": 19.2.14
+      "@types/react": "*"
       fumadocs-core: 16.7.16
       next: 16.x.x
       react: ^19.2.0
@@ -2863,12 +2835,6 @@ packages:
         integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==,
       }
 
-  memory-pager@1.5.0:
-    resolution:
-      {
-        integrity: sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==,
-      }
-
   micromark-core-commonmark@2.0.3:
     resolution:
       {
@@ -3098,43 +3064,6 @@ packages:
         integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==,
       }
     engines: { node: ">= 0.6" }
-
-  mongodb-connection-string-url@7.0.1:
-    resolution:
-      {
-        integrity: sha512-h0AZ9A7IDVwwHyMxmdMXKy+9oNlF0zFoahHiX3vQ8e3KFcSP3VmsmfvtRSuLPxmyv2vjIDxqty8smTgie/SNRQ==,
-      }
-    engines: { node: ">=20.19.0" }
-
-  mongodb@7.1.0:
-    resolution:
-      {
-        integrity: sha512-kMfnKunbolQYwCIyrkxNJFB4Ypy91pYqua5NargS/f8ODNSJxT03ZU3n1JqL4mCzbSih8tvmMEMLpKTT7x5gCg==,
-      }
-    engines: { node: ">=20.19.0" }
-    peerDependencies:
-      "@aws-sdk/credential-providers": ^3.806.0
-      "@mongodb-js/zstd": ^7.0.0
-      gcp-metadata: ^7.0.1
-      kerberos: ^7.0.0
-      mongodb-client-encryption: ">=7.0.0 <7.1.0"
-      snappy: ^7.3.2
-      socks: ^2.8.6
-    peerDependenciesMeta:
-      "@aws-sdk/credential-providers":
-        optional: true
-      "@mongodb-js/zstd":
-        optional: true
-      gcp-metadata:
-        optional: true
-      kerberos:
-        optional: true
-      mongodb-client-encryption:
-        optional: true
-      snappy:
-        optional: true
-      socks:
-        optional: true
 
   motion-dom@12.38.0:
     resolution:
@@ -3391,13 +3320,6 @@ packages:
         integrity: sha512-TwEZ+X+yCJmYfL7TPUOcvBZ4QfoT5YenQiJuX//0th53DE6w0xxLEtfK3iyryQFddXuvkIk51EEgrJQ0WJkOmQ==,
       }
 
-  punycode@2.3.1:
-    resolution:
-      {
-        integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==,
-      }
-    engines: { node: ">=6" }
-
   react-dom@19.2.5:
     resolution:
       {
@@ -3423,7 +3345,7 @@ packages:
       }
     engines: { node: ">=10" }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       "@types/react":
@@ -3436,7 +3358,7 @@ packages:
       }
     engines: { node: ">=10" }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -3449,7 +3371,7 @@ packages:
       }
     engines: { node: ">=10" }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -3651,12 +3573,6 @@ packages:
         integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==,
       }
 
-  sparse-bitfield@3.0.3:
-    resolution:
-      {
-        integrity: sha512-kvzhi7vqKTfkh0PZU+2D2PIllw2ymqJKujUcyPMd9Y75Nv4nPbGJZXNhxsgdQab2BmlDct1YnfQCguEvHr7VsQ==,
-      }
-
   sql-escaper@1.3.3:
     resolution:
       {
@@ -3749,13 +3665,6 @@ packages:
       {
         integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==,
       }
-
-  tr46@5.1.1:
-    resolution:
-      {
-        integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==,
-      }
-    engines: { node: ">=18" }
 
   trim-lines@3.0.1:
     resolution:
@@ -3850,7 +3759,7 @@ packages:
       }
     engines: { node: ">=10" }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -3863,7 +3772,7 @@ packages:
       }
     engines: { node: ">=10" }
     peerDependencies:
-      "@types/react": 19.2.14
+      "@types/react": "*"
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       "@types/react":
@@ -3911,20 +3820,6 @@ packages:
       {
         integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==,
       }
-
-  webidl-conversions@7.0.0:
-    resolution:
-      {
-        integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==,
-      }
-    engines: { node: ">=12" }
-
-  whatwg-url@14.2.0:
-    resolution:
-      {
-        integrity: sha512-De72GdQZzNTUBBChsXueQUnPKDkg/5A5zp7pFDuQAj5UFoENpiACU0wlCvzpAGnTkj++ihpKwKyYewn/XNUbKw==,
-      }
-    engines: { node: ">=18" }
 
   whatwg-url@5.0.0:
     resolution:
@@ -3977,12 +3872,10 @@ snapshots:
       "@better-auth/core": 1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0)
       "@better-auth/utils": 0.3.1
 
-  "@better-auth/mongo-adapter@1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)(mongodb@7.1.0)":
+  "@better-auth/mongo-adapter@1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)":
     dependencies:
       "@better-auth/core": 1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0)
       "@better-auth/utils": 0.3.1
-    optionalDependencies:
-      mongodb: 7.1.0
 
   "@better-auth/prisma-adapter@1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)":
     dependencies:
@@ -4249,11 +4142,6 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  "@mongodb-js/saslprep@1.4.6":
-    dependencies:
-      sparse-bitfield: 3.0.3
-    optional: true
 
   "@next/env@16.2.4": {}
 
@@ -4809,14 +4697,6 @@ snapshots:
 
   "@types/unist@3.0.3": {}
 
-  "@types/webidl-conversions@7.0.3":
-    optional: true
-
-  "@types/whatwg-url@13.0.0":
-    dependencies:
-      "@types/webidl-conversions": 7.0.3
-    optional: true
-
   "@ungap/structured-clone@1.3.0": {}
 
   "@vercel/analytics@1.6.1(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)":
@@ -4854,13 +4734,13 @@ snapshots:
 
   baseline-browser-mapping@2.10.19: {}
 
-  better-auth@1.5.6(@opentelemetry/api@1.9.1)(mongodb@7.1.0)(mysql2@3.20.0(@types/node@25.5.0))(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  better-auth@1.5.6(@opentelemetry/api@1.9.1)(mysql2@3.20.0(@types/node@25.5.0))(next@16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       "@better-auth/core": 1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0)
       "@better-auth/drizzle-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)
       "@better-auth/kysely-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)(kysely@0.28.15)
       "@better-auth/memory-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)
-      "@better-auth/mongo-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)(mongodb@7.1.0)
+      "@better-auth/mongo-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)
       "@better-auth/prisma-adapter": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))(@better-auth/utils@0.3.1)
       "@better-auth/telemetry": 1.5.6(@better-auth/core@1.5.6(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(@opentelemetry/api@1.9.1)(better-call@1.3.2(zod@4.3.6))(jose@6.2.2)(kysely@0.28.15)(nanostores@1.2.0))
       "@better-auth/utils": 0.3.1
@@ -4874,7 +4754,6 @@ snapshots:
       nanostores: 1.2.0
       zod: 4.3.6
     optionalDependencies:
-      mongodb: 7.1.0
       mysql2: 3.20.0(@types/node@25.5.0)
       next: 16.2.4(@opentelemetry/api@1.9.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react: 19.2.5
@@ -4893,9 +4772,6 @@ snapshots:
       zod: 4.3.6
 
   bignumber.js@9.0.0: {}
-
-  bson@7.2.0:
-    optional: true
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -5664,9 +5540,6 @@ snapshots:
     dependencies:
       "@types/mdast": 4.0.4
 
-  memory-pager@1.5.0:
-    optional: true
-
   micromark-core-commonmark@2.0.3:
     dependencies:
       decode-named-character-reference: 1.3.0
@@ -5947,19 +5820,6 @@ snapshots:
     dependencies:
       mime-db: 1.52.0
 
-  mongodb-connection-string-url@7.0.1:
-    dependencies:
-      "@types/whatwg-url": 13.0.0
-      whatwg-url: 14.2.0
-    optional: true
-
-  mongodb@7.1.0:
-    dependencies:
-      "@mongodb-js/saslprep": 1.4.6
-      bson: 7.2.0
-      mongodb-connection-string-url: 7.0.1
-    optional: true
-
   motion-dom@12.38.0:
     dependencies:
       motion-utils: 12.36.0
@@ -6086,9 +5946,6 @@ snapshots:
   process-nextick-args@2.0.1: {}
 
   property-information@7.1.0: {}
-
-  punycode@2.3.1:
-    optional: true
 
   react-dom@19.2.5(react@19.2.5):
     dependencies:
@@ -6321,11 +6178,6 @@ snapshots:
 
   space-separated-tokens@2.0.2: {}
 
-  sparse-bitfield@3.0.3:
-    dependencies:
-      memory-pager: 1.5.0
-    optional: true
-
   sql-escaper@1.3.3: {}
 
   sqlstring@2.3.1: {}
@@ -6366,11 +6218,6 @@ snapshots:
       picomatch: 4.0.4
 
   tr46@0.0.3: {}
-
-  tr46@5.1.1:
-    dependencies:
-      punycode: 2.3.1
-    optional: true
 
   trim-lines@3.0.1: {}
 
@@ -6463,15 +6310,6 @@ snapshots:
   web-streams-polyfill@4.0.0-beta.3: {}
 
   webidl-conversions@3.0.1: {}
-
-  webidl-conversions@7.0.0:
-    optional: true
-
-  whatwg-url@14.2.0:
-    dependencies:
-      tr46: 5.1.1
-      webidl-conversions: 7.0.0
-    optional: true
 
   whatwg-url@5.0.0:
     dependencies:

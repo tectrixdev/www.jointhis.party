@@ -1,5 +1,12 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import { CircleDollarSign, DollarSign, HandCoins, Heart, UserStar, Wrench } from "lucide-react";
+import {
+  CircleDollarSign,
+  DollarSign,
+  HandCoins,
+  Heart,
+  UserStar,
+  Wrench,
+} from "lucide-react";
 import { Speech } from "lucide-react";
 import { BookOpenText } from "lucide-react";
 import { Home } from "lucide-react";
@@ -131,7 +138,7 @@ export function baseOptions(): BaseLayoutProps {
         text: "Make a donation",
         url: `https://blog.tectrix.dev/blog/donations`,
         icon: <HandCoins fill="currentcolor" />,
-        on: "menu"
+        on: "menu",
       },
     ],
   };

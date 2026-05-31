@@ -42,6 +42,15 @@ export default function HomePage() {
         <Card
           className={cardClassName}
           icon={<Server />}
+          href="/docs/jointhisproxy"
+          title="JoinThisProxy"
+        >
+          Expose your local server to the internet without port forwarding for
+          free! TCP and UDP supported!
+        </Card>
+        <Card
+          className={cardClassName}
+          icon={<Server />}
           href="/docs/aternos"
           title="Aternos"
         >
