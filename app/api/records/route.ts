@@ -129,6 +129,7 @@ export async function createRecord(request: Request) {
           }
         }
         function isStolen(result: RecordResponse) {
+          // TODO: Split SRV into service, protocol, subdomain and implement like that.
           if (
             result.name == `${name}.jointhis.party` &&
             result.comment !== `${session?.user?.id}`
