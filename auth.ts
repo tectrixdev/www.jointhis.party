@@ -68,8 +68,3 @@ export function UserIdFromAvatar(avatar: string | null | undefined) {
   }
   return userId;
 }
-
-// sha256 hashes
-export const DiscordIdBlacklist = [
-  "381b29305da37587918b85e281be41ab9a5c9d4f19b8af8b24d3243a40c1582b",
-];

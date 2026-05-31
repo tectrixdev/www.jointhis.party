@@ -27,10 +27,10 @@
 - [x] Optimize CLI API to not fetch the dns api and just execute it instead.
 - [x] Prevent user overwriting / hijacking SRV record.
 - [ ] Translations
+- [x] Remove user id blacklist
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [ ] Landing page remake
 - [ ] Add moderation UI for moderators
-- [ ] Remove user id blacklist
 - [ ] Use better auth admin plugin for moderation UI
 - [ ] Select moderators and update privacy policy accordingly
 
