@@ -3,14 +3,37 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
-import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
+import {
+  RecordCreateParams,
+  RecordListParams,
+  RecordResponse,
+  RecordResponsesSinglePage,
+  RecordResponsesV4PagePaginationArray,
+  SRVRecord,
+} from "cloudflare/resources/dns/records.mjs";
 
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 });
-const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
+const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
+const DOMAIN = "jointhis.party";
 
-function IsUserAuthenticated(session: customSession | undefined) {
+// TODO: cleanup, consistent naming, consistent variables. (consistent examples)
+
+// EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
+function NameToSubdomain(name: string): string {
+  const domainsuffix = `.${DOMAIN}`;
+  return name.replace(domainsuffix, "");
+}
+
+// EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
+function SRVtoSubdomain(SRV: string): string {
+  return SRV.split(".").slice(2).join(".");
+}
+
+function IsUserAuthenticated(
+  session: customSession | undefined,
+): "notValidated" | boolean {
   // auth validation
   if (!session) {
     return false;
@@ -24,7 +47,7 @@ function IsUserAuthenticated(session: customSession | undefined) {
   }
 }
 
-const blacklist = [
+const blacklist: Array<string> = [
   "*",
   "@",
   "mc",
@@ -121,14 +144,67 @@ export async function createRecord(request: Request) {
         const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
         });
-        function isOwned(result: RecordResponse) {
+        function isOwned(result: RecordResponse): boolean {
           if (result.comment == session?.user?.id) {
             return true;
           } else {
             return false;
           }
         }
-        function isStolen(result: RecordResponse) {
+        function isStolen(result: RecordResponse): boolean | undefined {
+          // TODO: !prod --> clean up namings etc.
+          // NOTE: result.name = subdomain.jointhis.party, name = subdomain (This is due to the cloudflare API)
+          // TODO: !prod --> supply global consistency between name and result.name for developer sanity.
+          // result = record to check against, this loops through every record, including the records of the user.
+          // name, type, ... = pending creation record.
+
+          // A --> pending record
+          // B --> record to check against
+          interface InternalRecord {
+            name: string;
+            sub: string;
+            type: string;
+          }
+
+          var A: InternalRecord;
+          var B: InternalRecord;
+
+          if (type == `SRV`) {
+            A = {
+              name: `${name}.${DOMAIN}`,
+              sub: SRVtoSubdomain(name),
+              type: type,
+            };
+          } else {
+            A = {
+               name: `${name}.${DOMAIN}`,
+               sub: `${name}`,
+               type: type,
+             };
+          }
+
+          // TODO: same thing as above for B, which is the record we compare against. Make sure to parse SRVtoSubdomain.
+          // TODO: Add A/B for the whole function and fix issues with previous implementation
+          
+          var B: InternalRecord = {
+            name: `${result.name}`,
+            sub: NameToSubdomain(result.name),
+            type: result.type,
+          };
+
+          if (result.type == `SRV`) {
+            // Removes protocol and service parts of the record.
+            // EXAMPLE: _minecraft._tcp.test.dev(.jointhis.party) --> ["_minecraft", "_tcp", "test", "dev"] --> ["test", "dev"] --> "test.dev"
+            compare = result as Compare;
+            compare.SRVname = result.name
+              .replace(".jointhis.party", "")
+              .split(".")
+              .slice(2)
+              .join(".");
+          } else {
+            compare = result;
+            compare.name = result.name.replace(".jointhis.party", "");
+          }
           // TODO: Split SRV into service, protocol, subdomain and implement like that.
           if (
             result.name == `${name}.jointhis.party` &&
@@ -139,7 +215,7 @@ export async function createRecord(request: Request) {
           } else if (
             result.type == `SRV` &&
             result.comment !== `${session?.user?.id}` &&
-            result.name.endsWith(`${name}.jointhis.party`)
+            result.name == `${SRVsubdomain}.jointhis.party`
           ) {
             // If the user makes for example an A record that conflicts with an SRV record of another user.
             return true;

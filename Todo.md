@@ -28,6 +28,7 @@
 - [x] Prevent user overwriting / hijacking SRV record.
 - [x] Remove user id blacklist
 - [ ] Fix est -> devtest SRV record conflict
+- [ ] Proper typing and (inline) documentation
 - [ ] Translations
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [ ] Landing page remake
