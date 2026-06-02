@@ -3,14 +3,8 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
-import {
-  RecordCreateParams,
-  RecordListParams,
-  RecordResponse,
-  RecordResponsesSinglePage,
-  RecordResponsesV4PagePaginationArray,
-  SRVRecord,
-} from "cloudflare/resources/dns/records.mjs";
+import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
+import { Session } from "better-auth";
 
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
@@ -22,8 +16,8 @@ const DOMAIN = "jointhis.party";
 
 // EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
 function NameToSubdomain(name: string): string {
-  const domainsuffix = `.${DOMAIN}`;
-  return name.replace(domainsuffix, "");
+  const suffix = `.${DOMAIN}`;
+  return name.replace(suffix, "");
 }
 
 // EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
@@ -34,24 +28,33 @@ function SRVtoSubdomain(SRV: string): string {
 function IsUserAuthenticated(
   session: customSession | undefined,
 ): "notValidated" | boolean {
-  // auth validation
   if (!session) {
+    // No session --> Not authenticated.
     return false;
   } else if (!session.verified) {
+    // Email not verified.
     return "notValidated";
   } else if (!ValidateDiscordID.test(session.id || "")) {
-    // user ID validation, to avoid problems
+    // Test the userID with a regular expression, as the parsing in auth.ts may fail, which causes a lot of issues.
     return "notValidated";
   } else {
+    // User passes all checks, hence the user is successfully authenticated.
     return true;
   }
 }
+
+// Reserved subdomains for internal use or too common names.
+// NOTE: * --> Wildcard on root, @ --> root
 
 const blacklist: Array<string> = [
   "*",
   "@",
   "mc",
   "www",
+  "ww2",
+  "ww3",
+  "blog",
+  "contact",
   "docs",
   "official",
   "minecraft",
@@ -79,6 +82,77 @@ const blacklist: Array<string> = [
   "vps3",
   "vps4",
 ];
+// TODO: Global function here for checking wether a subdomain is allowed.
+function IsSubdomainAllowed(subdomain: string): boolean {
+  // Check if above list includes the subdomain, if yes, mark as disallowed.
+  if (blacklist.includes(subdomain)) {
+    return false;
+  }
+  // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
+  if (subdomain.match("[a-zA-Z0-9]+")) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isOwned(result: RecordResponse, session?: any): boolean {
+  if (result.comment == session?.user?.id) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isStolen(result: RecordResponse, body: any): boolean {
+  const { name, type, value, port } = body;
+  // A --> pending record
+  // B --> record to check against
+  interface InternalRecord {
+    name: string;
+    sub: string;
+    type: string;
+  }
+
+  var A: InternalRecord;
+  var B: InternalRecord;
+
+  if (type == `SRV`) {
+    A = {
+      name: `${name}.${DOMAIN}`,
+      sub: SRVtoSubdomain(name),
+      type: type,
+    };
+  } else {
+    A = {
+      name: `${name}.${DOMAIN}`,
+      sub: `${name}`,
+      type: type,
+    };
+  }
+
+  // With fetched results, cloudflare includes the domain in the "name" parameter. When creating, it only requires the subdomain. Therefore these conversions are necessary.
+  if (result.type == `SRV`) {
+    B = {
+      name: `${result.name}`,
+      sub: SRVtoSubdomain(NameToSubdomain(result.name)),
+      type: result.type,
+    };
+  } else {
+    B = {
+      name: `${result.name}`,
+      sub: NameToSubdomain(result.name),
+      type: type,
+    };
+  }
+
+  // Automatically prevents SRV and A record conflicts due to above conversions.
+  if (A.sub == B.sub) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 export async function getRecords(request: Request) {
   try {
@@ -140,65 +214,20 @@ export async function createRecord(request: Request) {
       case true: {
         const body = await request.json();
         const { name, type, value, port } = body;
-        // limitations
         const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
         });
-        function isOwned(result: RecordResponse): boolean {
-          if (result.comment == session?.user?.id) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-        function isStolen(result: RecordResponse): boolean | undefined {
-          // A --> pending record
-          // B --> record to check against
-          interface InternalRecord {
-            name: string;
-            sub: string;
-            type: string;
-          }
-
-          var A: InternalRecord;
-          var B: InternalRecord;
-
-          if (type == `SRV`) {
-            A = {
-              name: `${name}.${DOMAIN}`,
-              sub: SRVtoSubdomain(name),
-              type: type,
-            };
-          } else {
-            A = {
-              name: `${name}.${DOMAIN}`,
-              sub: `${name}`,
-              type: type,
-            };
-          }
-
-          // With fetched results, cloudflare includes the domain in the "name" parameter. When creating, it only requires the subdomain. Therefore these conversions are necessary.
-          if (result.type == `SRV`) {
-            B = {
-              name: `${result.name}`,
-              sub: SRVtoSubdomain(NameToSubdomain(result.name)),
-              type: result.type,
-            };
-          } else {
-            B = {
-              name: `${result.name}`,
-              sub: NameToSubdomain(result.name),
-              type: type,
-            };
-          }
-
-          // Automatically prevents SRV and A record conflicts due to above conversions.
-          if (A.sub == B.sub) {
-            return true;
-          }
-        }
-        const UserRecords = Records.result.filter(isOwned);
-        const unAuthorizedRecords = Records.result.filter(isStolen);
+        // CONTEXT: Records --> all DNS records
+        // Filter all records down to only records which belong to the user.
+        const UserRecords = Records.result.filter((record) =>
+          isOwned(record, session),
+        );
+        // Test for possible matches with other users records.
+        const unAuthorizedRecords = Records.result.filter((record) =>
+          isStolen(record, body),
+        );
+        // If no matching records are found which don't belong to the user:
+        // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found.
         if (
           !Array.isArray(unAuthorizedRecords) ||
           !unAuthorizedRecords.length
@@ -400,17 +429,17 @@ export async function deleteRecord(request: Request) {
   }
 }
 
-// List user owned subdomains
+// List user owned subdomains.
 export async function GET(request: Request) {
   return getRecords(request);
 }
 
-// create subdomain
+// Create subdomain.
 export async function POST(request: Request) {
   return createRecord(request);
 }
 
-// Delete subdomain
+// Delete subdomain.
 export async function DELETE(request: Request) {
   return deleteRecord(request);
 }
