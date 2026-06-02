@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
 import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
-import { Session } from "better-auth";
 
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
@@ -96,7 +95,7 @@ function IsSubdomainAllowed(subdomain: string): boolean {
   }
 }
 
-function isOwned(result: RecordResponse, session?: any): boolean {
+function isOwned(result: RecordResponse, session: any): boolean {
   if (result.comment == session?.user?.id) {
     return true;
   } else {
@@ -193,6 +192,88 @@ export async function getRecords(request: Request) {
   }
 }
 
+async function LogDeletion(record: RecordResponse, session: any) {
+  const name = record.name;
+  const value = record.content;
+  const type = record.type;
+  if (process.env.LOGS_WEBHOOK) {
+    await fetch(process.env.LOGS_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: "<@&1448781724803661927>",
+        tts: false,
+        embeds: [
+          {
+            id: 652627557,
+            title: "New subdomain deleted!",
+            description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
+            color: 2326507,
+            fields: [
+              {
+                id: 986834541,
+                name: "IP",
+                value: `${value}`,
+              },
+              {
+                id: 356214976,
+                name: "Record Type",
+                value: `${type}`,
+              },
+            ],
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+      }),
+    });
+  }
+}
+
+async function LogCreation(body: any, session: any) {
+  const { name, type, value } = body;
+  if (process.env.LOGS_WEBHOOK) {
+    await fetch(process.env.LOGS_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: "<@&1448781724803661927>",
+        tts: false,
+        embeds: [
+          {
+            id: 652627557,
+            title: "New subdomain created!",
+            description: `NAME: **${name}.jointhis.party**\nURL: https://${name}.jointhis.party\nOWNER: <@${session?.user?.id}>`,
+            color: 2326507,
+            fields: [
+              {
+                id: 986834541,
+                name: "IP",
+                value: `${value}`,
+              },
+              {
+                id: 356214976,
+                name: "Record Type",
+                value: `${type}`,
+              },
+            ],
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+      }),
+    });
+  }
+}
+
+// TODO: Simplify into one function, just change message depending on deletion or creation.
+
 export async function createRecord(request: Request) {
   try {
     const session = await auth.api.getSession({
@@ -273,41 +354,7 @@ export async function createRecord(request: Request) {
           // Actually create the record here.
           const recordResponse = await client.dns.records.create(payload);
           // Logging to the discord server for moderation purposes.
-          if (process.env.LOGS_WEBHOOK) {
-            await fetch(process.env.LOGS_WEBHOOK, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                content: "<@&1448781724803661927>",
-                tts: false,
-                embeds: [
-                  {
-                    id: 652627557,
-                    title: "New subdomain created!",
-                    description: `NAME: **${name}.jointhis.party**\nURL: https://${name}.jointhis.party\nOWNER: <@${session?.user?.id}>`,
-                    color: 2326507,
-                    fields: [
-                      {
-                        id: 986834541,
-                        name: "IP",
-                        value: `${value}`,
-                      },
-                      {
-                        id: 356214976,
-                        name: "Record Type",
-                        value: `${type}`,
-                      },
-                    ],
-                  },
-                ],
-                components: [],
-                actions: {},
-                flags: 0,
-              }),
-            });
-          }
+          LogCreation(body, session);
           return NextResponse.json(
             { success: true, record: recordResponse },
             { status: 200 },
@@ -363,51 +410,14 @@ export async function deleteRecord(request: Request) {
         const record = await client.dns.records.get(`${id}`, {
           zone_id: ZONE_ID,
         });
-        const name = record.name;
-        const value = record.content;
-        const type = record.type;
-        const comment = record.comment;
-        if (comment == session?.user.id) {
+        // Check if the user owns the pending record, to make sure the client isn't lying.
+        if (record.comment == session?.user.id) {
           // Actually deleting it.
           const deleteRecord = await client.dns.records.delete(`${id}`, {
             zone_id: ZONE_ID,
           });
           // Logging to the discord server for moderation purposes.
-          if (process.env.LOGS_WEBHOOK) {
-            await fetch(process.env.LOGS_WEBHOOK, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                content: "<@&1448781724803661927>",
-                tts: false,
-                embeds: [
-                  {
-                    id: 652627557,
-                    title: "New subdomain deleted!",
-                    description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
-                    color: 2326507,
-                    fields: [
-                      {
-                        id: 986834541,
-                        name: "IP",
-                        value: `${value}`,
-                      },
-                      {
-                        id: 356214976,
-                        name: "Record Type",
-                        value: `${type}`,
-                      },
-                    ],
-                  },
-                ],
-                components: [],
-                actions: {},
-                flags: 0,
-              }),
-            });
-          }
+          LogDeletion(record, session);
           return NextResponse.json(
             { success: true, result: deleteRecord },
             { status: 200 },
