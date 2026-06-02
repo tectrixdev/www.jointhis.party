@@ -152,12 +152,6 @@ export async function createRecord(request: Request) {
           }
         }
         function isStolen(result: RecordResponse): boolean | undefined {
-          // TODO: !prod --> clean up namings etc.
-          // NOTE: result.name = subdomain.jointhis.party, name = subdomain (This is due to the cloudflare API)
-          // TODO: !prod --> supply global consistency between name and result.name for developer sanity.
-          // result = record to check against, this loops through every record, including the records of the user.
-          // name, type, ... = pending creation record.
-
           // A --> pending record
           // B --> record to check against
           interface InternalRecord {
@@ -177,56 +171,29 @@ export async function createRecord(request: Request) {
             };
           } else {
             A = {
-               name: `${name}.${DOMAIN}`,
-               sub: `${name}`,
-               type: type,
-             };
+              name: `${name}.${DOMAIN}`,
+              sub: `${name}`,
+              type: type,
+            };
           }
 
-          // TODO: same thing as above for B, which is the record we compare against. Make sure to parse SRVtoSubdomain.
-          // TODO: Add A/B for the whole function and fix issues with previous implementation
-          
-          var B: InternalRecord = {
-            name: `${result.name}`,
-            sub: NameToSubdomain(result.name),
-            type: result.type,
-          };
-
+          // With fetched results, cloudflare includes the domain in the "name" parameter. When creating, it only requires the subdomain. Therefore these conversions are necessary.
           if (result.type == `SRV`) {
-            // Removes protocol and service parts of the record.
-            // EXAMPLE: _minecraft._tcp.test.dev(.jointhis.party) --> ["_minecraft", "_tcp", "test", "dev"] --> ["test", "dev"] --> "test.dev"
-            compare = result as Compare;
-            compare.SRVname = result.name
-              .replace(".jointhis.party", "")
-              .split(".")
-              .slice(2)
-              .join(".");
+            B = {
+              name: `${result.name}`,
+              sub: SRVtoSubdomain(NameToSubdomain(result.name)),
+              type: result.type,
+            };
           } else {
-            compare = result;
-            compare.name = result.name.replace(".jointhis.party", "");
+            B = {
+              name: `${result.name}`,
+              sub: NameToSubdomain(result.name),
+              type: type,
+            };
           }
-          // TODO: Split SRV into service, protocol, subdomain and implement like that.
-          if (
-            result.name == `${name}.jointhis.party` &&
-            result.comment !== `${session?.user?.id}`
-          ) {
-            // If it matches the record name and the user doesn't own it.
-            return true;
-          } else if (
-            result.type == `SRV` &&
-            result.comment !== `${session?.user?.id}` &&
-            result.name == `${SRVsubdomain}.jointhis.party`
-          ) {
-            // If the user makes for example an A record that conflicts with an SRV record of another user.
-            return true;
-          } else if (
-            type == `SRV` &&
-            result.comment !== `${session?.user?.id}` &&
-            result.name !== `jointhis.party` &&
-            // Otherwise it'll deny about everything :0
-            `${name}.jointhis.party`.endsWith(result.name)
-          ) {
-            // If the user makes an SRV record that conflicts with for example an A record of another user.
+
+          // Automatically prevents SRV and A record conflicts due to above conversions.
+          if (A.sub == B.sub) {
             return true;
           }
         }
