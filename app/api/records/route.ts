@@ -193,9 +193,7 @@ export async function getRecords(request: Request) {
 }
 
 async function LogDeletion(record: RecordResponse, session: any) {
-  const name = record.name;
-  const value = record.content;
-  const type = record.type;
+  const { name, content, type } = record;
   if (process.env.LOGS_WEBHOOK) {
     await fetch(process.env.LOGS_WEBHOOK, {
       method: "POST",
@@ -215,7 +213,7 @@ async function LogDeletion(record: RecordResponse, session: any) {
               {
                 id: 986834541,
                 name: "IP",
-                value: `${value}`,
+                value: `${content}`,
               },
               {
                 id: 356214976,
@@ -232,7 +230,7 @@ async function LogDeletion(record: RecordResponse, session: any) {
     });
   }
 }
-
+// TODO: value --> content for consistency.
 async function LogCreation(body: any, session: any) {
   const { name, type, value } = body;
   if (process.env.LOGS_WEBHOOK) {
