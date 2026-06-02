@@ -27,7 +27,7 @@
 - [x] Optimize CLI API to not fetch the dns api and just execute it instead.
 - [x] Prevent user overwriting / hijacking SRV record.
 - [x] Remove user id blacklist
-- [ ] Fix est -> devtest SRV record conflict
+- [x] Fix est -> devtest SRV record conflict
 - [ ] Proper typing and (inline) documentation
 - [ ] Translations
 - [ ] ~~More rate limiting~~ + **better error handling.**
