@@ -3,14 +3,37 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
-import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
+import {
+  RecordCreateParams,
+  RecordListParams,
+  RecordResponse,
+  RecordResponsesSinglePage,
+  RecordResponsesV4PagePaginationArray,
+  SRVRecord,
+} from "cloudflare/resources/dns/records.mjs";
 
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 });
-const ZONE_ID = "fc5602181bbb84839aef4907714f435c"; // jointhis.party domain
+const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
+const DOMAIN = "jointhis.party";
 
-function IsUserAuthenticated(session: customSession | undefined) {
+// TODO: cleanup, consistent naming, consistent variables. (consistent examples)
+
+// EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
+function NameToSubdomain(name: string): string {
+  const domainsuffix = `.${DOMAIN}`;
+  return name.replace(domainsuffix, "");
+}
+
+// EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
+function SRVtoSubdomain(SRV: string): string {
+  return SRV.split(".").slice(2).join(".");
+}
+
+function IsUserAuthenticated(
+  session: customSession | undefined,
+): "notValidated" | boolean {
   // auth validation
   if (!session) {
     return false;
@@ -24,7 +47,7 @@ function IsUserAuthenticated(session: customSession | undefined) {
   }
 }
 
-const blacklist = [
+const blacklist: Array<string> = [
   "*",
   "@",
   "mc",
@@ -118,21 +141,64 @@ export async function createRecord(request: Request) {
         const body = await request.json();
         const { name, type, value, port } = body;
         // limitations
-        const userRecords = await client.dns.records.list({
+        const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
-          comment: {
-            exact: session?.user?.id,
-          },
         });
-        const UserRecords = userRecords.result;
-        const duplicates = await client.dns.records.list({
-          zone_id: ZONE_ID,
-          name: { exact: `${name}.jointhis.party` },
-        });
-        function isStolen(result: RecordResponse) {
-          return result.comment !== `${session?.user?.id}`;
+        function isOwned(result: RecordResponse): boolean {
+          if (result.comment == session?.user?.id) {
+            return true;
+          } else {
+            return false;
+          }
         }
-        const unAuthorizedRecords = duplicates.result.filter(isStolen);
+        function isStolen(result: RecordResponse): boolean | undefined {
+          // A --> pending record
+          // B --> record to check against
+          interface InternalRecord {
+            name: string;
+            sub: string;
+            type: string;
+          }
+
+          var A: InternalRecord;
+          var B: InternalRecord;
+
+          if (type == `SRV`) {
+            A = {
+              name: `${name}.${DOMAIN}`,
+              sub: SRVtoSubdomain(name),
+              type: type,
+            };
+          } else {
+            A = {
+              name: `${name}.${DOMAIN}`,
+              sub: `${name}`,
+              type: type,
+            };
+          }
+
+          // With fetched results, cloudflare includes the domain in the "name" parameter. When creating, it only requires the subdomain. Therefore these conversions are necessary.
+          if (result.type == `SRV`) {
+            B = {
+              name: `${result.name}`,
+              sub: SRVtoSubdomain(NameToSubdomain(result.name)),
+              type: result.type,
+            };
+          } else {
+            B = {
+              name: `${result.name}`,
+              sub: NameToSubdomain(result.name),
+              type: type,
+            };
+          }
+
+          // Automatically prevents SRV and A record conflicts due to above conversions.
+          if (A.sub == B.sub) {
+            return true;
+          }
+        }
+        const UserRecords = Records.result.filter(isOwned);
+        const unAuthorizedRecords = Records.result.filter(isStolen);
         if (
           !Array.isArray(unAuthorizedRecords) ||
           !unAuthorizedRecords.length

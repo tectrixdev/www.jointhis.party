@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { createPool } from "mysql2/promise";
 import { oneTimeToken } from "better-auth/plugins/one-time-token";
-import { captcha } from "better-auth/plugins";
 import { bearer } from "better-auth/plugins";
 
 export const auth = betterAuth({
@@ -17,14 +16,6 @@ export const auth = betterAuth({
     discord: {
       clientId: process.env.AUTH_DISCORD_ID as string,
       clientSecret: process.env.AUTH_DISCORD_SECRET as string,
-      // mapProfileToUser: (profile) => {
-      //   console.log("Discord profile:", profile);
-      //   return {
-      //     discordId: profile.id,
-      //     // emailVerified: profile.verified,
-      //     // implement these in the future for better security/alt mitigation
-      //   };
-      // },
     },
   },
   plugins: [
@@ -42,10 +33,6 @@ export const auth = betterAuth({
       };
     }),
     bearer(),
-    // captcha({
-    //   provider: "cloudflare-turnstile",
-    //   secretKey: process.env.TURNSTILE_SECRET_KEY!,
-    // }),
   ],
   session: {
     cookieCache: {
@@ -81,18 +68,3 @@ export function UserIdFromAvatar(avatar: string | null | undefined) {
   }
   return userId;
 }
-
-// export const { handlers, signIn, signOut, auth } = NextAuth({
-//   providers: [Discord],
-//   callbacks: {
-//     async session({ session }) {
-//       if (session.user.image == null || session.user.image == undefined) {
-//         return session;
-//       } else {
-//         session.user.id = UserIdFromAvatar(session.user.image) || "undefined";
-//       }
-//       return session;
-//     },
-//   },
-// });
-// Discord auth only for now to identify quickly for moderation.

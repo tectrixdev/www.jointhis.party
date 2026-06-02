@@ -19,23 +19,22 @@
 - [x] SEO(google)
 - [x] Add to tectrix.dev
 - [x] Subdomain tool UI overhaul
-- [ ] Store whole user object in domain comments + email user identification.
-- [ ] Finish more guides (web, games, discord bot), add new guides from poll
-- [ ] Minecraft unified server hub. (opt-in)
-- [ ] Translations
-- [ ] cloudflare proxy support using overwrite
-- [ ] more editing options
-- [ ] custom guide import markdown files in the tabs
-- [ ] second code cleanup (if needed)
 - [x] Add logging name consistency.
 - [x] ~~Router refresh tool page when record is created.~~ **Not possible**
-- [ ] ~~More rate limiting~~ + **better error handling.**
 - [x] Optimize CLI API.
 - [x] Optimize records API.
 - [x] Fix cloudflare bot protection blocking vercel.
 - [x] Optimize CLI API to not fetch the dns api and just execute it instead.
-- [ ] Add proper login page (and use other identifier than discord user ID?)
-- [ ] Prevent user overwriting / hijacking SRV record.
+- [x] Prevent user overwriting / hijacking SRV record.
+- [x] Remove user id blacklist
+- [x] Fix est -> devtest SRV record conflict
+- [ ] Proper typing and (inline) documentation
+- [ ] Translations
+- [ ] ~~More rate limiting~~ + **better error handling.**
+- [ ] Landing page remake
+- [ ] Add moderation UI for moderators
+- [ ] Use better auth admin plugin for moderation UI
+- [ ] Select moderators and update privacy policy accordingly
 
 ## Guides / docs
 
@@ -52,7 +51,16 @@
 - [x] Add a way to communicate this with the CLI
 - [ ] Implement captcha with cloudflare turnstile.
 
-These are now possible due to DB:
+## These are now possible due to having an auth DB
 
 - [ ] get discord user id properly
 - [ ] implement alt mitigation better with profile info.
+
+## Future / uncertain
+
+- [ ] Store whole user object in domain comments + email user identification.
+- [ ] second code cleanup (if needed)
+- [ ] cloudflare proxy support using overwrite
+- [ ] more editing options
+- [ ] Minecraft unified server hub. (opt-in)
+- [ ] Add proper login page (and use other identifier than discord user ID?) + turnstile
