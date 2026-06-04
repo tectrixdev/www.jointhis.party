@@ -153,7 +153,7 @@ function isStolen(result: RecordResponse, body: any): boolean {
   }
 }
 
-async function LogDeletion(record: RecordResponse, session: any) {
+async function Log(record: RecordResponse, session: any, deletion: boolean) {
   const { name, content, type } = record;
   if (process.env.LOGS_WEBHOOK) {
     await fetch(process.env.LOGS_WEBHOOK, {
@@ -167,9 +167,9 @@ async function LogDeletion(record: RecordResponse, session: any) {
         embeds: [
           {
             id: 652627557,
-            title: "New subdomain deleted!",
+            title: deletion ? "Subdomain deleted" : "New subdomain registered",
             description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.user?.id}>`,
-            color: 2326507,
+            color: deletion ? 15548997 : 326507,
             fields: [
               {
                 id: 986834541,
@@ -191,45 +191,6 @@ async function LogDeletion(record: RecordResponse, session: any) {
     });
   }
 }
-async function LogCreation(body: any, session: any) {
-  const { name, type, content } = body;
-  if (process.env.LOGS_WEBHOOK) {
-    await fetch(process.env.LOGS_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: "<@&1448781724803661927>",
-        tts: false,
-        embeds: [
-          {
-            id: 652627557,
-            title: "New subdomain created!",
-            description: `NAME: **${name}.jointhis.party**\nURL: https://${name}.jointhis.party\nOWNER: <@${session?.user?.id}>`,
-            color: 2326507,
-            fields: [
-              {
-                id: 986834541,
-                name: "IP",
-                value: `${content}`,
-              },
-              {
-                id: 356214976,
-                name: "Record Type",
-                value: `${type}`,
-              },
-            ],
-          },
-        ],
-        components: [],
-        actions: {},
-        flags: 0,
-      }),
-    });
-  }
-}
-// TODO: Simplify into one function, just change message depending on deletion or creation.
 
 export async function getRecords(request: Request) {
   try {
@@ -351,7 +312,7 @@ export async function createRecord(request: Request) {
           // Actually create the record here.
           const recordResponse = await client.dns.records.create(payload);
           // Logging to the discord server for moderation purposes.
-          LogCreation(body, session);
+          Log(body, session, false);
           return NextResponse.json(
             { success: true, record: recordResponse },
             { status: 200 },
@@ -414,7 +375,7 @@ export async function deleteRecord(request: Request) {
             zone_id: ZONE_ID,
           });
           // Logging to the discord server for moderation purposes.
-          LogDeletion(record, session);
+          Log(record, session, true);
           return NextResponse.json(
             { success: true, result: deleteRecord },
             { status: 200 },
