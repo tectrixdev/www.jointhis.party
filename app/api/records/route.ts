@@ -103,14 +103,15 @@ function isOwned(result: RecordResponse, session: any): boolean {
   }
 }
 
-function isStolen(result: RecordResponse, body: any): boolean {
-  const { name, type } = body;
+function isStolen(result: RecordResponse, body: any, session: any): boolean {
+  const { name, type, comment } = body;
   // A --> pending record
   // B --> record to check against
   interface InternalRecord {
     name: string;
     sub: string;
     type: string;
+    comment: string;
   }
 
   var A: InternalRecord;
@@ -121,12 +122,14 @@ function isStolen(result: RecordResponse, body: any): boolean {
       name: `${name}.${DOMAIN}`,
       sub: SRVtoSubdomain(name),
       type: type,
+      comment: comment,
     };
   } else {
     A = {
       name: `${name}.${DOMAIN}`,
       sub: `${name}`,
       type: type,
+      comment: comment,
     };
   }
 
@@ -136,17 +139,19 @@ function isStolen(result: RecordResponse, body: any): boolean {
       name: `${result.name}`,
       sub: SRVtoSubdomain(NameToSubdomain(result.name)),
       type: result.type,
+      comment: comment,
     };
   } else {
     B = {
       name: `${result.name}`,
       sub: NameToSubdomain(result.name),
       type: type,
+      comment: comment,
     };
   }
-  // TODO: Prevent the users record from being marked as stolen.
   // Automatically prevents SRV and A record conflicts due to above conversions.
-  if (A.sub == B.sub) {
+  // Testcase: comments
+  if (A.sub == B.sub && B.comment !== session?.user?.comment) {
     return true;
   } else {
     return false;
@@ -262,7 +267,7 @@ export async function createRecord(request: Request) {
         );
         // Test for possible matches with other users records.
         const unAuthorizedRecords = Records.result.filter((record) =>
-          isStolen(record, body),
+          isStolen(record, body, session),
         );
         // If no matching records are found which don't belong to the user:
         // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found.
