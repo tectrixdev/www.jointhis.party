@@ -3,7 +3,14 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
-import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
+import { RecordCreateParams, RecordResponse } from "cloudflare/resources/dns/records.mjs";
+import {
+  DNSCreateParams,
+  DNSRecord,
+  DNSRecordsSinglePage,
+} from "cloudflare/resources/email-routing/dns.mjs";
+import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_CALLBACK_REF_RETURN_VALUES } from "react";
+import { PayloadCreateResponse } from "cloudflare/resources/content-scanning/payloads.mjs";
 
 // Initialize Cloudflare API instance.
 const client = new Cloudflare({
@@ -162,7 +169,11 @@ function isStolen(result: RecordResponse, body: any, session: any): boolean {
   }
 }
 
-async function Log(message: string, identifier: string, error: boolean) {
+async function Log(
+  message: string,
+  identifier: string | undefined,
+  error: boolean,
+) {
   if (process.env.LOGS_WEBHOOK) {
     await fetch(process.env.LOGS_WEBHOOK, {
       method: "POST",
@@ -248,6 +259,11 @@ export async function getRecords(request: Request) {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
       case "notValidated": {
+        Log(
+          "User failed regular expression or has not verified their email.",
+          session?.user?.id,
+          true,
+        );
         return NextResponse.json(
           {
             error:
@@ -269,6 +285,10 @@ export async function getRecords(request: Request) {
       }
     }
   } catch (err: any) {
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
+    Log("Unexpected error while fetching records.", session?.user?.id, true);
     console.error(err);
     return NextResponse.json(
       { error: err?.errors[0].message || "Unknown error" },
@@ -287,6 +307,11 @@ export async function createRecord(request: Request) {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
       }
       case "notValidated": {
+        Log(
+          "User failed regular expression or has not verified their email.",
+          session?.user?.id,
+          true,
+        );
         return NextResponse.json(
           {
             error:
@@ -297,7 +322,8 @@ export async function createRecord(request: Request) {
       }
       case true: {
         const body = await request.json();
-        const { name, type, content, port } = body;
+        const { name, content, port } = body;
+        const type = body.type as "A" | "AAAA" | "CNAME" | "SRV";
         const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
         });
@@ -317,6 +343,12 @@ export async function createRecord(request: Request) {
           !unAuthorizedRecords.length
         ) {
           if (UserRecords.length > 5) {
+            Log(
+              "User reached maximum amount of allowed records.",
+              session?.user?.id,
+              true,
+            );
+
             return NextResponse.json(
               {
                 error:
@@ -325,7 +357,13 @@ export async function createRecord(request: Request) {
               { status: 403 },
             );
           }
+
           if (blacklist.includes(name)) {
+            Log(
+              "User tried registering a blacklisted subdomain",
+              session?.user?.id,
+              true,
+            );
             return NextResponse.json(
               {
                 error:
@@ -334,28 +372,37 @@ export async function createRecord(request: Request) {
               { status: 403 },
             );
           }
-          // Creation.
-          // TODO: Simplify and improve the payload creation. + Add inline documentation.
-          const payload: any = {
-            zone_id: ZONE_ID,
-            name: `${name}`,
-            type: `${type}`,
-            ttl: 3600,
-            content: `${content}`,
-            comment: session?.user?.id ?? undefined,
-          };
-          // comment == undefined should NOT happen!
+          
+          var payload: RecordCreateParams;
           if (type === "SRV") {
-            payload.data = {
+            // SRV record payload format.
+            // TTL --> 3600 because most subdomains don't last long or are expected to change owners quickly.
+            // comment --> This is (for now) used to store ownership information, which is just the discord user ID.
+            payload = {
+              zone_id: ZONE_ID,
               name: `${name}`,
-              priority: 0,
-              weight: 0,
-              port: Number(port || 0),
-              target: `${content}`,
+              type: `${type}`,
+              ttl: 3600,
+              comment: session?.user?.id ?? undefined,
+              data: {
+                priority: 0,
+                weight: 0,
+                port: Number(port || 0),
+                target: `${content}`,
+              },
             };
-            delete payload.content;
+          } else {
+            // Payload for ordinary records such as TXT, A, AAAA
+            payload = {
+              zone_id: ZONE_ID,
+              name: `${name}`,
+              type: `${type}`,
+              ttl: 3600,
+              content: `${content}`,
+              comment: session?.user?.id ?? undefined,
+            };
           }
-          // Actually create the record here.
+          // comment == undefined should NOT happen!
           const recordResponse = await client.dns.records.create(payload);
           // Logging to the discord server for moderation purposes.
           LogRecord(body, session, false);

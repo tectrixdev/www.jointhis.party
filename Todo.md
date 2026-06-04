@@ -29,6 +29,7 @@
 - [x] Remove user id blacklist
 - [x] Fix est -> devtest SRV record conflict
 - [ ] Proper typing and (inline) documentation
+- [ ] SRV record presets.
 - [ ] Translations
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [ ] Landing page remake
