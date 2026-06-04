@@ -5,12 +5,16 @@ import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
 import { RecordResponse } from "cloudflare/resources/dns/records.mjs";
 
+// Initialize Cloudflare API instance.
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 });
+// Cloudflare zone == internal code for domain.
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
+// Domain for subdomain conversions etc.
 const DOMAIN = "jointhis.party";
-
+// Moderator role ID to ping when needed
+const MODERATORS = "1448781724803661927";
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
 
 // EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
@@ -158,7 +162,44 @@ function isStolen(result: RecordResponse, body: any, session: any): boolean {
   }
 }
 
-async function Log(record: RecordResponse, session: any, deletion: boolean) {
+async function Log(message: string, identifier: string, error: boolean) {
+  if (process.env.LOGS_WEBHOOK) {
+    await fetch(process.env.LOGS_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: error ? `<@&${MODERATORS}>` : ``,
+        tts: false,
+        embeds: [
+          {
+            id: 652627557,
+            title: error ? "Error" : "Successful",
+            description: message,
+            color: error ? 15548997 : 326507,
+            fields: [
+              {
+                id: 986834541,
+                name: "User",
+                value: `<@&${identifier}>`,
+              },
+            ],
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+      }),
+    });
+  }
+}
+
+async function LogRecord(
+  record: RecordResponse,
+  session: any,
+  deletion: boolean,
+) {
   const { name, content, type } = record;
   if (process.env.LOGS_WEBHOOK) {
     await fetch(process.env.LOGS_WEBHOOK, {
@@ -167,7 +208,7 @@ async function Log(record: RecordResponse, session: any, deletion: boolean) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: "<@&1448781724803661927>",
+        content: `<@&${MODERATORS}>`,
         tts: false,
         embeds: [
           {
@@ -317,7 +358,7 @@ export async function createRecord(request: Request) {
           // Actually create the record here.
           const recordResponse = await client.dns.records.create(payload);
           // Logging to the discord server for moderation purposes.
-          Log(body, session, false);
+          LogRecord(body, session, false);
           return NextResponse.json(
             { success: true, record: recordResponse },
             { status: 200 },
@@ -380,7 +421,7 @@ export async function deleteRecord(request: Request) {
             zone_id: ZONE_ID,
           });
           // Logging to the discord server for moderation purposes.
-          Log(record, session, true);
+          LogRecord(record, session, true);
           return NextResponse.json(
             { success: true, result: deleteRecord },
             { status: 200 },
