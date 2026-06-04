@@ -3,25 +3,25 @@ import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
 import { ValidateDiscordID } from "@/auth";
-import { RecordCreateParams, RecordResponse } from "cloudflare/resources/dns/records.mjs";
 import {
-  DNSCreateParams,
-  DNSRecord,
-  DNSRecordsSinglePage,
-} from "cloudflare/resources/email-routing/dns.mjs";
-import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_CALLBACK_REF_RETURN_VALUES } from "react";
-import { PayloadCreateResponse } from "cloudflare/resources/content-scanning/payloads.mjs";
+  RecordCreateParams,
+  RecordResponse,
+} from "cloudflare/resources/dns/records.mjs";
 
 // Initialize Cloudflare API instance.
 const client = new Cloudflare({
   apiToken: process.env["CLOUDFLARE_API_TOKEN"],
 });
+
 // Cloudflare zone == internal code for domain.
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
+
 // Domain for subdomain conversions etc.
 const DOMAIN = "jointhis.party";
+
 // Moderator role ID to ping when needed
 const MODERATORS = "1448781724803661927";
+
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
 
 // EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
@@ -92,7 +92,9 @@ const blacklist: Array<string> = [
   "vps3",
   "vps4",
 ];
+
 // TODO: Global function here for checking wether a subdomain is allowed.
+
 function IsSubdomainAllowed(subdomain: string): boolean {
   // Check if above list includes the subdomain, if yes, mark as disallowed.
   if (blacklist.includes(subdomain)) {
@@ -299,9 +301,12 @@ export async function getRecords(request: Request) {
 
 export async function createRecord(request: Request) {
   try {
+    // Get authentication session.
     const session = await auth.api.getSession({
       headers: request.headers,
     });
+
+    // Authentication.
     switch (IsUserAuthenticated(session?.user)) {
       case false: {
         return NextResponse.json({ error: "Please log in." }, { status: 401 });
@@ -320,13 +325,29 @@ export async function createRecord(request: Request) {
           { status: 500 },
         );
       }
+      // Authentication success.
       case true: {
         const body = await request.json();
         const { name, content, port } = body;
+        // These are the only possible options, see ToolInput.tsx
         const type = body.type as "A" | "AAAA" | "CNAME" | "SRV";
         const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
         });
+        if (!IsSubdomainAllowed(name)) {
+          Log(
+            "User tried registering a blacklisted subdomain",
+            session?.user?.id,
+            true,
+          );
+          return NextResponse.json(
+            {
+              error:
+                "Subdomain name not allowed! If this is a mistake, please create a support ticket.",
+            },
+            { status: 403 },
+          );
+        }
         // CONTEXT: Records --> all DNS records
         // Filter all records down to only records which belong to the user.
         const UserRecords = Records.result.filter((record) =>
@@ -358,21 +379,6 @@ export async function createRecord(request: Request) {
             );
           }
 
-          if (blacklist.includes(name)) {
-            Log(
-              "User tried registering a blacklisted subdomain",
-              session?.user?.id,
-              true,
-            );
-            return NextResponse.json(
-              {
-                error:
-                  "Subdomain name not allowed! If this is a mistake, please create a support ticket.",
-              },
-              { status: 403 },
-            );
-          }
-          
           var payload: RecordCreateParams;
           if (type === "SRV") {
             // SRV record payload format.
