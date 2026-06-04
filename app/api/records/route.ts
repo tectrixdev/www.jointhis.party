@@ -104,7 +104,7 @@ function isOwned(result: RecordResponse, session: any): boolean {
 }
 
 function isStolen(result: RecordResponse, body: any): boolean {
-  const { name, type, value, port } = body;
+  const { name, type } = body;
   // A --> pending record
   // B --> record to check against
   interface InternalRecord {
@@ -144,51 +144,12 @@ function isStolen(result: RecordResponse, body: any): boolean {
       type: type,
     };
   }
-
+  // TODO: Prevent the users record from being marked as stolen.
   // Automatically prevents SRV and A record conflicts due to above conversions.
   if (A.sub == B.sub) {
     return true;
   } else {
     return false;
-  }
-}
-
-export async function getRecords(request: Request) {
-  try {
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
-    switch (IsUserAuthenticated(session?.user)) {
-      case false: {
-        return NextResponse.json({ error: "Please log in." }, { status: 401 });
-      }
-      case "notValidated": {
-        return NextResponse.json(
-          {
-            error:
-              "Discord user ID or e-mail could not be validated, please make a support ticket.",
-          },
-          { status: 500 },
-        );
-      }
-      case true: {
-        // Get records associated with user id, possibly dangerous if it's empty. Should be fine with the validation of the userID
-        const userRecords = await client.dns.records.list({
-          zone_id: ZONE_ID,
-          comment: {
-            exact: session?.user?.id,
-          },
-        });
-        const UserRecords = userRecords.result;
-        return NextResponse.json({ UserRecords }, { status: 200 });
-      }
-    }
-  } catch (err: any) {
-    console.error(err);
-    return NextResponse.json(
-      { error: err?.errors[0].message || "Unknown error" },
-      { status: 500 },
-    );
   }
 }
 
@@ -230,9 +191,8 @@ async function LogDeletion(record: RecordResponse, session: any) {
     });
   }
 }
-// TODO: value --> content for consistency.
 async function LogCreation(body: any, session: any) {
-  const { name, type, value } = body;
+  const { name, type, content } = body;
   if (process.env.LOGS_WEBHOOK) {
     await fetch(process.env.LOGS_WEBHOOK, {
       method: "POST",
@@ -252,7 +212,7 @@ async function LogCreation(body: any, session: any) {
               {
                 id: 986834541,
                 name: "IP",
-                value: `${value}`,
+                value: `${content}`,
               },
               {
                 id: 356214976,
@@ -269,8 +229,46 @@ async function LogCreation(body: any, session: any) {
     });
   }
 }
-
 // TODO: Simplify into one function, just change message depending on deletion or creation.
+
+export async function getRecords(request: Request) {
+  try {
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
+    switch (IsUserAuthenticated(session?.user)) {
+      case false: {
+        return NextResponse.json({ error: "Please log in." }, { status: 401 });
+      }
+      case "notValidated": {
+        return NextResponse.json(
+          {
+            error:
+              "Discord user ID or e-mail could not be validated, please make a support ticket.",
+          },
+          { status: 500 },
+        );
+      }
+      case true: {
+        // Get records associated with user id, possibly dangerous if it's empty. Should be fine with the validation of the userID
+        const userRecords = await client.dns.records.list({
+          zone_id: ZONE_ID,
+          comment: {
+            exact: session?.user?.id,
+          },
+        });
+        const UserRecords = userRecords.result;
+        return NextResponse.json({ UserRecords }, { status: 200 });
+      }
+    }
+  } catch (err: any) {
+    console.error(err);
+    return NextResponse.json(
+      { error: err?.errors[0].message || "Unknown error" },
+      { status: 500 },
+    );
+  }
+}
 
 export async function createRecord(request: Request) {
   try {
@@ -292,7 +290,7 @@ export async function createRecord(request: Request) {
       }
       case true: {
         const body = await request.json();
-        const { name, type, value, port } = body;
+        const { name, type, content, port } = body;
         const Records = await client.dns.records.list({
           zone_id: ZONE_ID,
         });
@@ -330,12 +328,13 @@ export async function createRecord(request: Request) {
             );
           }
           // Creation.
+          // TODO: Simplify and improve the payload creation. + Add inline documentation.
           const payload: any = {
             zone_id: ZONE_ID,
             name: `${name}`,
             type: `${type}`,
             ttl: 3600,
-            content: `${value}`,
+            content: `${content}`,
             comment: session?.user?.id ?? undefined,
           };
           // comment == undefined should NOT happen!
@@ -345,7 +344,7 @@ export async function createRecord(request: Request) {
               priority: 0,
               weight: 0,
               port: Number(port || 0),
-              target: `${value}`,
+              target: `${content}`,
             };
             delete payload.content;
           }

@@ -8,4 +8,5 @@ production
 - [ ] Blacklist functionality
 - [ ] Owned records
 - [ ] Stolen records
+- [ ] Simple record creation, deletion, ...
 - [ ] Discord webhook logging

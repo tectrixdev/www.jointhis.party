@@ -40,7 +40,7 @@ export function Form() {
     const payload = {
       name: fd.get("name"),
       type: fd.get("type"),
-      value: fd.get("value"),
+      content: fd.get("content"),
       port: fd.get("port"),
     };
 
@@ -106,13 +106,13 @@ export function Form() {
         </select>
       </div>
       <div className="flex flex-col gap-2">
-        <label className="font-semibold" htmlFor="value">
-          Value
+        <label className="font-semibold" htmlFor="content">
+          Content
         </label>
         <input
           className="rounded-md border border-black px-3 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none dark:border-gray-300"
-          id="value"
-          name="value"
+          id="content"
+          name="content"
           required
           placeholder="169.134.121.60"
         />
