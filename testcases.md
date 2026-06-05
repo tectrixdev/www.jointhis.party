@@ -10,3 +10,4 @@ production
 - [ ] Stolen records
 - [ ] Simple record creation, deletion, ...
 - [ ] Discord webhook logging
+- [ ] Test authentication
