@@ -52,6 +52,10 @@ export function Form() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      if (res.status == 429) {
+        console.error("You are being rate-limited, try again in one minute.");
+        toast.error("You are being rate-limited, try again in one minute.");
+      }
       const data = await res.json();
       if (!res.ok) {
         toast.dismiss(t);
@@ -163,9 +167,13 @@ export function Manager() {
     setLoadingRecords(true);
     try {
       const res = await fetch("/api/records");
+      if (res.status == 429) {
+        console.error("You are being rate-limited, try again in one minute.");
+        toast.error("You are being rate-limited, try again in one minute.");
+      }
       const json = await res.json();
       const payload =
-        json?.UserRecords ||
+        json.UserRecords ||
         json?.userRecords ||
         json?.userRecords?.result ||
         [];
@@ -202,6 +210,10 @@ export function Manager() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
+      if (res.status == 429) {
+        console.error("You are being rate-limited, try again in one minute.");
+        toast.error("You are being rate-limited, try again in one minute.");
+      }
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Delete failed");
       toast.success("Deleted");
