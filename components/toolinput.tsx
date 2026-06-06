@@ -55,14 +55,15 @@ export function Form() {
       if (res.status == 429) {
         console.error("You are being rate-limited, try again in one minute.");
         toast.error("You are being rate-limited, try again in one minute.");
-      }
-      const data = await res.json();
-      if (!res.ok) {
-        toast.dismiss(t);
-        toast.error(data?.error || "Failed to create record");
       } else {
-        toast.dismiss(t);
-        toast.success("Record created, refresh the manager to view it.");
+        const data = await res.json();
+        if (!res.ok) {
+          toast.dismiss(t);
+          toast.error(data?.error || "Failed to create record");
+        } else {
+          toast.dismiss(t);
+          toast.success("Record created, refresh the manager to view it.");
+        }
       }
     } catch (err: any) {
       toast.error(err?.message || "Network error");
@@ -170,24 +171,25 @@ export function Manager() {
       if (res.status == 429) {
         console.error("You are being rate-limited, try again in one minute.");
         toast.error("You are being rate-limited, try again in one minute.");
-      }
-      const json = await res.json();
-      const payload =
-        json.UserRecords ||
-        json?.userRecords ||
-        json?.userRecords?.result ||
-        [];
-      const list = Array.isArray(payload) ? payload : (payload?.result ?? []);
-      const mapped = (list || []).map((r: any) => ({
-        id: r.id,
-        name: r.name,
-        type: r.type,
-        content: r.content,
-        data: r.data,
-      }));
-      setRecords(mapped);
-      if (!res.ok) {
-        toast.error(json?.error || "Failed to fetch records.");
+      } else {
+        const json = await res.json();
+        const payload =
+          json.UserRecords ||
+          json?.userRecords ||
+          json?.userRecords?.result ||
+          [];
+        const list = Array.isArray(payload) ? payload : (payload?.result ?? []);
+        const mapped = (list || []).map((r: any) => ({
+          id: r.id,
+          name: r.name,
+          type: r.type,
+          content: r.content,
+          data: r.data,
+        }));
+        setRecords(mapped);
+        if (!res.ok) {
+          toast.error(json?.error || "Failed to fetch records.");
+        }
       }
     } catch (err: any) {
       console.error(err);
@@ -213,11 +215,12 @@ export function Manager() {
       if (res.status == 429) {
         console.error("You are being rate-limited, try again in one minute.");
         toast.error("You are being rate-limited, try again in one minute.");
+      } else {
+        const json = await res.json();
+        if (!res.ok) throw new Error(json?.error || "Delete failed");
+        toast.success("Deleted");
+        fetchRecords();
       }
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || "Delete failed");
-      toast.success("Deleted");
-      fetchRecords();
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Delete failed");
