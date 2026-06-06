@@ -6,6 +6,7 @@ import { ValidateDiscordID } from "@/auth";
 import {
   RecordCreateParams,
   RecordResponse,
+  RecordResponsesV4PagePaginationArray,
 } from "cloudflare/resources/dns/records.mjs";
 
 // Initialize Cloudflare API instance.
@@ -22,7 +23,6 @@ const DOMAIN = "jointhis.party";
 // Moderator role ID to ping when needed
 const MODERATORS = "1448781724803661927";
 
-// TODO: Global function here for checking wether a subdomain is allowed.
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
 
 // EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
@@ -75,7 +75,11 @@ const blacklist: Array<string> = [
   "vps4",
 ];
 
-function UnexpectedError(err: any, session: any, route: string): NextResponse {
+function UnexpectedError(
+  err: any,
+  session: customSession | undefined,
+  route: string,
+): NextResponse {
   Log(`Unexpected error occurred in ${route}`, session?.id, true);
   console.error(err);
   return NextResponse.json(
@@ -88,12 +92,12 @@ interface AuthState {
   state: boolean;
   error?: string;
 }
-function VerifyUserAuth(session: any): AuthState {
+function VerifyUserAuth(session: customSession | undefined): AuthState {
   // Try if session is valid.
   if (
     session &&
     session.verified &&
-    ValidateDiscordID.test(session.user.id || "")
+    ValidateDiscordID.test(session?.id || "")
   ) {
     return { state: true };
   }
@@ -103,7 +107,7 @@ function VerifyUserAuth(session: any): AuthState {
     return { state: false, error: "Please log in." };
   }
   // If the user ID in the session does not match the proper format.
-  if (!ValidateDiscordID.test(session.user.id || "")) {
+  if (!ValidateDiscordID.test(session?.id || "")) {
     Log("User failed regular expression.", session?.id, true);
     return {
       state: false,
@@ -119,26 +123,100 @@ function VerifyUserAuth(session: any): AuthState {
   return { state: false, error: "An unknown error occurred." };
 }
 
-function IsSubdomainAllowed(subdomain: string): boolean {
+interface SubdomainAvailability {
+  status: boolean;
+  error?: string;
+}
+
+function SubdomainAvailability(
+  Records: RecordResponsesV4PagePaginationArray,
+  session: customSession | undefined,
+  body: any,
+): SubdomainAvailability {
+  const subdomain = body.name;
+  const MaximumRecords = 5;
   // Check if above list includes the subdomain, if yes, mark as disallowed.
   if (blacklist.includes(subdomain)) {
-    return false;
+    Log(
+      `User tried to register a blacklisted subdomain: ${subdomain}`,
+      session?.id,
+      true,
+    );
+    return { status: false, error: "This subdomain is blacklisted." };
   }
   // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
-  if (subdomain.match("[a-zA-Z0-9]+")) {
-    return true;
+  if (!subdomain.match("[a-zA-Z0-9]+")) {
+    Log(
+      `User tried registering non-alphanumeric subdomain: ${subdomain}`,
+      session?.id,
+      true,
+    );
+    return {
+      status: false,
+      error: "Subdomains may only include alphanumeric characters",
+    };
+  }
+  // CONTEXT: Records --> all DNS records
+  // Filter all records down to only records which belong to the user.
+  const UserRecords = Records.result.filter((record) =>
+    isOwned(record, session),
+  );
+  // Test for possible matches with other users records.
+  const unAuthorizedRecords = Records.result.filter((record) =>
+    isStolen(record, body, session),
+  );
+
+  // If no matching records are found which don't belong to the user:
+  // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found.
+  if (Array.isArray(unAuthorizedRecords)) {
+    Log(
+      `User tried registering a subdomain already in use by another user: ${subdomain} `,
+      session?.id,
+      true,
+    );
+    return {
+      status: false,
+      error: "This subdomain is already in use by another user.",
+    };
+  } else if (UserRecords.length > MaximumRecords) {
+    Log("User reached maximum amount of allowed records.", session?.id, true);
+    return {
+      status: false,
+      error: "You have reached the maximum amount of subdomains.",
+    };
+  }
+  if (
+    !blacklist.includes(subdomain) &&
+    subdomain.match("[a-zA-Z0-9]+") &&
+    !Array.isArray(unAuthorizedRecords) &&
+    !(UserRecords.length > MaximumRecords)
+  ) {
+    return { status: true };
   } else {
-    return false;
+    Log(
+      `Subdomain validation has failed unexpectedly. debug: ${subdomain}, ${unAuthorizedRecords}, ${UserRecords}`,
+      session?.id,
+      true,
+    );
+    return { status: false, error: "An unexpected error occurred." };
   }
 }
-function isOwned(result: RecordResponse, session: any): boolean {
+
+function isOwned(
+  result: RecordResponse,
+  session: customSession | undefined,
+): boolean {
   if (result.comment == session?.id) {
     return true;
   } else {
     return false;
   }
 }
-function isStolen(result: RecordResponse, body: any, session: any): boolean {
+function isStolen(
+  result: RecordResponse,
+  body: any,
+  session: customSession | undefined,
+): boolean {
   const { name, type, comment } = body;
   // A --> pending record
   // B --> record to check against
@@ -186,7 +264,7 @@ function isStolen(result: RecordResponse, body: any, session: any): boolean {
   }
   // Automatically prevents SRV and A record conflicts due to above conversions.
   // Testcase: comments
-  if (A.sub == B.sub && B.comment !== session?.comment) {
+  if (A.sub == B.sub && B.comment !== session?.id) {
     return true;
   } else {
     return false;
@@ -231,7 +309,7 @@ async function Log(
 }
 async function LogRecord(
   record: RecordResponse,
-  session: any,
+  session: customSession | undefined,
   deletion: boolean,
 ) {
   const { name, content, type } = record;
@@ -318,48 +396,9 @@ export async function createRecord(request: Request) {
       const Records = await client.dns.records.list({
         zone_id: ZONE_ID,
       });
-      if (!IsSubdomainAllowed(name)) {
-        Log(
-          "User tried registering a blacklisted subdomain",
-          session?.id,
-          true,
-        );
-        return NextResponse.json(
-          {
-            error:
-              "Subdomain name not allowed! If this is a mistake, please create a support ticket.",
-          },
-          { status: 403 },
-        );
-      }
-      // CONTEXT: Records --> all DNS records
-      // Filter all records down to only records which belong to the user.
-      const UserRecords = Records.result.filter((record) =>
-        isOwned(record, session),
-      );
-      // Test for possible matches with other users records.
-      const unAuthorizedRecords = Records.result.filter((record) =>
-        isStolen(record, body, session),
-      );
-      // If no matching records are found which don't belong to the user:
-      // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found.
-      if (!Array.isArray(unAuthorizedRecords) || !unAuthorizedRecords.length) {
-        if (UserRecords.length > 5) {
-          Log(
-            "User reached maximum amount of allowed records.",
-            session?.id,
-            true,
-          );
 
-          return NextResponse.json(
-            {
-              error:
-                "Maximum amount of records reached. If you need more, please create a support ticket.",
-            },
-            { status: 403 },
-          );
-        }
-
+      const Availability = SubdomainAvailability(Records, session, body);
+      if (Availability.status) {
         var payload: RecordCreateParams;
         if (type === "SRV") {
           // SRV record payload format.
@@ -398,10 +437,12 @@ export async function createRecord(request: Request) {
           { status: 200 },
         );
       } else {
+        // Error while validating.
         return NextResponse.json(
           {
             error:
-              "Identical record already exists and is in use by another user.",
+              Availability.error ||
+              "An error occurred while validating your subdomain.",
           },
           { status: 403 },
         );
