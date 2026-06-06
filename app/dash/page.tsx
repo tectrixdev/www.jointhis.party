@@ -4,7 +4,7 @@ import { Rubik_Glitch } from "next/font/google";
 import { Rubik } from "next/font/google";
 import { MainHome } from "@/components/main";
 import "ldrs/react/Zoomies.css";
-import { Manager } from "@/components/ToolInput";
+import { Manager } from "@/components/toolinput";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
 import TokenViewer from "@/components/viewtoken";

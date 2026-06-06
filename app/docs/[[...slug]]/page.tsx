@@ -12,7 +12,7 @@ import { createRelativeLink } from "fumadocs-ui/mdx";
 import { Pencil, PencilIcon, SeparatorHorizontal } from "lucide-react";
 import { Card } from "fumadocs-ui/components/card";
 import { baseUrl } from "@/lib/metadata";
-import GitLab from "@/components/gitlabIcon";
+import GitLab from "@/components/gitlabicon";
 import { SidebarSeparator } from "@/components/layout/docs/sidebar";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {

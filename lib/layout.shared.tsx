@@ -14,7 +14,7 @@ import Image from "next/image";
 import Authbutton from "@/components/authbutton";
 import { LayoutDashboard } from "lucide-react";
 import { baseUrl } from "./metadata";
-import GitLab from "@/components/gitlabIcon";
+import GitLab from "@/components/gitlabicon";
 
 export function baseOptions(): BaseLayoutProps {
   return {
