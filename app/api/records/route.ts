@@ -25,6 +25,104 @@ const MODERATORS = "1448781724803661927";
 
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
 
+// Logging:
+interface Field {
+  name: string;
+  value: string;
+  inline?: boolean;
+}
+async function Log(
+  message: string,
+  identifier: string | undefined,
+  error: boolean,
+  info?: Array<Field>,
+) {
+  error ? console.error(message, info) : console.log(message, info);
+  if (process.env.LOGS_WEBHOOK) {
+    const userField: Array<Field> = [
+      {
+        name: "User",
+        value: `<@${identifier}>`,
+      },
+    ];
+    const Fields: Array<Field> = info ? userField.concat(info) : userField;
+    await fetch(process.env.LOGS_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: error ? `<@&${MODERATORS}>` : ``,
+        embeds: [
+          {
+            title: error ? ":warning: Error" : ":white_check_mark: Successful",
+            description: message,
+            color: error ? 15548997 : 326507,
+            fields: Fields.map((field) =>
+              field.inline
+                ? {
+                    name: field.name,
+                    value: field.value,
+                    inline: field.inline,
+                  }
+                : { name: field.name, value: field.value },
+            ),
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+      }),
+    });
+  }
+}
+
+async function LogRecord(
+  record: RecordResponse,
+  session: customSession | undefined,
+  deletion: boolean,
+) {
+  const { content, type } = record;
+  var name;
+  deletion ? (name = NameToSubdomain(record.name)) : (name = record.name);
+  console.log(
+    deletion
+      ? `Record of type ${type} with name ${name} deleted by ${session?.id}.`
+      : `Record of type ${type} with name ${name} created by ${session?.id}.`,
+  );
+  if (process.env.LOGS_WEBHOOK) {
+    await fetch(process.env.LOGS_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: `<@&${MODERATORS}>`,
+        embeds: [
+          {
+            title: deletion ? "Subdomain deleted" : "New subdomain registered",
+            description: `NAME: **${name}**\nURL: https://${name}.${DOMAIN}\nOWNER: <@${session?.id}>`,
+            color: deletion ? 15548997 : 326507,
+            fields: [
+              {
+                name: "IP",
+                value: `${content}`,
+              },
+              {
+                name: "Record Type",
+                value: `${type}`,
+              },
+            ],
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+      }),
+    });
+  }
+}
+
 // EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
 function NameToSubdomain(name: string): string {
   const suffix = `.${DOMAIN}`;
@@ -79,9 +177,13 @@ function UnexpectedError(
   err: any,
   session: customSession | undefined,
   route: string,
+  method: "GET" | "DELETE" | "POST",
 ): NextResponse {
-  Log(`Unexpected error occurred in ${route}`, session?.id, true);
-  console.error(err);
+  Log(`Unexpected error occurred.`, session?.id, true, [
+    { name: "Error", value: err.toString(), inline: true },
+    { name: "Route", value: route, inline: true },
+    { name: "Method", value: method, inline: true },
+  ]);
   return NextResponse.json(
     { error: err?.errors[0].message || "Unknown error" },
     { status: 500 },
@@ -137,23 +239,23 @@ function SubdomainAvailability(
   const MaximumRecords = 5;
   // Check if above list includes the subdomain, if yes, mark as disallowed.
   if (blacklist.includes(subdomain)) {
-    Log(
-      `User tried to register a blacklisted subdomain: ${subdomain}`,
-      session?.id,
-      true,
-    );
+    Log(`User tried to register a blacklisted subdomain.`, session?.id, true, [
+      { name: "Subdomain", value: subdomain },
+    ]);
     return { status: false, error: "This subdomain is blacklisted." };
   }
   // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
-  if (!subdomain.match("[a-zA-Z0-9]+")) {
+  const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
+  if (!FullMatch) {
     Log(
-      `User tried registering non-alphanumeric subdomain: ${subdomain}`,
+      `User tried registering non-alphanumeric subdomain.`,
       session?.id,
       true,
+      [{ name: "Subdomain", value: subdomain }],
     );
     return {
       status: false,
-      error: "Subdomains may only include alphanumeric characters",
+      error: "Subdomains may only include alphanumeric characters.",
     };
   }
   // CONTEXT: Records --> all DNS records
@@ -163,22 +265,32 @@ function SubdomainAvailability(
   );
   // Test for possible matches with other users records.
   const unAuthorizedRecords = Records.result.filter((record) =>
-    isStolen(record, body, session),
+    isInUse(record, body, session),
   );
 
   // If no matching records are found which don't belong to the user:
-  // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found.
-  if (Array.isArray(unAuthorizedRecords)) {
+  // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found. --> If it is an array, AND its length is bigger than 0, there are matching records found.
+  if (Array.isArray(unAuthorizedRecords) && unAuthorizedRecords.length > 0) {
     Log(
-      `User tried registering a subdomain already in use by another user: ${subdomain} `,
+      `User tried registering a subdomain already in use.`,
       session?.id,
       true,
+      [
+        { name: "Subdomain", value: subdomain, inline: true },
+        {
+          name: "Conflicting user",
+          value: `<@${unAuthorizedRecords[0].comment}>`,
+          inline: true,
+        },
+      ],
     );
     return {
       status: false,
-      error: "This subdomain is already in use by another user.",
+      error: "This subdomain is already in use.",
     };
-  } else if (UserRecords.length > MaximumRecords) {
+  }
+  // + 1, as UserRecords is before creation, and we should compare the situation as if we would've created a new record.
+  if (UserRecords.length + 1 > MaximumRecords) {
     Log("User reached maximum amount of allowed records.", session?.id, true);
     return {
       status: false,
@@ -187,17 +299,17 @@ function SubdomainAvailability(
   }
   if (
     !blacklist.includes(subdomain) &&
-    subdomain.match("[a-zA-Z0-9]+") &&
-    !Array.isArray(unAuthorizedRecords) &&
-    !(UserRecords.length > MaximumRecords)
+    FullMatch &&
+    unAuthorizedRecords.length == 0 &&
+    UserRecords.length < MaximumRecords
   ) {
     return { status: true };
   } else {
-    Log(
-      `Subdomain validation has failed unexpectedly. debug: ${subdomain}, ${unAuthorizedRecords}, ${UserRecords}`,
-      session?.id,
-      true,
-    );
+    Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
+      { name: "Subdomain", value: subdomain },
+      { name: "unAuthorizedRecords", value: unAuthorizedRecords },
+      { name: "The users records", value: UserRecords },
+    ]);
     return { status: false, error: "An unexpected error occurred." };
   }
 }
@@ -212,7 +324,7 @@ function isOwned(
     return false;
   }
 }
-function isStolen(
+function isInUse(
   result: RecordResponse,
   body: any,
   session: customSession | undefined,
@@ -263,93 +375,12 @@ function isStolen(
     };
   }
   // Automatically prevents SRV and A record conflicts due to above conversions.
-  // Testcase: comments
-  if (A.sub == B.sub && B.comment !== session?.id) {
+  if (A.sub == B.sub) {
     return true;
   } else {
     return false;
   }
 }
-// Logging:
-async function Log(
-  message: string,
-  identifier: string | undefined,
-  error: boolean,
-) {
-  if (process.env.LOGS_WEBHOOK) {
-    await fetch(process.env.LOGS_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: error ? `<@&${MODERATORS}>` : ``,
-        tts: false,
-        embeds: [
-          {
-            id: 652627557,
-            title: error ? "Error" : "Successful",
-            description: message,
-            color: error ? 15548997 : 326507,
-            fields: [
-              {
-                id: 986834541,
-                name: "User",
-                value: `<@&${identifier}>`,
-              },
-            ],
-          },
-        ],
-        components: [],
-        actions: {},
-        flags: 0,
-      }),
-    });
-  }
-}
-async function LogRecord(
-  record: RecordResponse,
-  session: customSession | undefined,
-  deletion: boolean,
-) {
-  const { name, content, type } = record;
-  if (process.env.LOGS_WEBHOOK) {
-    await fetch(process.env.LOGS_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: `<@&${MODERATORS}>`,
-        tts: false,
-        embeds: [
-          {
-            id: 652627557,
-            title: deletion ? "Subdomain deleted" : "New subdomain registered",
-            description: `NAME: **${name}**\nURL: https://${name}\nOWNER: <@${session?.id}>`,
-            color: deletion ? 15548997 : 326507,
-            fields: [
-              {
-                id: 986834541,
-                name: "IP",
-                value: `${content}`,
-              },
-              {
-                id: 356214976,
-                name: "Record Type",
-                value: `${type}`,
-              },
-            ],
-          },
-        ],
-        components: [],
-        actions: {},
-        flags: 0,
-      }),
-    });
-  }
-}
-
 export async function getRecords(request: Request) {
   const FullSession = await auth.api.getSession({
     headers: request.headers,
@@ -376,7 +407,7 @@ export async function getRecords(request: Request) {
       );
     }
   } catch (err: any) {
-    return UnexpectedError(err, session, "GET /records");
+    return UnexpectedError(err, session, "/api/records/", "GET");
   }
 }
 
@@ -455,7 +486,7 @@ export async function createRecord(request: Request) {
       );
     }
   } catch (err: any) {
-    return UnexpectedError(err, session, "POST /records");
+    return UnexpectedError(err, session, "/api/records/", "POST");
   }
 }
 
@@ -506,7 +537,7 @@ export async function deleteRecord(request: Request) {
       );
     }
   } catch (err: any) {
-    return UnexpectedError(err, session, "DELETE /records");
+    return UnexpectedError(err, session, "/api/records/", "DELETE");
   }
 }
 
