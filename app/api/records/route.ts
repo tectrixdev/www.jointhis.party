@@ -204,7 +204,7 @@ function VerifyUserAuth(session: customSession | undefined): AuthState {
     return { state: true };
   }
 
-  // Session is most likely not valid, state reasons for each fail.
+  // Figure out one by one why the session is invalid.
   if (!session) {
     return { state: false, error: "Please log in." };
   }
@@ -237,6 +237,8 @@ function SubdomainAvailability(
 ): SubdomainAvailability {
   const subdomain = body.name;
   const MaximumRecords = 5;
+  const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
+  // isOwned and isInUse are computationally expensive, so we try every fast check first before checking those.
   // Check if above list includes the subdomain, if yes, mark as disallowed.
   if (blacklist.includes(subdomain)) {
     Log(`User tried to register a blacklisted subdomain.`, session?.id, true, [
@@ -245,7 +247,6 @@ function SubdomainAvailability(
     return { status: false, error: "This subdomain is blacklisted." };
   }
   // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
-  const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
   if (!FullMatch) {
     Log(
       `User tried registering non-alphanumeric subdomain.`,
@@ -258,6 +259,7 @@ function SubdomainAvailability(
       error: "Subdomains may only include alphanumeric characters.",
     };
   }
+
   // CONTEXT: Records --> all DNS records
   // Filter all records down to only records which belong to the user.
   const UserRecords = Records.result.filter((record) =>
@@ -268,7 +270,16 @@ function SubdomainAvailability(
     isInUse(record, body, session),
   );
 
-  // If no matching records are found which don't belong to the user:
+  // Try if it is available first for performance.
+  if (
+    !blacklist.includes(subdomain) &&
+    FullMatch &&
+    unAuthorizedRecords.length == 0 &&
+    UserRecords.length < MaximumRecords
+  ) {
+    return { status: true };
+  }
+  // Subdomain not available, figure out why.
   // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found. --> If it is an array, AND its length is bigger than 0, there are matching records found.
   if (Array.isArray(unAuthorizedRecords) && unAuthorizedRecords.length > 0) {
     Log(
@@ -297,21 +308,13 @@ function SubdomainAvailability(
       error: "You have reached the maximum amount of subdomains.",
     };
   }
-  if (
-    !blacklist.includes(subdomain) &&
-    FullMatch &&
-    unAuthorizedRecords.length == 0 &&
-    UserRecords.length < MaximumRecords
-  ) {
-    return { status: true };
-  } else {
-    Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
-      { name: "Subdomain", value: subdomain },
-      { name: "unAuthorizedRecords", value: unAuthorizedRecords },
-      { name: "The users records", value: UserRecords },
-    ]);
-    return { status: false, error: "An unexpected error occurred." };
-  }
+  // If all else fails, this is a fallback.
+  Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
+    { name: "Subdomain", value: subdomain },
+    { name: "unAuthorizedRecords", value: unAuthorizedRecords },
+    { name: "The users records", value: UserRecords },
+  ]);
+  return { status: false, error: "An unexpected error occurred." };
 }
 
 function isOwned(
