@@ -1,6 +1,12 @@
 words = [
+    # AAAA record
     "AAAA",
+    # One Time Token
+    "OTT",
+    # SRV record
+    "SRV",
     "aternos",
+    # Carrier Grade Network Address Translation
     "cgnat",
     "chmod",
     "cloudflare",
@@ -12,12 +18,14 @@ words = [
     "fumadocs",
     "hennion",
     "jointhis",
+    "jointhisproxy",
     "joran",
     "lucide",
     "mymodem",
     "myserver",
     "nmap",
     "playit",
+    "proxyserver",
     "simplevoicechat",
     "systemctl",
     "terraria",

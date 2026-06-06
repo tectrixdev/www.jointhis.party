@@ -32,7 +32,7 @@ function NameToSubdomain(name: string): string {
 }
 
 // EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
-function SRVtoSubdomain(SRV: string): string {
+function SRVToSubdomain(SRV: string): string {
   return SRV.split(".").slice(2).join(".");
 }
 
@@ -233,7 +233,7 @@ function isStolen(
   if (type == `SRV`) {
     A = {
       name: `${name}.${DOMAIN}`,
-      sub: SRVtoSubdomain(name),
+      sub: SRVToSubdomain(name),
       type: type,
       comment: comment,
     };
@@ -250,7 +250,7 @@ function isStolen(
   if (result.type == `SRV`) {
     B = {
       name: `${result.name}`,
-      sub: SRVtoSubdomain(NameToSubdomain(result.name)),
+      sub: SRVToSubdomain(NameToSubdomain(result.name)),
       type: result.type,
       comment: comment,
     };
@@ -455,7 +455,7 @@ export async function createRecord(request: Request) {
       );
     }
   } catch (err: any) {
-    UnexpectedError(err, session, "POST /records");
+    return UnexpectedError(err, session, "POST /records");
   }
 }
 
@@ -506,7 +506,7 @@ export async function deleteRecord(request: Request) {
       );
     }
   } catch (err: any) {
-    UnexpectedError(err, session, "DELETE /records");
+    return UnexpectedError(err, session, "DELETE /records");
   }
 }
 
