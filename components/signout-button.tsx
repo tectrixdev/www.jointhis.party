@@ -1,12 +1,17 @@
 "use client";
 import { authClient } from "@/auth-client";
 import { LogOut } from "lucide-react";
+import toast from "react-hot-toast";
 
 export function SignOut() {
   return (
     <form
       action={async () => {
         const { data, error } = await authClient.signOut();
+        if (error?.status == 429) {
+          console.error("You are being rate-limited, try again in one minute.");
+          toast.error("You are being rate-limited, try again in one minute.");
+        }
       }}
     >
       <button

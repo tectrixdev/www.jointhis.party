@@ -3,6 +3,7 @@ import { authClient } from "@/auth-client";
 import { LogIn } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export function SignIn() {
   const [url, setUrl] = useState("");
@@ -23,6 +24,10 @@ export function SignIn() {
           provider: "discord",
           callbackURL: callback,
         });
+        if (error?.status == 429) {
+          console.error("You are being rate-limited, try again in one minute.");
+          toast.error("You are being rate-limited, try again in one minute.");
+        }
       }}
     >
       <button
