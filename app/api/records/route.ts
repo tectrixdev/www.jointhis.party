@@ -66,7 +66,6 @@ const blacklist: Array<string> = [
   "jointhis",
   "party",
   "beta",
-  "play",
   "proxy",
   "proxy1",
   "proxy2",
