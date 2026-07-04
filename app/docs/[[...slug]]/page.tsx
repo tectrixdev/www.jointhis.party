@@ -40,7 +40,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       </DocsBody>
       <Card
         title={"Edit on GitLab"}
-        href={`https://gitlab.com/tectrixdev/www.jointhis.party/edit/main/content/docs/${page.path}`}
+        href={`https://gitlab.com/jointhisparty/www.jointhis.party/edit/main/content/docs/${page.path}`}
         icon={
           <div className="flex items-center justify-center gap-3 px-1 **:select-none">
             <PencilIcon />

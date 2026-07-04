@@ -36,7 +36,7 @@ under GPLv3.
 clone the repository:
 
 ```bash
-git clone https://gitlab.com/tectrixdev/www.jointhis.party.git
+git clone https://gitlab.com/jointhisparty/www.jointhis.party.git
 ```
 
 ```bash
