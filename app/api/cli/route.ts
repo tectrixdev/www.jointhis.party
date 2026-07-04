@@ -1,4 +1,3 @@
-"use server";
 import { auth, ValidateDiscordID } from "@/auth";
 import { UserIdFromAvatar } from "@/auth";
 import { baseUrl } from "@/lib/metadata";
