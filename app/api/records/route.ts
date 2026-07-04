@@ -431,10 +431,7 @@ export async function createRecord(request: Request) {
           // SRV record payload format.
           // TTL --> 3600 because most subdomains don't last long or are expected to change owners quickly.
           // comment --> This is (for now) used to store ownership information, which is just the discord user ID.
-          payload = {
-            zone_id: ZONE_ID,
-            name: `${name}`,
-            type: `${type}`,
+          payload = { zone_id: ZONE_ID, name: `${name}`, type: `${type}`,
             ttl: 3600,
             comment: session?.id ?? undefined,
             data: {
@@ -475,8 +472,7 @@ export async function createRecord(request: Request) {
         );
       }
     } else {
-      // Return authentication error.
-      return NextResponse.json(
+      // Return authentication error. return NextResponse.json(
         { error: AuthState.error || "Authentication error occurred." },
         { status: 403 },
       );

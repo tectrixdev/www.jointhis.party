@@ -28,15 +28,17 @@
 - [x] Prevent user overwriting / hijacking SRV record.
 - [x] Remove user id blacklist
 - [x] Fix est -> devtest SRV record conflict
-- [ ] Proper typing and (inline) documentation
+- [x] Proper typing and (inline) documentation (needs some final polishing later)
 - [x] Proper rate limiting handling.
 - [ ] SRV record presets.
+- [ ] Fix toolinput.
 - [ ] Translations
 - [ ] ~~More rate limiting~~ + **better error handling.**
 - [ ] Landing page remake
 - [ ] Add moderation UI for moderators
 - [ ] Use better auth admin plugin for moderation UI
 - [ ] Select moderators and update privacy policy accordingly
+- [ ] Add the ability to edit records.
 
 ## Guides / docs
 
@@ -60,6 +62,7 @@
 
 ## Future / uncertain
 
+- [ ] Universal user id, more signup providers.
 - [ ] Store whole user object in domain comments + email user identification.
 - [ ] second code cleanup (if needed)
 - [ ] cloudflare proxy support using overwrite
