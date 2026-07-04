@@ -70,7 +70,7 @@ export function baseOptions(): BaseLayoutProps {
         type: "icon",
         label: "GitLab",
         text: "GitLab",
-        url: "https://gitlab.com/tectrixdev/www.jointhis.party",
+        url: "https://gitlab.com/jointhisparty/www.jointhis.party",
         icon: (
           <>
             <svg
@@ -112,7 +112,7 @@ export function baseOptions(): BaseLayoutProps {
         type: "icon",
         label: "GitLab",
         text: "GitLab",
-        url: "https://gitlab.com/tectrixdev/www.jointhis.party",
+        url: "https://gitlab.com/jointhisparty/www.jointhis.party",
         icon: <GitLab />,
         on: "menu",
       },
