@@ -16,12 +16,46 @@ const client = new Cloudflare({
 
 // Cloudflare zone == internal code for domain.
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
-
 // Domain for subdomain conversions etc.
 const DOMAIN = "jointhis.party";
-
 // Moderator role ID to ping when needed
 const MODERATORS = "1448781724803661927";
+// NOTE: * --> Wildcard on root, @ --> root
+const BLACKLIST: Array<string> = [
+  "*",
+  "@",
+  "mc",
+  "www",
+  "ww2",
+  "ww3",
+  "blog",
+  "contact",
+  "docs",
+  "official",
+  "minecraft",
+  "join",
+  "jointhis.party",
+  "tool",
+  "discord",
+  "hub",
+  "main",
+  "site",
+  "tectrix",
+  "jointhis",
+  "party",
+  "beta",
+  "proxy",
+  "proxy1",
+  "proxy2",
+  "proxy3",
+  "proxy4",
+  "proxyserver",
+  "vps",
+  "vps1",
+  "vps2",
+  "vps3",
+  "vps4",
+];
 
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
 
@@ -76,7 +110,6 @@ async function Log(
     });
   }
 }
-
 async function LogRecord(
   record: RecordResponse,
   session: customSession | undefined,
@@ -122,57 +155,6 @@ async function LogRecord(
     });
   }
 }
-
-// EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
-function NameToSubdomain(name: string): string {
-  const suffix = `.${DOMAIN}`;
-  return name.replace(suffix, "");
-}
-
-// EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
-function SRVToSubdomain(SRV: string): string {
-  return SRV.split(".").slice(2).join(".");
-}
-
-// Reserved subdomains for internal use or too common names.
-// NOTE: * --> Wildcard on root, @ --> root
-const blacklist: Array<string> = [
-  "*",
-  "@",
-  "mc",
-  "www",
-  "ww2",
-  "ww3",
-  "blog",
-  "contact",
-  "docs",
-  "official",
-  "minecraft",
-  "join",
-  "jointhis.party",
-  "tool",
-  "discord",
-  "hub",
-  "main",
-  "site",
-  "tectrix",
-  "jointhis",
-  "party",
-  "beta",
-  "play",
-  "proxy",
-  "proxy1",
-  "proxy2",
-  "proxy3",
-  "proxy4",
-  "proxyserver",
-  "vps",
-  "vps1",
-  "vps2",
-  "vps3",
-  "vps4",
-];
-
 function UnexpectedError(
   err: any,
   session: customSession | undefined,
@@ -188,6 +170,17 @@ function UnexpectedError(
     { error: err?.errors[0].message || "Unknown error" },
     { status: 500 },
   );
+}
+
+// General conversions.
+// EXAMPLE: myserver.cool.jointhis.party --> myserver.cool
+function NameToSubdomain(name: string): string {
+  const suffix = `.${DOMAIN}`;
+  return name.replace(suffix, "");
+}
+// EXAMPLE: _minecraft._tcp.myserver.cool --> myserver.cool
+function SRVToSubdomain(SRV: string): string {
+  return SRV.split(".").slice(2).join(".");
 }
 
 interface AuthState {
@@ -223,98 +216,6 @@ function VerifyUserAuth(session: customSession | undefined): AuthState {
   }
   // Panic statement.
   return { state: false, error: "An unknown error occurred." };
-}
-
-interface SubdomainAvailability {
-  status: boolean;
-  error?: string;
-}
-
-function SubdomainAvailability(
-  Records: RecordResponsesV4PagePaginationArray,
-  session: customSession | undefined,
-  body: any,
-): SubdomainAvailability {
-  const subdomain = body.name;
-  const MaximumRecords = 5;
-  const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
-  // isOwned and isInUse are computationally expensive, so we try every fast check first before checking those.
-  // Check if above list includes the subdomain, if yes, mark as disallowed.
-  if (blacklist.includes(subdomain)) {
-    Log(`User tried to register a blacklisted subdomain.`, session?.id, true, [
-      { name: "Subdomain", value: subdomain },
-    ]);
-    return { status: false, error: "This subdomain is blacklisted." };
-  }
-  // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
-  if (!FullMatch) {
-    Log(
-      `User tried registering non-alphanumeric subdomain.`,
-      session?.id,
-      true,
-      [{ name: "Subdomain", value: subdomain }],
-    );
-    return {
-      status: false,
-      error: "Subdomains may only include alphanumeric characters.",
-    };
-  }
-
-  // CONTEXT: Records --> all DNS records
-  // Filter all records down to only records which belong to the user.
-  const UserRecords = Records.result.filter((record) =>
-    isOwned(record, session),
-  );
-  // Test for possible matches with other users records.
-  const unAuthorizedRecords = Records.result.filter((record) =>
-    isInUse(record, body, session),
-  );
-
-  // Try if it is available first for performance.
-  if (
-    !blacklist.includes(subdomain) &&
-    FullMatch &&
-    unAuthorizedRecords.length == 0 &&
-    UserRecords.length < MaximumRecords
-  ) {
-    return { status: true };
-  }
-  // Subdomain not available, figure out why.
-  // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found. --> If it is an array, AND its length is bigger than 0, there are matching records found.
-  if (Array.isArray(unAuthorizedRecords) && unAuthorizedRecords.length > 0) {
-    Log(
-      `User tried registering a subdomain already in use.`,
-      session?.id,
-      true,
-      [
-        { name: "Subdomain", value: subdomain, inline: true },
-        {
-          name: "Conflicting user",
-          value: `<@${unAuthorizedRecords[0].comment}>`,
-          inline: true,
-        },
-      ],
-    );
-    return {
-      status: false,
-      error: "This subdomain is already in use.",
-    };
-  }
-  // + 1, as UserRecords is before creation, and we should compare the situation as if we would've created a new record.
-  if (UserRecords.length + 1 > MaximumRecords) {
-    Log("User reached maximum amount of allowed records.", session?.id, true);
-    return {
-      status: false,
-      error: "You have reached the maximum amount of subdomains.",
-    };
-  }
-  // If all else fails, this is a fallback.
-  Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
-    { name: "Subdomain", value: subdomain },
-    { name: "unAuthorizedRecords", value: unAuthorizedRecords },
-    { name: "The users records", value: UserRecords },
-  ]);
-  return { status: false, error: "An unexpected error occurred." };
 }
 
 function isOwned(
@@ -384,6 +285,98 @@ function isInUse(
     return false;
   }
 }
+
+interface SubdomainAvailability {
+  status: boolean;
+  error?: string;
+}
+function SubdomainAvailability(
+  Records: RecordResponsesV4PagePaginationArray,
+  session: customSession | undefined,
+  body: any,
+): SubdomainAvailability {
+  const subdomain = body.name;
+  const MaximumRecords = 5;
+  const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
+  // isOwned and isInUse are computationally expensive, so we try every fast check first before checking those.
+  // Check if above list includes the subdomain, if yes, mark as disallowed.
+  if (BLACKLIST.includes(subdomain)) {
+    Log(`User tried to register a blacklisted subdomain.`, session?.id, true, [
+      { name: "Subdomain", value: subdomain },
+    ]);
+    return { status: false, error: "This subdomain is blacklisted." };
+  }
+  // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
+  if (!FullMatch) {
+    Log(
+      `User tried registering non-alphanumeric subdomain.`,
+      session?.id,
+      true,
+      [{ name: "Subdomain", value: subdomain }],
+    );
+    return {
+      status: false,
+      error: "Subdomains may only include alphanumeric characters.",
+    };
+  }
+
+  // CONTEXT: Records --> all DNS records
+  // Filter all records down to only records which belong to the user.
+  const UserRecords = Records.result.filter((record) =>
+    isOwned(record, session),
+  );
+  // Test for possible matches with other users records.
+  const unAuthorizedRecords = Records.result.filter((record) =>
+    isInUse(record, body, session),
+  );
+
+  // Try if it is available first for performance.
+  if (
+    !BLACKLIST.includes(subdomain) &&
+    FullMatch &&
+    unAuthorizedRecords.length == 0 &&
+    UserRecords.length < MaximumRecords
+  ) {
+    return { status: true };
+  }
+  // Subdomain not available, figure out why.
+  // CONTEXT: If unAuthorizedRecords is not an array, nor has any length, it means no matching records have been found. --> If it is an array, AND its length is bigger than 0, there are matching records found.
+  if (Array.isArray(unAuthorizedRecords) && unAuthorizedRecords.length > 0) {
+    Log(
+      `User tried registering a subdomain already in use.`,
+      session?.id,
+      true,
+      [
+        { name: "Subdomain", value: subdomain, inline: true },
+        {
+          name: "Conflicting user",
+          value: `<@${unAuthorizedRecords[0].comment}>`,
+          inline: true,
+        },
+      ],
+    );
+    return {
+      status: false,
+      error: "This subdomain is already in use.",
+    };
+  }
+  // + 1, as UserRecords is before creation, and we should compare the situation as if we would've created a new record.
+  if (UserRecords.length + 1 > MaximumRecords) {
+    Log("User reached maximum amount of allowed records.", session?.id, true);
+    return {
+      status: false,
+      error: "You have reached the maximum amount of subdomains.",
+    };
+  }
+  // If all else fails, this is a fallback.
+  Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
+    { name: "Subdomain", value: subdomain },
+    { name: "unAuthorizedRecords", value: unAuthorizedRecords },
+    { name: "The users records", value: UserRecords },
+  ]);
+  return { status: false, error: "An unexpected error occurred." };
+}
+
 export async function getRecords(request: Request) {
   const FullSession = await auth.api.getSession({
     headers: request.headers,
