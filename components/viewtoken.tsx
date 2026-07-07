@@ -6,22 +6,19 @@ import { useRouter } from "next/navigation";
 import { Zoomies } from "ldrs/react";
 import "ldrs/react/Zoomies.css";
 
-interface Props {
-  token: string;
-}
-
-export default function TokenViewer({ token }: Props) {
+export default function TokenViewer() {
   const [Token, SetToken] = useState("");
   const [isPending, startTransition] = useTransition();
   const Router = useRouter();
+  //TODO: pull token from API.
   function refresh() {
     if (Token === "") {
-      SetToken(token);
+      SetToken("not available");
       Router.refresh();
     } else {
       startTransition(async () => {
         Router.refresh();
-        SetToken(token);
+        SetToken("not available");
       });
     }
   }
