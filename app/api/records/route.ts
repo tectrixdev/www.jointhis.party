@@ -118,7 +118,7 @@ async function LogRecord(
           msgtype: "m.text",
           body: `${deletion ? "Subdomain deleted" : "New subdomain registered"}\nName: ${name}\nURL: https://${name}.${DOMAIN}\nOWNER: ${session?.id}\nIP: ${content}\nRecord Type: ${type}`,
           format: "org.matrix.custom.html",
-          formatted_body: `<hr/><h1>${deletion ? "Subdomain deleted" : "New subdomain registered"}</h1>Name: <strong>${name}</strong><br/>URL: <strong>https://${name}.${DOMAIN}</strong><br/>OWNER: <strong>${session?.id}</strong><br/>IP: <strong>${content}</strong><br/>Record Type: <strong>${type}</strong><hr/>`,
+          formatted_body: `<hr/><h1>${deletion ? "Subdomain deleted" : "New subdomain registered"}</h1>Name: <strong>${name}</strong><br/>URL: <strong>https://${name}.${DOMAIN}</strong><br/>OWNER: <strong>${session?.id}</strong><br/>IP: <strong>${content}</strong><br/>Record Type: <strong>${type}</strong><br/><hr/>`,
         }),
       },
     );
