@@ -26,12 +26,12 @@ export default function HomePage() {
         <h1
           className={`${Glitch.className} w-full text-center text-3xl md:text-4xl`}
         >
-          Redirecting you to the jointhis.party discord...
+          Redirecting you to the jointhis.party matrix...
         </h1>
         <Zoomies color="white" size={250} />
         <Link
           className="rounded-xl bg-white p-3 font-bold text-black"
-          href="https://discord.com/invite/qFzhp9pCtc"
+          href="https://matrix.to/#/#jointhisparty:matrix.org"
         >
           Click here if you're not getting redirected.
         </Link>
@@ -41,8 +41,8 @@ export default function HomePage() {
 }
 
 export const metadata: Metadata = {
-  title: "JoinThisParty - Discord",
-  description: "Join the JoinThisParty discord here!",
+  title: "JoinThisParty - Matrix",
+  description: "Join the JoinThisParty matrix community here!",
   generator: "Next.js",
   applicationName: "jointhis.party",
   openGraph: {
@@ -62,11 +62,11 @@ export const metadata: Metadata = {
     "How to self host",
     "How to port forward",
     "How to use a reverse proxy",
-    "JoinThisParty discord",
+    "JoinThisParty Matrix",
   ],
   robots: "index, follow",
   alternates: {
-    canonical: "https://www.jointhis.party/discord",
+    canonical: "https://www.jointhis.party/matrix",
   },
   authors: [{ name: "Joran Hennion" }],
   creator: "Joran Hennion",

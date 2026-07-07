@@ -51,9 +51,6 @@ export default async function HomePage() {
   });
 
   if (session?.session?.id) {
-    const data = await auth.api.generateOneTimeToken({
-      headers: await headers(),
-    });
     return (
       <MainHome ClassName="p-10">
         <Toaster />
@@ -63,7 +60,7 @@ export default async function HomePage() {
           Dashboard
         </h1>
         <Dash name="JoinThis.proxy">
-          <TokenViewer token={data.token} />
+          <TokenViewer />
         </Dash>
         <Dash name="JoinThis.party">
           <Manager />

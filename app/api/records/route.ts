@@ -54,6 +54,8 @@ const BLACKLIST: Array<string> = [
   "vps2",
   "vps3",
   "vps4",
+  "play",
+  "matrix",
 ];
 
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)
@@ -71,42 +73,23 @@ export async function Log(
   info?: Array<Field>,
 ) {
   error ? console.error(message, info) : console.log(message, info);
-  if (process.env.LOGS_WEBHOOK) {
-    const userField: Array<Field> = [
+  if (process.env.MATRIX_TOKEN) {
+    await fetch(
+      `https://matrix.org/_matrix/client/v3/rooms/${process.env.MATRIX_ROOM}/send/m.room.message`,
       {
-        name: "User",
-        value: `<@${identifier}>`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.MATRIX_TOKEN}`,
+        },
+        body: JSON.stringify({
+          msgtype: "m.text",
+          body: `${error ? "ERROR" : "LOG"}:\nUser: ${identifier}\n${message}\nAdditional info: ${info}`,
+          format: "org.matrix.custom.html",
+          formatted_body: `<hr/><h1>${error ? "ERROR" : "LOG"}</h1>User: <strong>${identifier}</strong><br/><blockquote>\n<p>${message}</p>\n</blockquote><br/>Additional info: <strong>${info}</strong><hr/>`,
+        }),
       },
-    ];
-    const Fields: Array<Field> = info ? userField.concat(info) : userField;
-    await fetch(process.env.LOGS_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: error ? `<@&${MODERATORS}>` : ``,
-        embeds: [
-          {
-            title: error ? ":warning: Error" : ":white_check_mark: Successful",
-            description: message,
-            color: error ? 15548997 : 326507,
-            fields: Fields.map((field) =>
-              field.inline
-                ? {
-                    name: field.name,
-                    value: field.value,
-                    inline: field.inline,
-                  }
-                : { name: field.name, value: field.value },
-            ),
-          },
-        ],
-        components: [],
-        actions: {},
-        flags: 0,
-      }),
-    });
+    );
   }
 }
 async function LogRecord(
@@ -122,36 +105,23 @@ async function LogRecord(
       ? `Record of type ${type} with name ${name} deleted by ${session?.id}.`
       : `Record of type ${type} with name ${name} created by ${session?.id}.`,
   );
-  if (process.env.LOGS_WEBHOOK) {
-    await fetch(process.env.LOGS_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  if (process.env.MATRIX_TOKEN) {
+    await fetch(
+      `https://matrix.org/_matrix/client/v3/rooms/${process.env.MATRIX_ROOM}/send/m.room.message`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.MATRIX_TOKEN}`,
+        },
+        body: JSON.stringify({
+          msgtype: "m.text",
+          body: `${deletion ? "Subdomain deleted" : "New subdomain registered"}\nName: ${name}\nURL: https://${name}.${DOMAIN}\nOWNER: ${session?.id}\nIP: ${content}\nRecord Type: ${type}`,
+          format: "org.matrix.custom.html",
+          formatted_body: `<hr/><h1>${deletion ? "Subdomain deleted" : "New subdomain registered"}</h1>Name: <strong>${name}</strong><br/>URL: <strong>https://${name}.${DOMAIN}</strong><br/>OWNER: <strong>${session?.id}</strong><br/>IP: <strong>${content}</strong><br/>Record Type: <strong>${type}</strong><hr/>`,
+        }),
       },
-      body: JSON.stringify({
-        content: `<@&${MODERATORS}>`,
-        embeds: [
-          {
-            title: deletion ? "Subdomain deleted" : "New subdomain registered",
-            description: `NAME: **${name}**\nURL: https://${name}.${DOMAIN}\nOWNER: <@${session?.id}>`,
-            color: deletion ? 15548997 : 326507,
-            fields: [
-              {
-                name: "IP",
-                value: `${content}`,
-              },
-              {
-                name: "Record Type",
-                value: `${type}`,
-              },
-            ],
-          },
-        ],
-        components: [],
-        actions: {},
-        flags: 0,
-      }),
-    });
+    );
   }
 }
 export function UnexpectedError(
@@ -457,7 +427,7 @@ export async function createRecord(request: Request) {
         }
         // comment == undefined should NOT happen!
         const recordResponse = await client.dns.records.create(payload);
-        // Logging to the discord server for moderation purposes.
+        // Logging to the matrix server for moderation purposes.
         LogRecord(body, session, false);
         return NextResponse.json(
           { success: true, record: recordResponse },
@@ -513,7 +483,7 @@ export async function deleteRecord(request: Request) {
         const deleteRecord = await client.dns.records.delete(`${id}`, {
           zone_id: ZONE_ID,
         });
-        // Logging to the discord server for moderation purposes.
+        // Logging to the matrix community for moderation purposes.
         LogRecord(record, session, true);
         return NextResponse.json(
           { success: true, result: deleteRecord },
