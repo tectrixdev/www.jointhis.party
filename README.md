@@ -13,6 +13,8 @@ and we also aim to provide guides for every skill level to learn
 how to self host. This is to make it useful not only for advanced self-hosters,
 but also for beginners that don't know how to self-host anything.
 
+You can join us on Matrix: <https://matrix.to/#/#jointhisparty:matrix.org>
+
 ## Development / contributing
 
 Contributions are welcome using MRs.
