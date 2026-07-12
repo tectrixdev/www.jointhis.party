@@ -60,7 +60,8 @@ export default async function HomePage() {
           Dashboard
         </h1>
         <Dash name="JoinThis.proxy">
-          <TokenViewer />
+          <hr />
+          {/* (hr is a dummy component here) If there is no tunnel, display a create tunnel button, if there is, display info and authentication token. */}
         </Dash>
         <Dash name="JoinThis.party">
           <Manager />
