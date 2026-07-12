@@ -7,7 +7,6 @@ import "ldrs/react/Zoomies.css";
 import { Manager } from "@/components/toolinput";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
-import TokenViewer from "@/components/viewtoken";
 import { Toaster } from "react-hot-toast";
 
 const Glitch = Rubik_Glitch({
