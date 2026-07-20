@@ -11,7 +11,16 @@ import { NextResponse } from "next/server";
 // TODO: change code here to reflect new interaction method, dashboard fetches tunnels, if no tunnels, create tunnel button, if a tunnel, editable fields + status.
 // When creating a tunnel, check AvailableTunnels table and assign one to the user by creating a tunnel in Tunnels and marking it as taken in the AvailableTunnels table.
 // When editing, edit the tunnel record. Everything should be prepared for multiple tunnels too. For now single tunnel will be standard, but when there is a need for multiple tunnels, it would have to be multiple client instances of rtun per tunnel, until I make my own implementation of it. It isn't a huge issue, but it is a workaround.
-// Domain updates should happen right here too.
+// Domain updates should happen right here too. Tunnel update == DNS update.
+
+let connectionParams = {
+  host: process.env.PROXYHOST,
+  port: 3306,
+  user: "proxy",
+  password: process.env.PROXYPW,
+  database: "jointhisproxy",
+};
+const connection = await mysql.createConnection(connectionParams);
 type Tunnel = {
   id?: number;
   // Row number (not important)
@@ -35,15 +44,8 @@ type Tunnel = {
   purpose: string;
   // User description of tunnel, mainly for moderation.
 };
+
 async function GetTunnels(userID: string) {
-  let connectionParams = {
-    host: process.env.PROXYHOST,
-    port: 3306,
-    user: "proxy",
-    password: process.env.PROXYPW,
-    database: "jointhisproxy",
-  };
-  const connection = await mysql.createConnection(connectionParams);
   // Get user Tunnels
   try {
     const [results, fields] = await connection.query<RowDataPacket[]>(
