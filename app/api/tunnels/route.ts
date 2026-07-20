@@ -12,6 +12,29 @@ import { NextResponse } from "next/server";
 // When creating a tunnel, check AvailableTunnels table and assign one to the user by creating a tunnel in Tunnels and marking it as taken in the AvailableTunnels table.
 // When editing, edit the tunnel record. Everything should be prepared for multiple tunnels too. For now single tunnel will be standard, but when there is a need for multiple tunnels, it would have to be multiple client instances of rtun per tunnel, until I make my own implementation of it. It isn't a huge issue, but it is a workaround.
 // Domain updates should happen right here too.
+type Tunnel = {
+  id?: number;
+  // Row number (not important)
+  owner: string;
+  // User ID of the tunnel owner.
+  token: string;
+  // Token for rtun auth.
+  subdomain: string;
+  // Subdomain, without .jointhis.party.
+  UDP: number;
+  TCP: number;
+  // External ports.
+  intUDP: number;
+  intTCP: number;
+  // Internal ports.
+  type: "default" | "minecraft" | "https" | "http";
+  // Default = A record, minecraft = SRV, https + http = for future implementations and / or changes that need to be made for websites, like showing the cloudflare proxy option.
+  status: "disabled" | "enabled" | "online";
+  name: string;
+  // Tunnel name.
+  purpose: string;
+  // User description of tunnel, mainly for moderation.
+};
 async function GetTunnels(userID: string) {
   let connectionParams = {
     host: process.env.PROXYHOST,
@@ -23,26 +46,6 @@ async function GetTunnels(userID: string) {
   const connection = await mysql.createConnection(connectionParams);
   // Get user Tunnels
   try {
-    type Row = {
-      id: number;
-      // Row number (not important)
-      owner: string;
-      // User ID of the tunnel owner.
-      token: string;
-      // Token for rtun auth.
-      subdomain: string;
-      // Subdomain, without .jointhis.party.
-      UDP: number;
-      TCP: number;
-      // External ports.
-      type: "default" | "minecraft" | "https" | "http";
-      // Default = A record, minecraft = SRV, https + http = for future implementations and / or changes that need to be made for websites, like showing the cloudflare proxy option.
-      status: "disabled" | "enabled" | "online";
-      name: string;
-      // Tunnel name.
-      purpose: string;
-      // User description of tunnel, mainly for moderation.
-    };
     const [results, fields] = await connection.query<RowDataPacket[]>(
       `SELECT * from Tunnels where owner = ${userID}`,
     );
@@ -51,6 +54,12 @@ async function GetTunnels(userID: string) {
     console.error(err);
     return { error: "Database error." };
   }
+}
+
+async function CreateTunnel(userID: string, tunnel: Tunnel) {
+  // Tunnel check etc should not happen here, this function just straight up makes the tunnel without any checks
+  // First: Check for available tunnels / authentication tokens
+  // Second: Create tunnel.
 }
 
 export async function GET(request: Request) {
