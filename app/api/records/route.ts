@@ -56,6 +56,14 @@ const BLACKLIST: Array<string> = [
   "vps4",
   "play",
   "matrix",
+  "us1",
+  "us2",
+  "us3",
+  "eu1",
+  "eu2",
+  "eu3",
+  "us",
+  "eu",
 ];
 
 // TODO: cleanup, consistent naming, consistent variables. (consistent examples)

@@ -21,11 +21,61 @@ let connectionParams = {
   database: "jointhisproxy",
 };
 const connection = await mysql.createConnection(connectionParams);
+
+const PROXYSERVERS = [
+  { name: "US1", IP: "82.38.134.30", subdomain: "proxy.jointhis.party" },
+  // US1 is currently the main and only server so it uses proxy.jointhis.party, this will change when there are multiple servers.
+];
+
+// Body used for tunnel creation.
+type CreateTunnel = {
+  region: string;
+  // See constant above.
+  subdomain: string | undefined;
+  // Subdomain, if undefined, proxy.jointhis.party or play.jointhis.party is used.
+  intUDP: number;
+  intTCP: number;
+  // Internal ports
+  type: "default" | "minecraft" | "https" | "http";
+  name: string;
+  description: string;
+};
+
+// Body the user receives with a GET request.
+type FetchTunnel = {
+  config: {
+    host: string;
+    // IP of the proxy server.
+    token: string;
+    // Rtun token.
+    UDP: number;
+    TCP: number;
+    // External ports.
+    intUDP: number;
+    intTCP: number;
+    // Internal ports.
+  };
+  meta: {
+    type: "default" | "minecraft" | "https" | "http";
+    // Default = A record, minecraft = SRV, https + http = for future implementations and / or changes that need to be made for websites, like showing the cloudflare proxy option.
+    status: "disabled" | "enabled" | "online";
+    name: string;
+    // Tunnel name.
+    description: string;
+    // User description of tunnel, mainly for moderation.
+    subdomain: string;
+    // Assigned subdomain without .jointhis.party.
+  };
+};
+
+// Tunnel row as found in the database.
 type Tunnel = {
   id?: number;
   // Row number (not important)
   owner: string;
   // User ID of the tunnel owner.
+  server: string;
+  // Server assigned by the webserver.
   token: string;
   // Token for rtun auth.
   subdomain: string;
@@ -76,7 +126,26 @@ export async function GET(request: Request) {
       // User is verified, pass along their tunnels, granted the user has any.
       // TODO: Test no tunnels case.
       const tunnels = await GetTunnels(session?.id || "");
-      return NextResponse.json({ tunnels }, { status: 200 });
+      // TODO: move to a function (for example sanitizeOutputTunnels)
+      const userTunnels = tunnels.map((tunnel) => ({
+        config: {
+          host: PROXYSERVERS.find((server) => server.name == tunnel.server)
+            .subdomain,
+          token: tunnel.token,
+          UDP: tunnel.UDP,
+          TCP: tunnel.TCP,
+          intUDP: tunnel.intUDP || tunnel.UDP,
+          intTCP: tunnel.intTCP || tunnel.TCP,
+        },
+        meta: {
+          type: tunnel.type || "default",
+          status: tunnel.status || "offline",
+          name: tunnel.name,
+          description: tunnel.purpose,
+          subdomain: tunnel.subdomain || "play",
+        },
+      }));
+      return NextResponse.json({ userTunnels }, { status: 200 });
     } else {
       // Return authentication error.
       return NextResponse.json(
