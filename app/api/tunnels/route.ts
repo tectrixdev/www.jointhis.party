@@ -9,8 +9,7 @@ import { NextResponse } from "next/server";
 // PUT: Edit tunnel
 
 // TODO: change code here to reflect new interaction method, dashboard fetches tunnels, if no tunnels, create tunnel button, if a tunnel, editable fields + status.
-// When creating a tunnel, check AvailableTunnels table and assign one to the user by creating a tunnel in Tunnels and marking it as taken in the AvailableTunnels table.
-// When editing, edit the tunnel record. Everything should be prepared for multiple tunnels too. For now single tunnel will be standard, but when there is a need for multiple tunnels, it would have to be multiple client instances of rtun per tunnel, until I make my own implementation of it. It isn't a huge issue, but it is a workaround.
+// When creating a tunnel, check AvailableTunnels table and assign one to the user by creating a tunnel in Tunnels and marking it as taken in the AvailableTunnels table. When editing, edit the tunnel record. Everything should be prepared for multiple tunnels too. For now single tunnel will be standard, but when there is a need for multiple tunnels, it would have to be multiple client instances of rtun per tunnel, until I make my own implementation of it. It isn't a huge issue, but it is a workaround.
 // Domain updates should happen right here too. Tunnel update == DNS update.
 
 let connectionParams = {
@@ -23,9 +22,11 @@ let connectionParams = {
 const connection = await mysql.createConnection(connectionParams);
 
 const PROXYSERVERS = [
-  { name: "US1", IP: "82.38.134.30", subdomain: "proxy.jointhis.party" },
+  { name: "US1", IP: "82.38.134.30", domain: "proxy.jointhis.party" },
   // US1 is currently the main and only server so it uses proxy.jointhis.party, this will change when there are multiple servers.
 ];
+
+const FREETUNNELS = 1;
 
 // Body used for tunnel creation.
 type CreateTunnel = {
@@ -95,23 +96,37 @@ type Tunnel = {
   // User description of tunnel, mainly for moderation.
 };
 
-async function GetTunnels(userID: string) {
+type ReturnGetTunnels = {
+  status: boolean;
+  error?: string;
+  tunnels?: Tunnel[];
+};
+
+async function GetTunnels(userID: string): Promise<ReturnGetTunnels> {
   // Get user Tunnels
   try {
     const [results, fields] = await connection.query<RowDataPacket[]>(
       `SELECT * from Tunnels where owner = ${userID}`,
     );
-    return results;
+    return { status: true, tunnels: results as Tunnel[] };
   } catch (err: any) {
-    console.error(err);
-    return { error: "Database error." };
+    return { status: false, error: err };
   }
 }
 
-async function CreateTunnel(userID: string, tunnel: Tunnel) {
+type ReturnCreateTunnel = {
+  status: boolean;
+  error?: string;
+};
+
+async function CreateTunnel(
+  userID: string,
+  tunnel: Tunnel,
+): Promise<ReturnCreateTunnel> {
   // Tunnel check etc should not happen here, this function just straight up makes the tunnel without any checks
   // First: Check for available tunnels / authentication tokens
   // Second: Create tunnel.
+  return { status: true };
 }
 
 export async function GET(request: Request) {
@@ -125,12 +140,14 @@ export async function GET(request: Request) {
     if (AuthState.state) {
       // User is verified, pass along their tunnels, granted the user has any.
       // TODO: Test no tunnels case.
-      const tunnels = await GetTunnels(session?.id || "");
+      const { status, tunnels } = await GetTunnels(session?.id || "");
+      // TODO: status = false handling
       // TODO: move to a function (for example sanitizeOutputTunnels)
-      const userTunnels = tunnels.map((tunnel) => ({
+      const userTunnels = tunnels?.map((tunnel) => ({
         config: {
-          host: PROXYSERVERS.find((server) => server.name == tunnel.server)
-            .subdomain,
+          host:
+            PROXYSERVERS.find((server) => server.name == tunnel.server)
+              ?.domain || "proxy.jointhis.party",
           token: tunnel.token,
           UDP: tunnel.UDP,
           TCP: tunnel.TCP,

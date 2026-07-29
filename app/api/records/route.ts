@@ -264,15 +264,16 @@ function isInUse(
   }
 }
 
-interface SubdomainAvailability {
+type ReturnSubdomainAvailability = {
   status: boolean;
   error?: string;
-}
+};
+
 function SubdomainAvailability(
   Records: RecordResponsesV4PagePaginationArray,
   session: customSession | undefined,
   body: any,
-): SubdomainAvailability {
+): ReturnSubdomainAvailability {
   const subdomain = body.name;
   const MaximumRecords = 5;
   const FullMatch = subdomain.match("[a-zA-Z0-9]+")[0] === subdomain;
