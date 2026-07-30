@@ -54,11 +54,11 @@
 - [x] Add OTT auth
 - [x] Add a way to communicate this with the CLI
 - [ ] Implement captcha with cloudflare turnstile.
-
-## These are now possible due to having an auth DB
-
-- [ ] get discord user id properly
-- [ ] implement alt mitigation better with profile info.
+- [x] GitLab auth
+- [x] Fix logging
+- [x] fix email verification
+- [x] Update privacy policy accordingly
+- [ ] Other login providers
 
 ## Future / uncertain
 

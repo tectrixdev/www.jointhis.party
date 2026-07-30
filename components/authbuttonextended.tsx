@@ -10,7 +10,7 @@ export default function AuthbuttonExtended() {
       className="mb-5 flex w-full justify-center self-center md:hidden md:w-5/6"
       action={async () => {
         const { data, error } = await authClient.signIn.social({
-          provider: "discord",
+          provider: "gitlab",
         });
       }}
     >

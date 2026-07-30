@@ -21,7 +21,7 @@ export function SignIn() {
     <form
       action={async () => {
         const { data, error } = await authClient.signIn.social({
-          provider: "discord",
+          provider: "gitlab",
           callbackURL: callback,
         });
         if (error?.status == 429) {

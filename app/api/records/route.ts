@@ -1,12 +1,13 @@
 import Cloudflare from "cloudflare";
 import { NextResponse } from "next/server";
 import { auth, customSession } from "@/auth";
-import { ValidateDiscordID } from "@/auth";
 import {
   RecordCreateParams,
   RecordResponse,
   RecordResponsesV4PagePaginationArray,
 } from "cloudflare/resources/dns/records.mjs";
+
+// TODO: fix null | undefined types
 
 // Initialize Cloudflare API instance.
 const client = new Cloudflare({
@@ -17,8 +18,6 @@ const client = new Cloudflare({
 const ZONE_ID = "fc5602181bbb84839aef4907714f435c";
 // Domain for subdomain conversions etc.
 const DOMAIN = "jointhis.party";
-// Moderator role ID to ping when needed
-const MODERATORS = "1448781724803661927";
 // NOTE: * --> Wildcard on root, @ --> root
 const BLACKLIST: Array<string> = [
   "*",
@@ -76,12 +75,13 @@ interface Field {
 }
 export async function Log(
   message: string,
-  identifier: string | undefined,
+  identifier: string | null | undefined,
   error: boolean,
   info?: Array<Field>,
 ) {
   error ? console.error(message, info) : console.log(message, info);
   if (process.env.MATRIX_TOKEN) {
+    var textInfo = info?.map((field) => `${field.name}: ${field.value}`);
     await fetch(
       `https://matrix.org/_matrix/client/v3/rooms/${process.env.MATRIX_ROOM}/send/m.room.message`,
       {
@@ -92,9 +92,9 @@ export async function Log(
         },
         body: JSON.stringify({
           msgtype: "m.text",
-          body: `${error ? "ERROR" : "LOG"}:\nUser: ${identifier}\n${message}\nAdditional info: ${info}`,
+          body: `${error ? "ERROR" : "LOG"}:\nUser: ${identifier}\n${message}\nAdditional info:\n ${textInfo?.join("\n")}`,
           format: "org.matrix.custom.html",
-          formatted_body: `<hr/><h1>${error ? "ERROR" : "LOG"}</h1>User: <strong>${identifier}</strong><br/><blockquote>\n<p>${message}</p>\n</blockquote><br/>Additional info: <strong>${info}</strong><hr/>`,
+          formatted_body: `<hr/><h1>${error ? "ERROR" : "LOG"}</h1>User: <strong>${identifier}</strong><br/><blockquote>\n<p>${message}</p>\n</blockquote><br/>Additional info:<br/> <strong>${textInfo?.join("<br/>")}</strong><hr/>`,
         }),
       },
     );
@@ -110,8 +110,8 @@ async function LogRecord(
   deletion ? (name = NameToSubdomain(record.name)) : (name = record.name);
   console.log(
     deletion
-      ? `Record of type ${type} with name ${name} deleted by ${session?.id}.`
-      : `Record of type ${type} with name ${name} created by ${session?.id}.`,
+      ? `Record of type ${type} with name ${name} deleted by ${session?.accountId}.`
+      : `Record of type ${type} with name ${name} created by ${session?.accountId}.`,
   );
   if (process.env.MATRIX_TOKEN) {
     await fetch(
@@ -124,9 +124,9 @@ async function LogRecord(
         },
         body: JSON.stringify({
           msgtype: "m.text",
-          body: `${deletion ? "Subdomain deleted" : "New subdomain registered"}\nName: ${name}\nURL: https://${name}.${DOMAIN}\nOWNER: ${session?.id}\nIP: ${content}\nRecord Type: ${type}`,
+          body: `${deletion ? "Subdomain deleted" : "New subdomain registered"}\nName: ${name}\nURL: https://${name}.${DOMAIN}\nOWNER: ${session?.accountId}\nIP: ${content}\nRecord Type: ${type}`,
           format: "org.matrix.custom.html",
-          formatted_body: `<hr/><h1>${deletion ? "Subdomain deleted" : "New subdomain registered"}</h1>Name: <strong>${name}</strong><br/>URL: <strong>https://${name}.${DOMAIN}</strong><br/>OWNER: <strong>${session?.id}</strong><br/>IP: <strong>${content}</strong><br/>Record Type: <strong>${type}</strong><br/><hr/>`,
+          formatted_body: `<hr/><h1>${deletion ? "Subdomain deleted" : "New subdomain registered"}</h1>Name: <strong>${name}</strong><br/>URL: <strong>https://${name}.${DOMAIN}</strong><br/>OWNER: <strong>${session?.accountId}</strong><br/>IP: <strong>${content}</strong><br/>Record Type: <strong>${type}</strong><br/><hr/>`,
         }),
       },
     );
@@ -138,10 +138,11 @@ export function UnexpectedError(
   route: string,
   method: "GET" | "DELETE" | "POST",
 ): NextResponse {
-  Log(`Unexpected error occurred.`, session?.id, true, [
+  Log(`Unexpected error occurred.`, session?.accountId, true, [
     { name: "Error", value: err.toString(), inline: true },
     { name: "Route", value: route, inline: true },
     { name: "Method", value: method, inline: true },
+    { name: "Username", value: session?.name || "unable to fetch name" },
   ]);
   return NextResponse.json(
     { error: err?.errors[0].message || "Unknown error" },
@@ -167,11 +168,7 @@ interface AuthState {
 
 export function VerifyUserAuth(session: customSession | undefined): AuthState {
   // Try if session is valid.
-  if (
-    session &&
-    session.verified &&
-    ValidateDiscordID.test(session?.id || "")
-  ) {
+  if (session && session.verified) {
     return { state: true };
   }
 
@@ -179,18 +176,16 @@ export function VerifyUserAuth(session: customSession | undefined): AuthState {
   if (!session) {
     return { state: false, error: "Please log in." };
   }
-  // If the user ID in the session does not match the proper format.
-  if (!ValidateDiscordID.test(session?.id || "")) {
-    Log("User failed regular expression.", session?.id, true);
+  // If the account of the user is not verified, this is for bot and alt protection.
+  if (!session.verified) {
+    Log("User session is not verified.", session?.accountId, true, [
+      { name: "Username", value: session?.name || "unable to fetch name" },
+    ]);
     return {
       state: false,
-      error: "Could not verify your discord ID, please contact support.",
+      error:
+        "Your session is not verified, please contact moderators at moderators@jointhis.party.",
     };
-  }
-  // If email of the user is not verified, this is for bot and alt protection.
-  if (!session.verified) {
-    Log("User has not verified their email.", session?.id, true);
-    return { state: false, error: "Your e-mail on discord is not verified." };
   }
   // Panic statement.
   return { state: false, error: "An unknown error occurred." };
@@ -200,7 +195,7 @@ function isOwned(
   result: RecordResponse,
   session: customSession | undefined,
 ): boolean {
-  if (result.comment == session?.id) {
+  if (result.comment == session?.accountId) {
     return true;
   } else {
     return false;
@@ -280,18 +275,27 @@ function SubdomainAvailability(
   // isOwned and isInUse are computationally expensive, so we try every fast check first before checking those.
   // Check if above list includes the subdomain, if yes, mark as disallowed.
   if (BLACKLIST.includes(subdomain)) {
-    Log(`User tried to register a blacklisted subdomain.`, session?.id, true, [
-      { name: "Subdomain", value: subdomain },
-    ]);
+    Log(
+      `User tried to register a blacklisted subdomain.`,
+      session?.accountId || session?.accountId,
+      true,
+      [
+        { name: "Subdomain", value: subdomain },
+        { name: "Username", value: session?.name || "unable to fetch name" },
+      ],
+    );
     return { status: false, error: "This subdomain is blacklisted." };
   }
   // Allow alphanumeric characters only to prevent @ or * in the subdomain name, which could lead to problems.
   if (!FullMatch) {
     Log(
       `User tried registering non-alphanumeric subdomain.`,
-      session?.id,
+      session?.accountId,
       true,
-      [{ name: "Subdomain", value: subdomain }],
+      [
+        { name: "Subdomain", value: subdomain },
+        { name: "Username", value: session?.name || "unable to fetch name" },
+      ],
     );
     return {
       status: false,
@@ -323,15 +327,16 @@ function SubdomainAvailability(
   if (Array.isArray(unAuthorizedRecords) && unAuthorizedRecords.length > 0) {
     Log(
       `User tried registering a subdomain already in use.`,
-      session?.id,
+      session?.accountId,
       true,
       [
         { name: "Subdomain", value: subdomain, inline: true },
         {
           name: "Conflicting user",
-          value: `<@${unAuthorizedRecords[0].comment}>`,
+          value: `${unAuthorizedRecords[0].comment}`,
           inline: true,
         },
+        { name: "Username", value: session?.name || "unable to fetch name" },
       ],
     );
     return {
@@ -341,18 +346,29 @@ function SubdomainAvailability(
   }
   // + 1, as UserRecords is before creation, and we should compare the situation as if we would've created a new record.
   if (UserRecords.length + 1 > MaximumRecords) {
-    Log("User reached maximum amount of allowed records.", session?.id, true);
+    Log(
+      "User reached maximum amount of allowed records.",
+      session?.accountId,
+      true,
+      [{ name: "Username", value: session?.name || "unable to fetch name" }],
+    );
     return {
       status: false,
       error: "You have reached the maximum amount of subdomains.",
     };
   }
   // If all else fails, this is a fallback.
-  Log(`Subdomain validation has failed unexpectedly.`, session?.id, true, [
-    { name: "Subdomain", value: subdomain },
-    { name: "unAuthorizedRecords", value: unAuthorizedRecords },
-    { name: "The users records", value: UserRecords },
-  ]);
+  Log(
+    `Subdomain validation has failed unexpectedly.`,
+    session?.accountId,
+    true,
+    [
+      { name: "Subdomain", value: subdomain },
+      { name: "unAuthorizedRecords", value: unAuthorizedRecords },
+      { name: "The users records", value: UserRecords },
+      { name: "Username", value: session?.name || "unable to fetch name" },
+    ],
+  );
   return { status: false, error: "An unexpected error occurred." };
 }
 
@@ -365,11 +381,11 @@ export async function getRecords(request: Request) {
     // Fetch authentication state.
     const AuthState = VerifyUserAuth(session);
     if (AuthState.state) {
-      // Get records owned by user which we can find by matching their discord user ID in the comment of the DNS record.
+      // Get records owned by user which we can find by matching their user ID in the comment of the DNS record.
       const userRecords = await client.dns.records.list({
         zone_id: ZONE_ID,
         comment: {
-          exact: session?.id,
+          exact: session?.accountId || "",
         },
       });
       const UserRecords = userRecords.result;
@@ -409,13 +425,13 @@ export async function createRecord(request: Request) {
         if (type === "SRV") {
           // SRV record payload format.
           // TTL --> 3600 because most subdomains don't last long or are expected to change owners quickly.
-          // comment --> This is (for now) used to store ownership information, which is just the discord user ID.
+          // comment --> This is (for now) used to store ownership information, which is just the user ID.
           payload = {
             zone_id: ZONE_ID,
             name: `${name}`,
             type: `${type}`,
             ttl: 3600,
-            comment: session?.id ?? undefined,
+            comment: session?.accountId ?? undefined,
             data: {
               priority: 0,
               weight: 0,
@@ -431,7 +447,7 @@ export async function createRecord(request: Request) {
             type: `${type}`,
             ttl: 3600,
             content: `${content}`,
-            comment: session?.id ?? undefined,
+            comment: session?.accountId ?? undefined,
           };
         }
         // comment == undefined should NOT happen!
@@ -487,7 +503,7 @@ export async function deleteRecord(request: Request) {
         zone_id: ZONE_ID,
       });
       // Check if the user owns the pending record, to make sure the client isn't lying.
-      if (record.comment == session?.id) {
+      if (record.comment == session?.accountId) {
         // Actually deleting it.
         const deleteRecord = await client.dns.records.delete(`${id}`, {
           zone_id: ZONE_ID,

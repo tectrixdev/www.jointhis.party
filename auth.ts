@@ -10,26 +10,53 @@ export const auth = betterAuth({
     database: "betterauth",
     timezone: "Z", // Important to ensure consistent timezone values
   }),
-  socialProviders: {
-    discord: {
-      clientId: process.env.AUTH_DISCORD_ID as string,
-      clientSecret: process.env.AUTH_DISCORD_SECRET as string,
+  user: {
+    additionalFields: {
+      verified: {
+        type: "boolean",
+        required: true,
+        input: false,
+      },
+      accountId: {
+        type: "string",
+        required: false,
+        defaultValue: "error",
+        input: false,
+      },
     },
   },
-  plugins: [
-    customSession(async ({ user, session }) => {
-      return {
-        user: {
-          email: user.email,
-          verified: user.emailVerified,
-          name: user.name,
-          image: user.image,
-          id: UserIdFromAvatar(user.image), // Include Discord ID
-        },
-        session,
-      };
-    }),
-  ],
+  socialProviders: {
+    gitlab: {
+      clientId: process.env.GITLAB_CLIENT_ID as string,
+      clientSecret: process.env.GITLAB_CLIENT_SECRET as string,
+      mapProfileToUser: (profile) => {
+        var verified = false;
+        const creationDate = new Date(profile.created_at).getTime();
+        const today = new Date().getTime();
+        const minimumAgeDays = 10;
+        const isAccountOldEnough =
+          today - creationDate >= minimumAgeDays * 25 * 60 * 60 * 1000;
+        if (
+          !profile.locked &&
+          !profile.bot &&
+          profile.two_factor_enabled &&
+          isAccountOldEnough &&
+          profile.state == "active"
+        ) {
+          verified = true;
+        }
+        return {
+          email: profile.email,
+          verified: verified,
+          emailVerified: verified,
+          name: profile.username,
+          image: profile.avatar_url,
+          accountId: profile.id.toString(),
+        };
+      },
+    },
+  },
+  plugins: [],
   session: {
     cookieCache: {
       enabled: true,
@@ -42,25 +69,7 @@ export type customSession = {
   email: string;
   verified: boolean;
   name: string;
-  image: string | null | undefined;
+  image?: string | null | undefined;
   id: string | undefined;
+  accountId: string | null | undefined;
 };
-// There should be 2 types of avatar URLs:
-// https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png
-// https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}
-export const ValidateDiscordID = /^\d{17,30}$/; // snowflake = unix apparently, that's why newer accounts didn't work.
-export function UserIdFromAvatar(avatar: string | null | undefined) {
-  if (avatar === null || avatar === undefined) {
-    return undefined;
-  }
-  var userId;
-  const url = new URL(avatar);
-  if (ValidateDiscordID.test(url.pathname.split("/")[2])) {
-    userId = url.pathname.split("/")[2];
-  } else if (ValidateDiscordID.test((userId = url.pathname.split("/")[3]))) {
-    userId = url.pathname.split("/")[3];
-  } else {
-    userId = undefined;
-  }
-  return userId;
-}

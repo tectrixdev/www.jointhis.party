@@ -29,38 +29,37 @@ We, as jointhis.party, collect the following data when you log in:
 - The IP of the nearest cloudflare server (Authentication DB, this is the
   cloudflare IP due to the server being proxied. Your real IP is not stored. )
 - Your User agent (Authentication DB, is accessible by me.)
-- Your discord user ID (Authentication DB, is accessible by me.)
 - The records you create and their contents (moderation purposes)
-- Your discord email (Authentication DB, is accessible by me.)
-- If your discord email is verified (Authentication DB, is accessible by me.)
-- Your discord profile picture (Authentication DB, is accessible by me.)
-- Your discord username (Authentication DB, is accessible by me.)
+- Your email (Authentication DB, is accessible by me.)
+- If your email is verified (Authentication DB, is accessible by me.)
+- Your profile picture (Authentication DB, is accessible by me.)
+- Your username (Authentication DB, is accessible by me.)
+- Your GitLab user ID (Authentication DB, is accessible by me.)
 
 What happens to your data:
 
 Regular data:
 
-| Data             | Access                            | Storage                  | Storage retention                      |
-| ---------------- | --------------------------------- | ------------------------ | -------------------------------------- |
-| Discord user ID  | jointhis.party Discord moderators | DNS records / Cloudflare | As long as the DNS records are active. |
-| Your IP          | Cloudflare                        | Cloudflare               | 1 month                                |
-| User agent       | Me, Vercel                        | Vercel                   | 1 month                                |
-| Your referrer    | Me, Vercel                        | Vercel                   | 1 month                                |
-| Pages you access | Me, Vercel                        | Vercel                   | 1 month                                |
+| Data             | Access     | Storage    | Storage retention |
+| ---------------- | ---------- | ---------- | ----------------- |
+| Your IP          | Cloudflare | Cloudflare | 1 month           |
+| User agent       | Me, Vercel | Vercel     | 1 month           |
+| Your referrer    | Me, Vercel | Vercel     | 1 month           |
+| Pages you access | Me, Vercel | Vercel     | 1 month           |
 
 Data collected after authenticating:
 
-| Data                                     | Access                            | Storage                                | Storage retention      |
-| ---------------------------------------- | --------------------------------- | -------------------------------------- | ---------------------- |
-| Discord user ID                          | Me                                | Authentication DB                      | Until account deletion |
-| Your activity on the tool                | jointhis.party trusted moderators | Matrix room, DNS records / Cloudflare. | Forever                |
-| Nearest cloudflare datacenter            | Me                                | Authentication DB                      | 7 days                 |
-| User agent                               | Me, Vercel                        | Vercel, Authentication DB              | 7 days                 |
-| Your referrer                            | Me, Vercel                        | Vercel                                 | 1 month                |
-| Pages you access                         | Me, Vercel                        | Vercel                                 | 1 month                |
-| The email linked to your discord account | Me                                | Authentication DB                      | Until account deletion |
-| Wether your discord email is verified    | Me                                | Authentication DB                      | Until account deletion |
-| Your Discord display name                | Me                                | Authentication DB                      | Until account deletion |
+| Data                             | Access                            | Storage                                | Storage retention      |
+| -------------------------------- | --------------------------------- | -------------------------------------- | ---------------------- |
+| user ID                          | Me, jointhis.party moderators     | Authentication DB, logs, DNS records   | Until account deletion |
+| Your activity on the tool        | jointhis.party trusted moderators | Matrix room, DNS records / Cloudflare. | Forever                |
+| Nearest cloudflare datacenter    | Me                                | Authentication DB                      | 7 days                 |
+| User agent                       | Me, Vercel                        | Vercel, Authentication DB              | 7 days                 |
+| Your referrer                    | Me, Vercel                        | Vercel                                 | 1 month                |
+| Pages you access                 | Me, Vercel                        | Vercel                                 | 1 month                |
+| The email linked to your account | Me                                | Authentication DB                      | Until account deletion |
+| Wether your email is verified    | Me                                | Authentication DB                      | Until account deletion |
+| Your display name                | Me                                | Authentication DB                      | Until account deletion |
 
 The authentication DB is self-hosted on a VPS in the United States. Only I can
 access the database. You can always request your data by sending an email to
@@ -118,10 +117,10 @@ When you do log in, some info about your session is also saved in local storage.
 This section only applies to users that utilize our jointhis.proxy tool.
 The following data is collected:
 
-| Data            | Function                                        | Storage              |
-| --------------- | ----------------------------------------------- | -------------------- |
-| IP              | Connection to the server and runtime logging    | RAM-only             |
-| Discord user ID | Associate authentication key with your account. | Self-hosted database |
+| Data    | Function                                        | Storage              |
+| ------- | ----------------------------------------------- | -------------------- |
+| IP      | Connection to the server and runtime logging    | RAM-only             |
+| user ID | Associate authentication key with your account. | Self-hosted database |
 
 By using the service, you also agree that we may inspect packets if necessary
 to prevent abuse. As stated in the terms of service, we may also ask you what
@@ -135,5 +134,5 @@ If we do make changes to the terms, you will be notified in the
 matrix announcement room and when commits on the gitlab page get made.
 
 ```text
-Last update: 2026/03/28
+Last update: 2026/07/30
 ```
