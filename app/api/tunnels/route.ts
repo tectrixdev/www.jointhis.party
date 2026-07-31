@@ -22,7 +22,12 @@ let connectionParams = {
 const connection = await mysql.createConnection(connectionParams);
 
 const PROXYSERVERS = [
-  { name: "US1", IP: "82.38.134.30", domain: "proxy.jointhis.party" },
+  {
+    name: "US1",
+    IP: "82.38.134.30",
+    domain: "proxy.jointhis.party",
+    region: "US",
+  },
   // US1 is currently the main and only server so it uses proxy.jointhis.party, this will change when there are multiple servers.
 ];
 
@@ -121,12 +126,32 @@ type ReturnCreateTunnel = {
 
 async function CreateTunnel(
   userID: string,
-  tunnel: Tunnel,
+  tunnel: CreateTunnel,
+  session: customSession,
 ): Promise<ReturnCreateTunnel> {
   // Tunnel check etc should not happen here, this function just straight up makes the tunnel without any checks
-  // First: Check for available tunnels / authentication tokens
-  // Second: Create tunnel.
-  return { status: true };
+  // TODO: proper error handling and typing, + subdomain creation?
+  try {
+    const server = "US1";
+    // Due to there only being one server for now.
+    const [results, fields] = await connection.query<RowDataPacket[]>(
+      `SELECT id, token, TCP, UDP FROM AvailableTunnels WHERE status = 'available' AND server = '${server}'`,
+    );
+    // TODO: test for no available tunnels
+    if (!results.length) {
+      return { status: false, error: "No tunnels available." };
+      // In the future, loop through region servers if no tunnels available.
+    }
+    const { id, token, TCP, UDP } = results[0];
+    await connection.query(
+      `UPDATE AvailableTunnels SET status = 'taken' where id = ${id}`,
+    );
+    await connection.query(
+      `INSERT INTO Tunnels (owner, server, token, subdomain, UDP, TCP, intUDP, intTCP, type, status, name, purpose ) VALUES ("${session?.id}", "${server}", "${token}", "${tunnel.subdomain}", ${UDP}, ${TCP}, ${tunnel.intUDP}, ${tunnel.intTCP}, "${tunnel.type}", "offline", "${tunnel.name}", "${tunnel.description}")`,
+    );
+  } catch (err: any) {
+    return { status: false, error: err.toString() };
+  }
 }
 
 export async function GET(request: Request) {
