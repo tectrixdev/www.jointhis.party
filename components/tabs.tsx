@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   type ComponentProps,
   createContext,
@@ -10,15 +10,15 @@ import {
   useId,
   useMemo,
   useState,
-} from "react";
-import { cn } from "../lib/cn";
-import * as Unstyled from "./tabs.unstyled";
+} from 'react';
+import { cn } from '../lib/cn';
+import * as Unstyled from './ui/tabs';
 
 type CollectionKey = string | symbol;
 
 export interface TabsProps extends Omit<
   ComponentProps<typeof Unstyled.Tabs>,
-  "value" | "onValueChange"
+  'value' | 'onValueChange'
 > {
   /**
    * Use simple mode instead of advanced usage as documented in https://radix-ui.com/primitives/docs/components/tabs.
@@ -45,39 +45,40 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = useContext(TabsContext);
-  if (!ctx) throw new Error("You must wrap your component in <Tabs>");
+  if (!ctx) throw new Error('You must wrap your component in <Tabs>');
   return ctx;
 }
 
-export const TabsList = React.forwardRef<
-  React.ComponentRef<typeof Unstyled.TabsList>,
-  React.ComponentPropsWithoutRef<typeof Unstyled.TabsList>
->((props, ref) => (
-  <Unstyled.TabsList
-    ref={ref}
-    {...props}
-    className={cn(
-      "text-fd-secondary-foreground not-prose flex gap-3.5 overflow-x-auto px-4",
-      props.className,
-    )}
-  />
-));
-TabsList.displayName = "TabsList";
+export function TabsList({ className, ...props }: React.ComponentProps<typeof Unstyled.TabsList>) {
+  return (
+    <Unstyled.TabsList
+      {...props}
+      className={(s) =>
+        cn(
+          'flex gap-3.5 text-fd-secondary-foreground overflow-x-auto px-4 not-prose',
+          typeof className === 'function' ? className(s) : className,
+        )
+      }
+    />
+  );
+}
 
-export const TabsTrigger = React.forwardRef<
-  React.ComponentRef<typeof Unstyled.TabsTrigger>,
-  React.ComponentPropsWithoutRef<typeof Unstyled.TabsTrigger>
->((props, ref) => (
-  <Unstyled.TabsTrigger
-    ref={ref}
-    {...props}
-    className={cn(
-      "text-fd-muted-foreground hover:text-fd-accent-foreground data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary inline-flex items-center gap-2 border-b border-transparent py-2 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4",
-      props.className,
-    )}
-  />
-));
-TabsTrigger.displayName = "TabsTrigger";
+export function TabsTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof Unstyled.TabsTrigger>) {
+  return (
+    <Unstyled.TabsTrigger
+      {...props}
+      className={(s) =>
+        cn(
+          'inline-flex items-center gap-2 whitespace-nowrap text-fd-muted-foreground border-b border-transparent py-2 text-sm font-medium transition-colors [&_svg]:size-4 hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active]:border-fd-primary data-[active]:text-fd-primary',
+          typeof className === 'function' ? className(s) : className,
+        )
+      }
+    />
+  );
+}
 
 export function Tabs({
   ref,
@@ -94,10 +95,12 @@ export function Tabs({
   return (
     <Unstyled.Tabs
       ref={ref}
-      className={cn(
-        "bg-fd-secondary my-4 flex flex-col overflow-hidden rounded-xl border",
-        className,
-      )}
+      className={(s) =>
+        cn(
+          'flex flex-col overflow-hidden rounded-xl border bg-fd-secondary my-4',
+          typeof className === 'function' ? className(s) : className,
+        )
+      }
       value={value}
       onValueChange={(v: string) => {
         if (items && !items.some((item) => escapeValue(item) === v)) return;
@@ -107,9 +110,7 @@ export function Tabs({
     >
       {items && (
         <TabsList>
-          {label && (
-            <span className="my-auto me-auto text-sm font-medium">{label}</span>
-          )}
+          {label && <span className="text-sm font-medium my-auto me-auto">{label}</span>}
           {items.map((item) => (
             <TabsTrigger key={item} value={escapeValue(item)}>
               {item}
@@ -117,19 +118,14 @@ export function Tabs({
           ))}
         </TabsList>
       )}
-      <TabsContext.Provider
-        value={useMemo(() => ({ items, collection }), [collection, items])}
-      >
+      <TabsContext.Provider value={useMemo(() => ({ items, collection }), [collection, items])}>
         {props.children}
       </TabsContext.Provider>
     </Unstyled.Tabs>
   );
 }
 
-export interface TabProps extends Omit<
-  ComponentProps<typeof Unstyled.TabsContent>,
-  "value"
-> {
+export interface TabProps extends Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value'> {
   /**
    * Value of tab, detect from index if unspecified.
    */
@@ -144,7 +140,7 @@ export function Tab({ value, ...props }: TabProps) {
     items?.at(useCollectionIndex());
   if (!resolved)
     throw new Error(
-      "Failed to resolve tab `value`, please pass a `value` prop to the Tab component.",
+      'Failed to resolve tab `value`, please pass a `value` prop to the Tab component.',
     );
 
   return (
@@ -162,11 +158,12 @@ export function TabsContent({
   return (
     <Unstyled.TabsContent
       value={value}
-      forceMount
-      className={cn(
-        "bg-fd-background prose-no-margin rounded-xl p-4 text-[0.9375rem] outline-none data-[state=inactive]:hidden [&>figure:only-child]:-m-4 [&>figure:only-child]:border-none",
-        className,
-      )}
+      className={(s) =>
+        cn(
+          'p-4 text-[0.9375rem] bg-fd-background rounded-xl outline-none prose-no-margin data-[inactive]:hidden [&>figure:only-child]:-m-4 [&>figure:only-child]:border-none',
+          typeof className === 'function' ? className(s) : className,
+        )
+      }
       {...props}
     >
       {props.children}
@@ -199,5 +196,5 @@ function useCollectionIndex() {
  * only escape whitespaces in values in simple mode
  */
 function escapeValue(v: string): string {
-  return v.toLowerCase().replace(/\s/, "-");
+  return v.toLowerCase().replace(/\s/, '-');
 }

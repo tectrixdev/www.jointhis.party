@@ -149,6 +149,7 @@ async function CreateTunnel(
     await connection.query(
       `INSERT INTO Tunnels (owner, server, token, subdomain, UDP, TCP, intUDP, intTCP, type, status, name, purpose ) VALUES ("${session?.id}", "${server}", "${token}", "${tunnel.subdomain}", ${UDP}, ${TCP}, ${tunnel.intUDP}, ${tunnel.intTCP}, "${tunnel.type}", "offline", "${tunnel.name}", "${tunnel.description}")`,
     );
+    return { status: true };
   } catch (err: any) {
     return { status: false, error: err.toString() };
   }

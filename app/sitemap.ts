@@ -8,7 +8,7 @@ export const revalidate = false;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const items = await Promise.all(
     source.getPages().map(async (page) => {
-      const lastModified = page.data.lastModified; // modification by me
+      const { lastModified } = await page.data.load(); // modification by me
 
       return {
         url: url(page.url),
@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     // obviously modification by me ;)
     {
-      url: url("/discord"),
+      url: url("/matrix"),
       changeFrequency: "monthly",
       priority: 0.6,
     },

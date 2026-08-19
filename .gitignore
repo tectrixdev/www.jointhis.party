@@ -26,3 +26,6 @@ yarn-error.log*
 .vercel
 next-env.d.ts
 .env*
+
+# neovim
+Session.vim

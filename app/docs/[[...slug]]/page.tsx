@@ -1,9 +1,10 @@
-import { getPageImage, source } from "@/lib/source";
+import { getPageImageUrl, source } from "@/lib/source";
 import {
   DocsBody,
   DocsDescription,
   DocsPage,
   DocsTitle,
+  PageLastUpdate,
 } from "fumadocs-ui/layouts/docs/page";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
@@ -13,19 +14,18 @@ import { Pencil, PencilIcon, SeparatorHorizontal } from "lucide-react";
 import { Card } from "fumadocs-ui/components/card";
 import { baseUrl } from "@/lib/metadata";
 import GitLab from "@/components/gitlabicon";
-import { SidebarSeparator } from "@/components/layout/docs/sidebar";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
-
+  const { toc, lastModified } = await page.data.load();
   const MDX = page.data.body;
 
   return (
     <DocsPage
       tableOfContent={{ style: "clerk" }}
-      toc={page.data.toc}
+      toc={toc}
       full={page.data.full}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
@@ -39,6 +39,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         />
       </DocsBody>
       <Card
+        className="mt-5"
         title={"Edit on GitLab"}
         href={`https://gitlab.com/jointhisparty/www.jointhis.party/edit/main/content/docs/${page.path}`}
         icon={
@@ -51,6 +52,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       >
         Found a mistake? Want to improve the documentation?
       </Card>
+      {lastModified && <PageLastUpdate date={lastModified} />}
     </DocsPage>
   );
 }
@@ -70,7 +72,7 @@ export async function generateMetadata(
     title: page.data.title,
     description: page.data.description,
     openGraph: {
-      images: getPageImage(page).url,
+      images: getPageImageUrl(page).url,
     },
     metadataBase: new URL(baseUrl),
   };
